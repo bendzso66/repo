@@ -1,5 +1,4 @@
 import static spark.Spark.get;
-import static spark.Spark.post;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,7 +19,7 @@ import com.google.gson.Gson;
 
 public class iParkingInterface {
 
-	private static final String dbClassName = "com.mysql.jdbc.Driver";
+	private static final String DB_CLASS_NAME = "com.mysql.jdbc.Driver";
 	private static final String CONNECTION = "jdbc:mysql://127.0.0.1/smart_parking";
 	private static final int R = 6371; // corrected earth radius, km
 	private static String userName;
@@ -41,7 +40,7 @@ public class iParkingInterface {
 			System.out.println("IOException has been caught" + e);
 		}
 
-		Class.forName(dbClassName);
+		Class.forName(DB_CLASS_NAME);
 		Properties p = new Properties();
 		p.put("user", userName);
 		p.put("password", password);
@@ -100,7 +99,7 @@ public class iParkingInterface {
 	private static ArrayList<rowInParkingLots> getrowsInParkingLots(
 			ResultSet rs, double lat1, double lon1, double radius)
 			throws SQLException {
-		ArrayList<rowInParkingLots> lst = new ArrayList();
+		ArrayList<rowInParkingLots> lst = new ArrayList<rowInParkingLots>();
 		rowInParkingLots row = null;
 
 		Double distance = null;
