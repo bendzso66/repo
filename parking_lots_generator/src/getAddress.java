@@ -1,8 +1,8 @@
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Scanner;
+
+import org.json.JSONObject;
 
 public class getAddress {
 
@@ -14,35 +14,34 @@ public class getAddress {
 	public static void main(String[] args) throws Exception {
 		double lat = 47.5238609631467;
 		double lon = 19.097345216191794;
-		String targetURL = GEOCODING_URL + lat + COMMA_IN_URL + lon + KEY_STRING + API_KEY;
-		String response = executeGet(targetURL);
-		System.out.println(response);
+		String targetURL = GEOCODING_URL + lat + COMMA_IN_URL + lon
+				+ KEY_STRING + API_KEY;
+		executeGet(targetURL);
+
 	}
 
-	public static String executeGet(String targetURL) {
+	public static void executeGet(String targetURL) {
 		URL url;
 		HttpURLConnection connection = null;
 		try {
-			// Create connection
 			url = new URL(targetURL);
-			connection = (HttpURLConnection) url.openConnection();
-			connection.setRequestMethod("GET");
+			Scanner scan = new Scanner(url.openStream());
+			String str = new String();
 
-			// Get Response
-			InputStream is = connection.getInputStream();
-			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-			String line;
-			StringBuffer response = new StringBuffer();
-			while ((line = rd.readLine()) != null) {
-				response.append(line);
-				response.append('\r');
+			while (scan.hasNext()) {
+				str += scan.nextLine();
 			}
-			rd.close();
-			return response.toString();
+			scan.close();
 
+			JSONObject obj = new JSONObject(str);
+			JSONObject res = obj.getJSONArray("results").getJSONObject(0);
+			System.out.println(res.getString("formatted_address"));
+
+			if (!obj.getString("status").equals("OK")) {
+				System.out.println("not ok geocoding");
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return null;
 		} finally {
 			if (connection != null) {
 				connection.disconnect();
