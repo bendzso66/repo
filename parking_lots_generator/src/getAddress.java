@@ -16,11 +16,10 @@ public class getAddress {
 		double lon = 19.097345216191794;
 		String targetURL = GEOCODING_URL + lat + COMMA_IN_URL + lon
 				+ KEY_STRING + API_KEY;
-		executeGet(targetURL);
-
+		geocodeCoords(targetURL);
 	}
 
-	public static void executeGet(String targetURL) {
+	public static void geocodeCoords(String targetURL) {
 		URL url;
 		HttpURLConnection connection = null;
 		try {
