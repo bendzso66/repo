@@ -79,7 +79,9 @@ public class generateParkingLots {
 			return "no valid address";
 		} else {
 			JSONObject res = obj.getJSONArray("results").getJSONObject(0);
-			return res.getString("formatted_address");
+			String formattedAddress = res.getString("formatted_address");
+			String encodedAddress = new String(formattedAddress.getBytes(), "UTF-8");
+			return encodedAddress;
 		}
 	}
 }

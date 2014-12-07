@@ -34,7 +34,9 @@ public class getAddress {
 
 			JSONObject obj = new JSONObject(str);
 			JSONObject res = obj.getJSONArray("results").getJSONObject(0);
-			System.out.println(res.getString("formatted_address"));
+
+			String formattedAddress = res.getString("formatted_address");
+			System.out.println(new String(formattedAddress.getBytes(), "UTF-8"));
 
 			if (!obj.getString("status").equals("OK")) {
 				System.out.println("not ok geocoding");
