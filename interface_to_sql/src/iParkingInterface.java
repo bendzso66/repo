@@ -57,11 +57,13 @@ public class iParkingInterface {
 			public Object handle(Request request, Response response) {
 				try {
 					double radius;
+					// TODO do this without try-catch
 					try {
 						radius = Double.parseDouble(request.queryParams("rad"));
 					} catch (Exception e) {
 						radius = 1; // 1 km
 					}
+					// TODO try to find parking lots in SQL
 					stmt.execute("SELECT * FROM smart_parking.parking_lots;");
 					ArrayList<rowInParkingLots> lst = getrowsInParkingLots(
 							stmt.getResultSet(),
@@ -74,24 +76,91 @@ public class iParkingInterface {
 					return "Exception" + e;
 				}
 			}
+
 		});
 
 		get(new Route("/sendFreeLot") {
+
 			@Override
 			public Object handle(Request request, Response response) {
 				String answer;
 				try {
-					stmt.execute("INSERT INTO parking_lots (gps_time, latitude, longitude, user_id, parking_lot_availability, address) VALUES (" + "'"
-							+ request.queryParams("time") + "','" + request.queryParams("lat") + "','"
-							+ request.queryParams("lon") + "','" + request.queryParams("user") + "','" + request.queryParams("avail") + "','"
+					stmt.execute("INSERT INTO parking_lots (gps_time, latitude, longitude, user_id, parking_lot_availability, address) VALUES ("
+							+ "'"
+							+ request.queryParams("time")
+							+ "','"
+							+ request.queryParams("lat")
+							+ "','"
+							+ request.queryParams("lon")
+							+ "','"
+							+ request.queryParams("user")
+							+ "','"
+							+ request.queryParams("avail")
+							+ "','"
 							+ request.queryParams("addr") + "');");
 					answer = "New row is created.";
-				}catch (SQLException e){
+				} catch (SQLException e) {
 					response.status(202);
-					answer = "Wrong syntax to create new row. Error message: " + e;
+					answer = "Wrong syntax to create new row. Error message: "
+							+ e;
 				}
 				return answer;
 			}
+
+		});
+
+		get(new Route("/registration") {
+
+			@Override
+			public Object handle(Request request, Response response) {
+				String mail = request.queryParams("mail");
+				// TODO check password condition
+				String pass = request.queryParams("pass");
+				double radius = Double.parseDouble(request.queryParams("rad"));
+				try {
+					stmt.execute("INSERT INTO users (email, password, search_range, last_login, recommended_lots, lot_requests) "
+							+ "VALUES ('"
+							+ mail
+							+ "','"
+							+ pass
+							+ "','"
+							+ radius
+							+ "','"
+							+ System.currentTimeMillis()
+							+ "','0','0');");
+				} catch (SQLException e) {
+					return "Unsuccessfull registration: " + e;
+				}
+				return "Registration is successfull.";
+			}
+
+		});
+
+		get(new Route("/login") {
+
+			@Override
+			public Object handle(Request request, Response response) {
+				String mail = request.queryParams("mail");
+				String pass = request.queryParams("pass");
+				try {
+					ResultSet rs = stmt
+							.executeQuery("SELECT user_id FROM users WHERE email='"
+									+ mail + "'AND password='" + pass + "';");
+					rs.last();
+					int size = rs.getRow();
+					if (size == 0) {
+						return "Wrong email address or password!";
+					} else if (size == 1) {
+						return "Successfull login!";
+					} else {
+						// This should never happen!
+						return "Login error!";
+					}
+				} catch (SQLException e) {
+					return "Unsuccessfull registration: " + e;
+				}
+			}
+
 		});
 
 	}
@@ -99,10 +168,11 @@ public class iParkingInterface {
 	private static ArrayList<rowInParkingLots> getrowsInParkingLots(
 			ResultSet rs, double lat1, double lon1, double radius)
 			throws SQLException {
+
 		ArrayList<rowInParkingLots> lst = new ArrayList<rowInParkingLots>();
 		rowInParkingLots row = null;
-
 		Double distance = null;
+
 		while (rs.next()) {
 			double dLat = Math.toRadians(Double.parseDouble(rs
 					.getString("latitude")) - lat1);
@@ -131,6 +201,8 @@ public class iParkingInterface {
 				lst.add(row);
 			}
 		}
+
 		return lst;
+
 	}
 }
