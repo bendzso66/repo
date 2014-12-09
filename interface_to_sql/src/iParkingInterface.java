@@ -125,17 +125,18 @@ public class iParkingInterface {
 						} else {
 							stmt.execute("INSERT INTO parking_lots (gps_time, latitude, longitude, user_id, parking_lot_availability, address) VALUES ("
 									+ "'"
-									+ request.queryParams("time")
+									+ System.currentTimeMillis()
 									+ "','"
 									+ request.queryParams("lat")
 									+ "','"
 									+ request.queryParams("lon")
 									+ "','"
-									+ request.queryParams("user")
+									+ id
 									+ "','"
 									+ request.queryParams("avail")
 									+ "','"
-									+ request.queryParams("addr") + "');");
+									// TODO add geocoding here
+									+ "address" + "');");
 							stmt.execute("UPDATE users SET recommended_lots = recommended_lots + 1 WHERE user_id='"
 									+ id + "';");
 							return "New row is created.";
