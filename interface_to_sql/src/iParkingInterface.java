@@ -22,6 +22,7 @@ public class iParkingInterface {
 	private static final String DB_CLASS_NAME = "com.mysql.jdbc.Driver";
 	private static final String CONNECTION = "jdbc:mysql://127.0.0.1/smart_parking";
 	private static final int R = 6371; // corrected earth radius, km
+	private static final int TEN_MINUTE = 600000;
 	private static String userName;
 	private static String password;
 
@@ -55,25 +56,49 @@ public class iParkingInterface {
 
 			@Override
 			public Object handle(Request request, Response response) {
+
+				int id = Integer.parseInt(request.queryParams("id"));
 				try {
-					double radius;
-					// TODO do this without try-catch
-					try {
-						radius = Double.parseDouble(request.queryParams("rad"));
-					} catch (Exception e) {
-						radius = 1; // 1 km
+					ResultSet rs = stmt
+							.executeQuery("SELECT user_id, last_login, search_range FROM users WHERE user_id='"
+									+ id + "';");
+					rs.last();
+					int size = rs.getRow();
+					if (size == 0) {
+						return "Wrong user ID!";
+					} else if (size == 1) {
+
+						if (rs.getLong("last_login") + TEN_MINUTE < System
+								.currentTimeMillis()) {
+							return "You are not loged in!";
+						} else {
+							double radius;
+							// TODO do this without try-catch
+							try {
+								radius = Double.parseDouble(request
+										.queryParams("rad"));
+							} catch (Exception e) {
+								radius = rs.getDouble("search_range");
+							}
+							// TODO try to find parking lots in SQL
+							stmt.execute("SELECT * FROM smart_parking.parking_lots;");
+							ArrayList<rowInParkingLots> lst = getrowsInParkingLots(
+									stmt.getResultSet(),
+									Double.parseDouble(request
+											.queryParams("lat")),
+									Double.parseDouble(request
+											.queryParams("lon")), radius);
+							Gson gson = new Gson();
+							stmt.execute("UPDATE users SET lot_requests = lot_requests + 1 WHERE user_id='"
+									+ id + "';");
+							return gson.toJson(lst);
+						}
+					} else {
+						// This should never happen!
+						return "Login error!";
 					}
-					// TODO try to find parking lots in SQL
-					stmt.execute("SELECT * FROM smart_parking.parking_lots;");
-					ArrayList<rowInParkingLots> lst = getrowsInParkingLots(
-							stmt.getResultSet(),
-							Double.parseDouble(request.queryParams("lat")),
-							Double.parseDouble(request.queryParams("lon")),
-							radius);
-					Gson gson = new Gson();
-					return gson.toJson(lst);
 				} catch (SQLException e) {
-					return "Exception" + e;
+					return "Unsuccessfull registration: " + e;
 				}
 			}
 
@@ -83,30 +108,49 @@ public class iParkingInterface {
 
 			@Override
 			public Object handle(Request request, Response response) {
-				String answer;
+
+				int id = Integer.parseInt(request.queryParams("id"));
 				try {
-					stmt.execute("INSERT INTO parking_lots (gps_time, latitude, longitude, user_id, parking_lot_availability, address) VALUES ("
-							+ "'"
-							+ request.queryParams("time")
-							+ "','"
-							+ request.queryParams("lat")
-							+ "','"
-							+ request.queryParams("lon")
-							+ "','"
-							+ request.queryParams("user")
-							+ "','"
-							+ request.queryParams("avail")
-							+ "','"
-							+ request.queryParams("addr") + "');");
-					answer = "New row is created.";
+					ResultSet rs = stmt
+							.executeQuery("SELECT user_id, last_login FROM users WHERE user_id='"
+									+ id + "';");
+					rs.last();
+					int size = rs.getRow();
+					if (size == 0) {
+						return "Wrong user ID!";
+					} else if (size == 1) {
+						if (rs.getLong("last_login") + TEN_MINUTE < System
+								.currentTimeMillis()) {
+							return "You are not loged in!";
+						} else {
+							stmt.execute("INSERT INTO parking_lots (gps_time, latitude, longitude, user_id, parking_lot_availability, address) VALUES ("
+									+ "'"
+									+ request.queryParams("time")
+									+ "','"
+									+ request.queryParams("lat")
+									+ "','"
+									+ request.queryParams("lon")
+									+ "','"
+									+ request.queryParams("user")
+									+ "','"
+									+ request.queryParams("avail")
+									+ "','"
+									+ request.queryParams("addr") + "');");
+							stmt.execute("UPDATE users SET recommended_lots = recommended_lots + 1 WHERE user_id='"
+									+ id + "';");
+							return "New row is created.";
+
+						}
+					} else {
+						// This should never happen!
+						return "Login error!";
+					}
 				} catch (SQLException e) {
 					response.status(202);
-					answer = "Wrong syntax to create new row. Error message: "
+					return "Wrong syntax to create new row. Error message: "
 							+ e;
 				}
-				return answer;
 			}
-
 		});
 
 		get(new Route("/registration") {
@@ -151,7 +195,12 @@ public class iParkingInterface {
 					if (size == 0) {
 						return "Wrong email address or password!";
 					} else if (size == 1) {
-						return "Successfull login!";
+						int userId = rs.getInt("user_id");
+						stmt.execute("UPDATE users SET last_login='"
+								+ System.currentTimeMillis()
+								+ "' WHERE email='" + mail + "'AND password='"
+								+ pass + "';");
+						return userId;
 					} else {
 						// This should never happen!
 						return "Login error!";
