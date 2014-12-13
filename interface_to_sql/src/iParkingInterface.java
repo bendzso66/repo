@@ -107,7 +107,7 @@ public class iParkingInterface {
 					return gson.toJson(lst);
 
 				} catch (SQLException e) {
-					return "Unsuccessfull request: " + e;
+					return "UNSUCCESSFULL_REQUEST";
 				}
 			}
 
@@ -171,6 +171,7 @@ public class iParkingInterface {
 				// TODO check password condition
 				String pass = request.queryParams("pass");
 				double radius = Double.parseDouble(request.queryParams("rad"));
+				int id;
 				try {
 					stmt.execute("INSERT INTO users (email, password, search_range, last_login, recommended_lots, lot_requests) "
 							+ "VALUES ('"
@@ -182,10 +183,13 @@ public class iParkingInterface {
 							+ "','"
 							+ System.currentTimeMillis()
 							+ "','0','0');");
+					ResultSet rs = stmt.executeQuery("SELECT user_id FROM users WHERE email = '" + mail + "';");
+					rs.next();
+					id = rs.getInt("user_id");
 				} catch (SQLException e) {
-					return "Unsuccessfull registration: " + e;
+					return "USED_MAIL_ADDRESS";
 				}
-				return "Registration is successfull.";
+				return id;
 			}
 
 		});
