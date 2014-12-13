@@ -3,6 +3,7 @@ import static spark.Spark.get;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -10,7 +11,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Properties;
+import java.util.Scanner;
 import java.util.Set;
+
+import org.json.JSONObject;
 
 import spark.Request;
 import spark.Response;
@@ -26,6 +30,11 @@ public class iParkingInterface {
 	private static final int ONE_DAY = 600000 * 6 * 24;
 	private static String userName;
 	private static String password;
+
+	private static final String GEOCODING_URL = "https://maps.googleapis.com/maps/api/geocode/json?latlng=";
+	private static final String COMMA_IN_URL = "%2C";
+	private static final String KEY_STRING = "&key=";
+	private static final String API_KEY = "AIzaSyBGcrE7i3y8AsCY5R7ZEHIWB3jRDMMkIlo";
 
 	public static void main(String[] args) throws ClassNotFoundException,
 			SQLException {
@@ -118,49 +127,66 @@ public class iParkingInterface {
 			@Override
 			public Object handle(Request request, Response response) {
 
-				int id = Integer.parseInt(request.queryParams("id"));
+				int userId = 0;
+				Set<String> queryParams = request.queryParams();
 				try {
-					ResultSet rs = stmt
-							.executeQuery("SELECT user_id, last_login FROM users WHERE user_id='"
-									+ id + "';");
-					rs.last();
-					int size = rs.getRow();
-					if (size == 0) {
-						return "Wrong user ID!";
-					} else if (size == 1) {
-						if (rs.getLong("last_login") + ONE_DAY < System
-								.currentTimeMillis()) {
-							return "You are not loged in!";
+					if (queryParams.contains("id")) {
+						userId = Integer.parseInt(request.queryParams("id"));
+						ResultSet rs = stmt
+								.executeQuery("SELECT user_id, last_login FROM users WHERE user_id='"
+										+ userId + "';");
+						rs.last();
+						int size = rs.getRow();
+						if (size == 0) {
+							return "INVALID_ID";
+						} else if (size == 1) {
+							if (rs.getLong("last_login") + ONE_DAY < System
+									.currentTimeMillis()) {
+								return "NOT_LOGED_IN";
+							} else {
+								stmt.execute("UPDATE users SET recommended_lots = recommended_lots + 1 WHERE user_id='"
+										+ userId + "';");
+							}
 						} else {
-							stmt.execute("INSERT INTO parking_lots (gps_time, latitude, longitude, user_id, parking_lot_availability, address) VALUES ("
-									+ "'"
-									+ System.currentTimeMillis()
-									+ "','"
-									+ request.queryParams("lat")
-									+ "','"
-									+ request.queryParams("lon")
-									+ "','"
-									+ id
-									+ "','"
-									+ request.queryParams("avail")
-									+ "','"
-									// TODO add geocoding here
-									+ "address" + "');");
-							stmt.execute("UPDATE users SET recommended_lots = recommended_lots + 1 WHERE user_id='"
-									+ id + "';");
-							return "New row is created.";
-
+							// This should never happen!
+							return "DUPLICATED_USER";
 						}
-					} else {
-						// This should never happen!
-						return "Login error!";
 					}
+
+					String lat = request.queryParams("lat");
+					String lon = request.queryParams("lon");
+					String targetURL = GEOCODING_URL + lat + COMMA_IN_URL + lon
+							+ KEY_STRING + API_KEY;
+					String address;
+					try {
+						address = geocodeCoords(targetURL);
+					} catch (IOException e) {
+						address = "no address";
+					}
+					address = address.replace("'", "");
+
+					stmt.execute("INSERT INTO parking_lots (gps_time, latitude, longitude, user_id, parking_lot_availability, address) VALUES ("
+							+ "'"
+							+ System.currentTimeMillis()
+							+ "','"
+							+ lat
+							+ "','"
+							+ lon
+							+ "','"
+							+ userId
+							+ "','"
+							+ request.queryParams("avail")
+							+ "','"
+							+ address
+							+ "');");
+
+					return "New row is created.";
 				} catch (SQLException e) {
-					response.status(202);
 					return "Wrong syntax to create new row. Error message: "
 							+ e;
 				}
 			}
+
 		});
 
 		get(new Route("/registration") {
@@ -270,8 +296,30 @@ public class iParkingInterface {
 				lst.add(row);
 			}
 		}
-
 		return lst;
-
 	}
+
+	public static String geocodeCoords(String targetURL) throws IOException {
+		URL url;
+		url = new URL(targetURL);
+		Scanner scan = new Scanner(url.openStream());
+		String str = new String();
+
+		while (scan.hasNext()) {
+			str += scan.nextLine();
+		}
+		scan.close();
+
+		JSONObject obj = new JSONObject(str);
+		if (!obj.getString("status").equals("OK")) {
+			return "no address";
+		} else {
+			JSONObject res = obj.getJSONArray("results").getJSONObject(0);
+			String formattedAddress = res.getString("formatted_address");
+			String encodedAddress = new String(formattedAddress.getBytes(),
+					"UTF-8");
+			return encodedAddress;
+		}
+	}
+
 }
