@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Properties;
+import java.util.Set;
 
 import spark.Request;
 import spark.Response;
@@ -22,7 +23,7 @@ public class iParkingInterface {
 	private static final String DB_CLASS_NAME = "com.mysql.jdbc.Driver";
 	private static final String CONNECTION = "jdbc:mysql://127.0.0.1/smart_parking";
 	private static final int R = 6371; // corrected earth radius, km
-	private static final int TEN_MINUTE = 600000;
+	private static final int ONE_DAY = 600000 * 6 * 24;
 	private static String userName;
 	private static String password;
 
@@ -56,49 +57,57 @@ public class iParkingInterface {
 
 			@Override
 			public Object handle(Request request, Response response) {
-
-				int id = Integer.parseInt(request.queryParams("id"));
+				double radius = 0;
+				Set<String> queryParams = request.queryParams();
+				if (queryParams.contains("rad")) {
+					radius = Double.parseDouble(request.queryParams("rad"));
+				}
 				try {
-					ResultSet rs = stmt
-							.executeQuery("SELECT user_id, last_login, search_range FROM users WHERE user_id='"
-									+ id + "';");
-					rs.last();
-					int size = rs.getRow();
-					if (size == 0) {
-						return "Wrong user ID!";
-					} else if (size == 1) {
+					if (queryParams.contains("id")) {
+						int id = Integer.parseInt(request.queryParams("id"));
+						ResultSet rs = stmt
+								.executeQuery("SELECT user_id, last_login, search_range FROM users WHERE user_id='"
+										+ id + "';");
+						rs.last();
+						int size = rs.getRow();
 
-						if (rs.getLong("last_login") + TEN_MINUTE < System
-								.currentTimeMillis()) {
-							return "You are not loged in!";
-						} else {
-							double radius;
-							// TODO do this without try-catch
-							try {
-								radius = Double.parseDouble(request
-										.queryParams("rad"));
-							} catch (Exception e) {
-								radius = rs.getDouble("search_range");
+						if (size == 0) {
+							return "INVALID_ID";
+						} else if (size == 1) {
+							if (rs.getLong("last_login") + ONE_DAY < System
+									.currentTimeMillis()) {
+								return "NOT_LOGED_IN";
+							} else {
+								if (radius == 0) {
+									radius = rs.getDouble("search_range");
+								}
+								stmt.execute("UPDATE users SET lot_requests = lot_requests + 1 , last_login = '"
+										+ System.currentTimeMillis()
+										+ "' WHERE user_id='" + id + "';");
 							}
-							// TODO try to find parking lots in SQL
-							stmt.execute("SELECT * FROM smart_parking.parking_lots;");
-							ArrayList<rowInParkingLots> lst = getrowsInParkingLots(
-									stmt.getResultSet(),
-									Double.parseDouble(request
-											.queryParams("lat")),
-									Double.parseDouble(request
-											.queryParams("lon")), radius);
-							Gson gson = new Gson();
-							stmt.execute("UPDATE users SET lot_requests = lot_requests + 1 WHERE user_id='"
-									+ id + "';");
-							return gson.toJson(lst);
+						} else {
+							// This should never happen!
+							return "DUPLICATED_USER";
 						}
-					} else {
-						// This should never happen!
-						return "Login error!";
 					}
+
+					if (radius == 0) {
+						radius = 0.5;
+					}
+
+					// TODO try to find parking lots in SQL
+					stmt.execute("SELECT * FROM smart_parking.parking_lots;");
+					ArrayList<rowInParkingLots> lst = getrowsInParkingLots(
+							stmt.getResultSet(),
+							Double.parseDouble(request.queryParams("lat")),
+							Double.parseDouble(request.queryParams("lon")),
+							radius);
+					Gson gson = new Gson();
+
+					return gson.toJson(lst);
+
 				} catch (SQLException e) {
-					return "Unsuccessfull registration: " + e;
+					return "Unsuccessfull request: " + e;
 				}
 			}
 
@@ -119,7 +128,7 @@ public class iParkingInterface {
 					if (size == 0) {
 						return "Wrong user ID!";
 					} else if (size == 1) {
-						if (rs.getLong("last_login") + TEN_MINUTE < System
+						if (rs.getLong("last_login") + ONE_DAY < System
 								.currentTimeMillis()) {
 							return "You are not loged in!";
 						} else {
@@ -204,10 +213,10 @@ public class iParkingInterface {
 						return userId;
 					} else {
 						// This should never happen!
-						return "Login error!";
+						return "Duplicated user!";
 					}
 				} catch (SQLException e) {
-					return "Unsuccessfull registration: " + e;
+					return "Unsuccessfull login: " + e;
 				}
 			}
 
