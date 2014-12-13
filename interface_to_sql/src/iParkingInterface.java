@@ -171,7 +171,7 @@ public class iParkingInterface {
 				// TODO check password condition
 				String pass = request.queryParams("pass");
 				double radius = Double.parseDouble(request.queryParams("rad"));
-				int id;
+				int userId;
 				try {
 					stmt.execute("INSERT INTO users (email, password, search_range, last_login, recommended_lots, lot_requests) "
 							+ "VALUES ('"
@@ -183,13 +183,15 @@ public class iParkingInterface {
 							+ "','"
 							+ System.currentTimeMillis()
 							+ "','0','0');");
-					ResultSet rs = stmt.executeQuery("SELECT user_id FROM users WHERE email = '" + mail + "';");
+					ResultSet rs = stmt
+							.executeQuery("SELECT user_id FROM users WHERE email = '"
+									+ mail + "';");
 					rs.next();
-					id = rs.getInt("user_id");
+					userId = rs.getInt("user_id");
 				} catch (SQLException e) {
 					return "USED_MAIL_ADDRESS";
 				}
-				return id;
+				return userId;
 			}
 
 		});
@@ -202,25 +204,29 @@ public class iParkingInterface {
 				String pass = request.queryParams("pass");
 				try {
 					ResultSet rs = stmt
-							.executeQuery("SELECT user_id FROM users WHERE email='"
-									+ mail + "'AND password='" + pass + "';");
+							.executeQuery("SELECT user_id, password FROM users WHERE email='"
+									+ mail + "';");
 					rs.last();
 					int size = rs.getRow();
 					if (size == 0) {
-						return "Wrong email address or password!";
+						return "INVALID_MAIL";
 					} else if (size == 1) {
-						int userId = rs.getInt("user_id");
-						stmt.execute("UPDATE users SET last_login='"
-								+ System.currentTimeMillis()
-								+ "' WHERE email='" + mail + "'AND password='"
-								+ pass + "';");
-						return userId;
+						if (pass.equals(rs.getString("password"))) {
+							int userId = rs.getInt("user_id");
+							stmt.execute("UPDATE users SET last_login='"
+									+ System.currentTimeMillis()
+									+ "' WHERE email='" + mail
+									+ "'AND password='" + pass + "';");
+							return userId;
+						} else {
+							return "WRONG_PASSWORD";
+						}
 					} else {
 						// This should never happen!
-						return "Duplicated user!";
+						return "DUPLICATED_USER";
 					}
 				} catch (SQLException e) {
-					return "Unsuccessfull login: " + e;
+					return "SQL_SERVER_ERROR: " + e;
 				}
 			}
 
