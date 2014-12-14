@@ -33,7 +33,8 @@ public class iParkingInterface {
 	private static String userName;
 	private static String password;
 
-	private static final String GEOCODING_URL = "https://maps.googleapis.com/maps/api/geocode/json?latlng=";
+	private static final String GEOCODING_COORDS_URL = "https://maps.googleapis.com/maps/api/geocode/json?latlng=";
+	private static final String GEOCODING_ADDRESS_URL = "https://maps.googleapis.com/maps/api/geocode/json?address=";
 	private static final String COMMA_IN_URL = "%2C";
 	private static final String KEY_STRING = "&key=";
 	private static final String API_KEY = "AIzaSyBGcrE7i3y8AsCY5R7ZEHIWB3jRDMMkIlo";
@@ -157,15 +158,14 @@ public class iParkingInterface {
 
 					String lat = request.queryParams("lat");
 					String lon = request.queryParams("lon");
-					String targetURL = GEOCODING_URL + lat + COMMA_IN_URL + lon
-							+ KEY_STRING + API_KEY;
+
 					String address;
 					try {
-						address = geocodeCoords(targetURL);
+						address = geocoding(lat, lon);
+						address = address.replace("'", "");
 					} catch (IOException e) {
 						address = "no address";
 					}
-					address = address.replace("'", "");
 
 					stmt.execute("INSERT INTO parking_lots (gps_time, latitude, longitude, user_id, parking_lot_availability, address) VALUES ("
 							+ "'"
@@ -259,6 +259,21 @@ public class iParkingInterface {
 
 		});
 
+		get(new Route("/getAddress") {
+
+			@Override
+			public Object handle(Request request, Response response) {
+				String address = request.queryParams("address");
+				String coords;
+				try {
+					coords = geocoding(address);
+				} catch (IOException e) {
+					coords = "NO_COORDS";
+				}
+				return coords;
+			}
+
+		});
 	}
 
 	private static List<rowInParkingLots> getrowsInParkingLots(ResultSet rs,
@@ -301,9 +316,9 @@ public class iParkingInterface {
 		return lst;
 	}
 
-	public static String geocodeCoords(String targetURL) throws IOException {
-		URL url;
-		url = new URL(targetURL);
+	public static String geocoding(String lat, String lon) throws IOException {
+		URL url = new URL(GEOCODING_COORDS_URL + lat + COMMA_IN_URL + lon
+				+ KEY_STRING + API_KEY);
 		Scanner scan = new Scanner(url.openStream());
 		String str = new String();
 
@@ -321,6 +336,32 @@ public class iParkingInterface {
 			String encodedAddress = new String(formattedAddress.getBytes(),
 					"UTF-8");
 			return encodedAddress;
+		}
+	}
+
+	public static String geocoding(String address) throws IOException {
+		URL url = new URL(GEOCODING_ADDRESS_URL + address + KEY_STRING
+				+ API_KEY);
+		Scanner scan = new Scanner(url.openStream());
+		String str = new String();
+
+		while (scan.hasNext()) {
+			str += scan.nextLine();
+		}
+		scan.close();
+
+		JSONObject obj = new JSONObject(str);
+		if (!obj.getString("status").equals("OK")) {
+			return "NO_COORDS";
+		} else {
+			JSONObject res = obj.getJSONArray("results").getJSONObject(0);
+			JSONObject geom = new JSONObject(res.get("geometry").toString());
+			JSONObject loc = new JSONObject(geom.get("location").toString());
+
+			String lat = loc.get("lat").toString();
+			String lon = loc.get("lng").toString();
+
+			return "lat: " + lat + ", lon: " + lon;
 		}
 	}
 
