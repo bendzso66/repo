@@ -118,7 +118,7 @@ public class iParkingInterface {
 					return gson.toJson(lst);
 
 				} catch (SQLException e) {
-					return "UNSUCCESSFULL_REQUEST";
+					return "SQL_SERVER_ERROR";
 				}
 			}
 
@@ -182,10 +182,9 @@ public class iParkingInterface {
 							+ address
 							+ "');");
 
-					return "New row is created.";
+					return "SUCCESSFULL_REQUEST";
 				} catch (SQLException e) {
-					return "Wrong syntax to create new row. Error message: "
-							+ e;
+					return "SQL_SERVER_ERROR";
 				}
 			}
 
@@ -254,7 +253,7 @@ public class iParkingInterface {
 						return "DUPLICATED_USER";
 					}
 				} catch (SQLException e) {
-					return "SQL_SERVER_ERROR: " + e;
+					return "SQL_SERVER_ERROR";
 				}
 			}
 
