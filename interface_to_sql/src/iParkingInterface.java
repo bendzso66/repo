@@ -10,6 +10,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.Set;
@@ -106,7 +108,7 @@ public class iParkingInterface {
 
 					// TODO try to find parking lots in SQL
 					stmt.execute("SELECT * FROM smart_parking.parking_lots;");
-					ArrayList<rowInParkingLots> lst = getrowsInParkingLots(
+					List<rowInParkingLots> lst = getrowsInParkingLots(
 							stmt.getResultSet(),
 							Double.parseDouble(request.queryParams("lat")),
 							Double.parseDouble(request.queryParams("lon")),
@@ -260,9 +262,8 @@ public class iParkingInterface {
 
 	}
 
-	private static ArrayList<rowInParkingLots> getrowsInParkingLots(
-			ResultSet rs, double lat1, double lon1, double radius)
-			throws SQLException {
+	private static List<rowInParkingLots> getrowsInParkingLots(ResultSet rs,
+			double lat1, double lon1, double radius) throws SQLException {
 
 		ArrayList<rowInParkingLots> lst = new ArrayList<rowInParkingLots>();
 		rowInParkingLots row = null;
@@ -292,10 +293,12 @@ public class iParkingInterface {
 				row.setParkingLotAvailability(rs
 						.getString("parking_lot_availability"));
 				row.setAddress(rs.getString("address"));
+				row.setDistance(distance);
 
 				lst.add(row);
 			}
 		}
+		Collections.sort(lst);
 		return lst;
 	}
 

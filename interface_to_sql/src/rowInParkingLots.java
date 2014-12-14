@@ -1,4 +1,4 @@
-public class rowInParkingLots {
+public class rowInParkingLots implements Comparable<rowInParkingLots> {
 
 	private int ID;
 	private long gpsTime;
@@ -7,6 +7,7 @@ public class rowInParkingLots {
 	private long userId;
 	private String parkingLotAvailability;
 	private String address;
+	private Double distance;
 
 	public void setId(int ID) {
 		this.ID = ID;
@@ -62,6 +63,19 @@ public class rowInParkingLots {
 
 	public String getAddress() {
 		return this.address;
+	}
+
+	public void setDistance(Double distance) {
+		this.distance = distance;
+	}
+
+	public Double getDistance() {
+		return this.distance;
+	}
+
+	@Override
+	public int compareTo(rowInParkingLots other) {
+		return Double.compare(this.distance, other.getDistance());
 	}
 
 }
