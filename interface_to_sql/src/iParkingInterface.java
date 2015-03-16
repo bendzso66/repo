@@ -27,7 +27,7 @@ import com.google.gson.Gson;
 public class iParkingInterface {
 
 	private static final String DB_CLASS_NAME = "com.mysql.jdbc.Driver";
-	private static final String CONNECTION = "jdbc:mysql://127.0.0.1/smart_parking";
+	private static final String CONNECTION = "jdbc:mysql://impala.aut.bme.hu/vehicle_data";
 	private static final int R = 6371; // corrected earth radius, km
 	private static final int ONE_DAY = 600000 * 6 * 24;
 	private static String userName;
@@ -78,7 +78,7 @@ public class iParkingInterface {
 					if (queryParams.contains("id")) {
 						int id = Integer.parseInt(request.queryParams("id"));
 						ResultSet rs = stmt
-								.executeQuery("SELECT user_id, last_login, search_range FROM users WHERE user_id='"
+								.executeQuery("SELECT id, last_login, search_range FROM vehicle_data.smartparking_users WHERE id='"
 										+ id + "';");
 						rs.last();
 						int size = rs.getRow();
@@ -93,9 +93,9 @@ public class iParkingInterface {
 								if (radius == 0) {
 									radius = rs.getDouble("search_range");
 								}
-								stmt.execute("UPDATE users SET lot_requests = lot_requests + 1 , last_login = '"
+								stmt.execute("UPDATE vehicle_data.smartparking_users SET lot_requests = lot_requests + 1 , last_login = '"
 										+ System.currentTimeMillis()
-										+ "' WHERE user_id='" + id + "';");
+										+ "' WHERE id='" + id + "';");
 							}
 						} else {
 							// This should never happen!
@@ -108,7 +108,7 @@ public class iParkingInterface {
 					}
 
 					// TODO try to find parking lots in SQL
-					stmt.execute("SELECT * FROM smart_parking.parking_lots;");
+					stmt.execute("SELECT * FROM vehicle_data.smartparking_parking_lots;");
 					List<rowInParkingLots> lst = getrowsInParkingLots(
 							stmt.getResultSet(),
 							Double.parseDouble(request.queryParams("lat")),
@@ -136,7 +136,7 @@ public class iParkingInterface {
 					if (queryParams.contains("id")) {
 						userId = Integer.parseInt(request.queryParams("id"));
 						ResultSet rs = stmt
-								.executeQuery("SELECT user_id, last_login FROM users WHERE user_id='"
+								.executeQuery("SELECT id, last_login FROM vehicle_data.smartparking_users WHERE id='"
 										+ userId + "';");
 						rs.last();
 						int size = rs.getRow();
@@ -147,7 +147,7 @@ public class iParkingInterface {
 									.currentTimeMillis()) {
 								return "NOT_LOGED_IN";
 							} else {
-								stmt.execute("UPDATE users SET recommended_lots = recommended_lots + 1 WHERE user_id='"
+								stmt.execute("UPDATE vehicle_data.smartparking_users SET recommended_lots = recommended_lots + 1 WHERE id='"
 										+ userId + "';");
 							}
 						} else {
@@ -167,7 +167,7 @@ public class iParkingInterface {
 						address = "no address";
 					}
 
-					stmt.execute("INSERT INTO parking_lots (gps_time, latitude, longitude, user_id, parking_lot_availability, address) VALUES ("
+					stmt.execute("INSERT INTO vehicle_data.smartparking_parking_lots (gps_time, latitude, longitude, id, parking_lot_availability, address) VALUES ("
 							+ "'"
 							+ System.currentTimeMillis()
 							+ "','"
@@ -200,7 +200,7 @@ public class iParkingInterface {
 				double radius = Double.parseDouble(request.queryParams("rad"));
 				int userId;
 				try {
-					stmt.execute("INSERT INTO users (email, password, search_range, last_login, recommended_lots, lot_requests) "
+					stmt.execute("INSERT INTO vehicle_data.smartparking_users (email, password, search_range, last_login, recommended_lots, lot_requests) "
 							+ "VALUES ('"
 							+ mail
 							+ "','"
@@ -211,10 +211,10 @@ public class iParkingInterface {
 							+ System.currentTimeMillis()
 							+ "','0','0');");
 					ResultSet rs = stmt
-							.executeQuery("SELECT user_id FROM users WHERE email = '"
+							.executeQuery("SELECT id FROM vehicle_data.smartparking_users WHERE email = '"
 									+ mail + "';");
 					rs.next();
-					userId = rs.getInt("user_id");
+					userId = rs.getInt("id");
 				} catch (SQLException e) {
 					return "USED_MAIL_ADDRESS";
 				}
@@ -231,7 +231,7 @@ public class iParkingInterface {
 				String pass = request.queryParams("pass");
 				try {
 					ResultSet rs = stmt
-							.executeQuery("SELECT user_id, password FROM users WHERE email='"
+							.executeQuery("SELECT id, password FROM vehicle_data.smartparking_users WHERE email='"
 									+ mail + "';");
 					rs.last();
 					int size = rs.getRow();
@@ -239,8 +239,8 @@ public class iParkingInterface {
 						return "INVALID_MAIL";
 					} else if (size == 1) {
 						if (pass.equals(rs.getString("password"))) {
-							int userId = rs.getInt("user_id");
-							stmt.execute("UPDATE users SET last_login='"
+							int userId = rs.getInt("id");
+							stmt.execute("UPDATE vehicle_data.smartparking_users SET last_login='"
 									+ System.currentTimeMillis()
 									+ "' WHERE email='" + mail
 									+ "'AND password='" + pass + "';");
@@ -303,7 +303,7 @@ public class iParkingInterface {
 				row.setGpsTime(rs.getLong("gps_time"));
 				row.setLatitude(rs.getDouble("latitude"));
 				row.setLongitude(rs.getDouble("longitude"));
-				row.setUserId(rs.getLong("user_id"));
+				row.setUserId(rs.getLong("id"));
 				row.setParkingLotAvailability(rs
 						.getString("parking_lot_availability"));
 				row.setAddress(rs.getString("address"));
