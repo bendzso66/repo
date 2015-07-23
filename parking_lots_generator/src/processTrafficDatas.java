@@ -33,7 +33,7 @@ public class processTrafficDatas {
 			input.next();
 			double latitude = Double.parseDouble(input.next());
 			double longitude = Double.parseDouble(input.next());
-			
+		
 			if (randIdAndAvailability.nextBoolean()) {
 				availability = "free";
 			} else {
