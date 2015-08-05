@@ -29,8 +29,7 @@ public class generateParkingLots {
     private static final String API_KEY = "AIzaSyBGcrE7i3y8AsCY5R7ZEHIWB3jRDMMkIlo";
 
     public static void main(String[] args) throws Exception {
-        PrintWriter writer = new PrintWriter("d://insert_random_lines.sql",
-                "UTF-8");
+        PrintWriter writer = new PrintWriter("d://insert_random_lines.sql", "UTF-8");
         for (int i = 0; i < 1000; i++) {
             double latitude = randLat.nextDouble() * rangeLat + minLat;
             double longitude = randLong.nextDouble() * rangeLong + minLong;
@@ -41,21 +40,12 @@ public class generateParkingLots {
                 availability = "reserved";
             }
 
-            String targetURL = GEOCODING_URL + latitude + COMMA_IN_URL
-                    + longitude + KEY_STRING + API_KEY;
+            String targetURL = GEOCODING_URL + latitude + COMMA_IN_URL + longitude + KEY_STRING + API_KEY;
             String address = geocodeCoords(targetURL);
 
             newLine = "INSERT INTO parking_lots (gps_time, latitude, longitude, user_id, parking_lot_availability, address)\nVALUES ("
-                    + "'"
-                    + System.currentTimeMillis()
-                    + "','"
-                    + latitude
-                    + "','"
-                    + longitude
-                    + "','"
-                    + (randIdAndAvailability.nextInt(2000) + 1)
-                    + "','"
-                    + availability + "','" + address + "');";
+                    + "'" + System.currentTimeMillis() + "','" + latitude + "','" + longitude + "','"
+                    + (randIdAndAvailability.nextInt(2000) + 1) + "','" + availability + "','" + address + "');";
             System.out.println(newLine);
             writer.println(newLine);
             Thread.sleep(110);
@@ -80,8 +70,7 @@ public class generateParkingLots {
         } else {
             JSONObject res = obj.getJSONArray("results").getJSONObject(0);
             String formattedAddress = res.getString("formatted_address");
-            String encodedAddress = new String(formattedAddress.getBytes(),
-                    "UTF-8");
+            String encodedAddress = new String(formattedAddress.getBytes(), "UTF-8");
             return encodedAddress;
         }
     }

@@ -14,8 +14,7 @@ public class getAddress {
     public static void main(String[] args) throws Exception {
         double lat = 47.5238609631467;
         double lon = 19.097345216191794;
-        String targetURL = GEOCODING_URL + lat + COMMA_IN_URL + lon
-                + KEY_STRING + API_KEY;
+        String targetURL = GEOCODING_URL + lat + COMMA_IN_URL + lon + KEY_STRING + API_KEY;
         geocodeCoords(targetURL);
     }
 
@@ -36,8 +35,7 @@ public class getAddress {
             JSONObject res = obj.getJSONArray("results").getJSONObject(0);
 
             String formattedAddress = res.getString("formatted_address");
-            System.out
-                    .println(new String(formattedAddress.getBytes(), "UTF-8"));
+            System.out.println(new String(formattedAddress.getBytes(), "UTF-8"));
 
             if (!obj.getString("status").equals("OK")) {
                 System.out.println("not ok geocoding");
