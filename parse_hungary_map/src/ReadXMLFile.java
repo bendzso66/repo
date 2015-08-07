@@ -18,8 +18,6 @@ public class ReadXMLFile {
     private static final String userName = "root";
     private static final String password = "";
 
-    static boolean getNameAttr = false;
-
     public static void main(String argv[]) throws ClassNotFoundException {
 
         Class.forName(DB_CLASS_NAME);
@@ -34,6 +32,11 @@ public class ReadXMLFile {
 
             DefaultHandler handler = new DefaultHandler() {
 
+                private boolean getNameAttr = false;
+                private boolean getParkingAttr = false;
+                private String nodeId = null;
+                private String wayId = null;
+
                 @Override
                 public void startElement(String uri, String localName,
                         String qName, Attributes attributes)
@@ -45,55 +48,133 @@ public class ReadXMLFile {
                     try {
                         c = DriverManager.getConnection(CONNECTION, p);
                         stmt = c.createStatement();
-                    } catch (SQLException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
 
-                    if (qName.equalsIgnoreCase("node")) {
+                        if (qName.equalsIgnoreCase("node")) {
 
-                        getNameAttr = false;
+                            getNameAttr = false;
+                            getParkingAttr = true;
 
-                        System.out.print("NODE       ");
-                        System.out.print("id: " + attributes.getValue("id"));
-                        System.out.print(" lat: " + attributes.getValue("lat"));
-                        System.out.print(" lon: " + attributes.getValue("lon"));
-                        System.out.println(" changeset: "
-                                + attributes.getValue("changeset"));
-                        try {
-                            stmt.execute("INSERT INTO street_sections (section_id, latitude, longitude, changeset) VALUES ("
+                            nodeId = attributes.getValue("id");
+                            String nodeLat = attributes.getValue("lat");
+                            String nodeLon = attributes.getValue("lon");
+
+                            System.out.print("NODE       ");
+                            System.out.print("id: " + nodeId);
+                            System.out.print(" lat: " + nodeLat);
+                            System.out.print(" lon: " + nodeLon);
+                            String sqlStatement = "INSERT INTO street_sections (section_id, latitude, longitude) VALUES ("
                                     + "'"
-                                    + attributes.getValue("id")
+                                    + nodeId
                                     + "','"
-                                    + attributes.getValue("lat")
+                                    + nodeLat
                                     + "','"
-                                    + attributes.getValue("lon")
+                                    + nodeLon
+                                    + "');";
+                            try {
+                                stmt.execute(sqlStatement);
+                            } catch (SQLException e) {
+                                System.out
+                                        .println("SQL error: cannot create new record in table street_sections.");
+                                System.out.println(sqlStatement);
+                                e.printStackTrace();
+                            }
+
+                        } else if (qName.equalsIgnoreCase("tag")
+                                && attributes.getValue("v").equals("parking")
+                                && getParkingAttr) {
+
+                            System.out.print("NODE TAG   ");
+                            System.out.println("parking");
+
+                            String sqlStatement = "UPDATE street_sections SET parking=1 WHERE section_id="
+                                    + nodeId
+                                    + ";";
+                            try {
+                                stmt.execute(sqlStatement);
+                            } catch (SQLException e) {
+                                System.out
+                                        .println("SQL error: cannot update table street_sections.");
+                                System.out.println(sqlStatement);
+                                e.printStackTrace();
+                            }
+
+                        } else if (qName.equalsIgnoreCase("way")) {
+
+                            getNameAttr = true;
+                            getParkingAttr = false;
+
+                            wayId = attributes.getValue("id");
+
+                            System.out.print("WAY        ");
+                            System.out.print("id: " + wayId);
+
+                            String sqlStatement = "INSERT INTO streets (street_id) VALUES ("
+                                    + "'"
+                                    + wayId
+                                    + "');";
+
+                            try {
+                                stmt.execute(sqlStatement);
+                            } catch (SQLException e) {
+                                System.out
+                                        .println("SQL error: cannot create new record in table streets.");
+                                System.out.println(sqlStatement);
+                                e.printStackTrace();
+                            }
+
+                        } else if (qName.equalsIgnoreCase("nd")) {
+
+                            String nodeRef = attributes.getValue("ref");
+
+                            System.out.print("WAY ND     ");
+                            System.out.println("ref: " + nodeRef);
+
+                            String sqlStatement = "INSERT INTO street_references (street_id, section_id) VALUES ("
+                                    + "'"
+                                    + wayId
                                     + "','"
-                                    + attributes.getValue("changeset") + "');");
-                        } catch (SQLException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
+                                    + nodeRef
+                                    + "');";
+                            try {
+                                stmt.execute(sqlStatement);
+                            } catch (SQLException e) {
+                                System.out
+                                        .println("SQL error: cannot create new record in table street_references.");
+                                System.out.println(sqlStatement);
+                                e.printStackTrace();
+                            }
+
+                        } else if (qName.equalsIgnoreCase("tag")
+                                && attributes.getValue("k").equals("name")
+                                && getNameAttr) {
+
+                            String nameOfStreet = attributes.getValue("v");
+
+                            System.out.print("WAY TAG    ");
+                            System.out.println("street: " + nameOfStreet);
+
+                            String sqlStatement = "UPDATE streets SET name_of_street='"
+                                    + nameOfStreet
+                                    + "' WHERE street_id="
+                                    + wayId
+                                    + ";";
+
+                            try {
+                                stmt.execute(sqlStatement);
+                            } catch (SQLException e) {
+                                System.out
+                                        .println("SQL error: cannot update table streets.");
+                                System.out.println(sqlStatement);
+                                e.printStackTrace();
+                            }
+
                         }
-                    } else if (qName.equalsIgnoreCase("tag")
-                            && attributes.getValue("v").equals("parking")) {
-                        System.out.print("NODE TAG   ");
-                        System.out.println("parking");
-                    } else if (qName.equalsIgnoreCase("way")) {
-                        System.out.print("WAY        ");
-                        getNameAttr = true;
-                        System.out.print("id: " + attributes.getValue("id"));
-                        System.out.println(" changeset: "
-                                + attributes.getValue("changeset"));
-                    } else if (qName.equalsIgnoreCase("nd")) {
-                        System.out.print("WAY ND     ");
+                    } catch (SQLException e) {
                         System.out
-                                .println("ref: " + attributes.getValue("ref"));
-                    } else if (qName.equalsIgnoreCase("tag")
-                            && attributes.getValue("k").equals("name")
-                            && getNameAttr) {
-                        System.out.print("WAY TAG    ");
-                        System.out.println("street: "
-                                + attributes.getValue("v"));
+                                .println("SQL error: cannot create the connection.");
+                        e.printStackTrace();
+                    } finally {
+                        ManageJdbcConnections.closeConnections(c, stmt);
                     }
                 }
 
@@ -108,5 +189,4 @@ public class ReadXMLFile {
         }
 
     }
-
 }
