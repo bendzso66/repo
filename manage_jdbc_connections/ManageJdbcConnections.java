@@ -5,6 +5,17 @@ import java.sql.Statement;
 
 public class ManageJdbcConnections {
 
+    public static void executeStatement(Statement stmt, String sqlStmt,
+            String errorMsg) {
+        try {
+            stmt.execute(sqlStmt);
+        } catch (SQLException e) {
+            System.out.println(errorMsg);
+            System.out.println(sqlStmt);
+            e.printStackTrace();
+        }
+    }
+
     public static void closeConnections(Connection conn, Statement stmt) {
         if (stmt != null) {
             try {
@@ -25,7 +36,8 @@ public class ManageJdbcConnections {
         }
     }
 
-    public static void closeConnections(Connection conn, Statement stmt, ResultSet rs) {
+    public static void closeConnections(Connection conn, Statement stmt,
+            ResultSet rs) {
         if (rs != null) {
             try {
                 rs.close();

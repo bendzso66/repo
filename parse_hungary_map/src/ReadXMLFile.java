@@ -70,14 +70,9 @@ public class ReadXMLFile {
                                     + "','"
                                     + nodeLon
                                     + "');";
-                            try {
-                                stmt.execute(sqlStatement);
-                            } catch (SQLException e) {
-                                System.out
-                                        .println("SQL error: cannot create new record in table street_sections.");
-                                System.out.println(sqlStatement);
-                                e.printStackTrace();
-                            }
+                            String errorMsg = "SQL error: cannot create new record in table street_sections.";
+                            ManageJdbcConnections.executeStatement(stmt,
+                                    sqlStatement, errorMsg);
 
                         } else if (qName.equalsIgnoreCase("tag")
                                 && attributes.getValue("v").equals("parking")
@@ -89,14 +84,9 @@ public class ReadXMLFile {
                             String sqlStatement = "UPDATE street_sections SET parking=1 WHERE section_id="
                                     + nodeId
                                     + ";";
-                            try {
-                                stmt.execute(sqlStatement);
-                            } catch (SQLException e) {
-                                System.out
-                                        .println("SQL error: cannot update table street_sections.");
-                                System.out.println(sqlStatement);
-                                e.printStackTrace();
-                            }
+                            String errorMsg = "SQL error: cannot update table street_sections.";
+                            ManageJdbcConnections.executeStatement(stmt,
+                                    sqlStatement, errorMsg);
 
                         } else if (qName.equalsIgnoreCase("way")) {
 
@@ -112,15 +102,9 @@ public class ReadXMLFile {
                                     + "'"
                                     + wayId
                                     + "');";
-
-                            try {
-                                stmt.execute(sqlStatement);
-                            } catch (SQLException e) {
-                                System.out
-                                        .println("SQL error: cannot create new record in table streets.");
-                                System.out.println(sqlStatement);
-                                e.printStackTrace();
-                            }
+                            String errorMsg = "SQL error: cannot create new record in table streets.";
+                            ManageJdbcConnections.executeStatement(stmt,
+                                    sqlStatement, errorMsg);
 
                         } else if (qName.equalsIgnoreCase("nd")) {
 
@@ -135,14 +119,9 @@ public class ReadXMLFile {
                                     + "','"
                                     + nodeRef
                                     + "');";
-                            try {
-                                stmt.execute(sqlStatement);
-                            } catch (SQLException e) {
-                                System.out
-                                        .println("SQL error: cannot create new record in table street_references.");
-                                System.out.println(sqlStatement);
-                                e.printStackTrace();
-                            }
+                            String errorMsg = "SQL error: cannot create new record in table street_references.";
+                            ManageJdbcConnections.executeStatement(stmt,
+                                    sqlStatement, errorMsg);
 
                         } else if (qName.equalsIgnoreCase("tag")
                                 && attributes.getValue("k").equals("name")
@@ -158,17 +137,12 @@ public class ReadXMLFile {
                                     + "' WHERE street_id="
                                     + wayId
                                     + ";";
-
-                            try {
-                                stmt.execute(sqlStatement);
-                            } catch (SQLException e) {
-                                System.out
-                                        .println("SQL error: cannot update table streets.");
-                                System.out.println(sqlStatement);
-                                e.printStackTrace();
-                            }
+                            String errorMsg = "SQL error: cannot update table streets.";
+                            ManageJdbcConnections.executeStatement(stmt,
+                                    sqlStatement, errorMsg);
 
                         }
+
                     } catch (SQLException e) {
                         System.out
                                 .println("SQL error: cannot create the connection.");
