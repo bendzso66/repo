@@ -3,7 +3,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class ManageJdbcConnections {
+public class CommonJdbcMethods {
 
     public static void executeStatement(Statement stmt, String sqlStmt,
             String errorMsg) {

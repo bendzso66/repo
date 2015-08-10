@@ -71,7 +71,7 @@ public class ReadXMLFile {
                                     + nodeLon
                                     + "');";
                             String errorMsg = "SQL error: cannot create new record in table street_sections.";
-                            ManageJdbcConnections.executeStatement(stmt,
+                            CommonJdbcMethods.executeStatement(stmt,
                                     sqlStatement, errorMsg);
 
                         } else if (qName.equalsIgnoreCase("tag")
@@ -85,7 +85,7 @@ public class ReadXMLFile {
                                     + nodeId
                                     + ";";
                             String errorMsg = "SQL error: cannot update table street_sections.";
-                            ManageJdbcConnections.executeStatement(stmt,
+                            CommonJdbcMethods.executeStatement(stmt,
                                     sqlStatement, errorMsg);
 
                         } else if (qName.equalsIgnoreCase("way")) {
@@ -103,7 +103,7 @@ public class ReadXMLFile {
                                     + wayId
                                     + "');";
                             String errorMsg = "SQL error: cannot create new record in table streets.";
-                            ManageJdbcConnections.executeStatement(stmt,
+                            CommonJdbcMethods.executeStatement(stmt,
                                     sqlStatement, errorMsg);
 
                         } else if (qName.equalsIgnoreCase("nd")) {
@@ -120,7 +120,7 @@ public class ReadXMLFile {
                                     + nodeRef
                                     + "');";
                             String errorMsg = "SQL error: cannot create new record in table street_references.";
-                            ManageJdbcConnections.executeStatement(stmt,
+                            CommonJdbcMethods.executeStatement(stmt,
                                     sqlStatement, errorMsg);
 
                         } else if (qName.equalsIgnoreCase("tag")
@@ -138,7 +138,7 @@ public class ReadXMLFile {
                                     + wayId
                                     + ";";
                             String errorMsg = "SQL error: cannot update table streets.";
-                            ManageJdbcConnections.executeStatement(stmt,
+                            CommonJdbcMethods.executeStatement(stmt,
                                     sqlStatement, errorMsg);
 
                         }
@@ -148,7 +148,7 @@ public class ReadXMLFile {
                                 .println("SQL error: cannot create the connection.");
                         e.printStackTrace();
                     } finally {
-                        ManageJdbcConnections.closeConnections(c, stmt);
+                        CommonJdbcMethods.closeConnections(c, stmt);
                     }
                 }
 
