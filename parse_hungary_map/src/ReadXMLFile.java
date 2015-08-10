@@ -58,10 +58,6 @@ public class ReadXMLFile {
                             String nodeLat = attributes.getValue("lat");
                             String nodeLon = attributes.getValue("lon");
 
-                            System.out.print("NODE       ");
-                            System.out.print("id: " + nodeId);
-                            System.out.print(" lat: " + nodeLat);
-                            System.out.print(" lon: " + nodeLon);
                             String sqlStatement = "INSERT INTO street_sections (section_id, latitude, longitude) VALUES ("
                                     + "'"
                                     + nodeId
@@ -71,6 +67,7 @@ public class ReadXMLFile {
                                     + nodeLon
                                     + "');";
                             String errorMsg = "SQL error: cannot create new record in table street_sections.";
+
                             CommonJdbcMethods.executeStatement(stmt,
                                     sqlStatement, errorMsg);
 
@@ -78,13 +75,11 @@ public class ReadXMLFile {
                                 && attributes.getValue("v").equals("parking")
                                 && getParkingAttr) {
 
-                            System.out.print("NODE TAG   ");
-                            System.out.println("parking");
-
                             String sqlStatement = "UPDATE street_sections SET parking=1 WHERE section_id="
                                     + nodeId
                                     + ";";
                             String errorMsg = "SQL error: cannot update table street_sections.";
+
                             CommonJdbcMethods.executeStatement(stmt,
                                     sqlStatement, errorMsg);
 
@@ -95,23 +90,18 @@ public class ReadXMLFile {
 
                             wayId = attributes.getValue("id");
 
-                            System.out.print("WAY        ");
-                            System.out.print("id: " + wayId);
-
                             String sqlStatement = "INSERT INTO streets (street_id) VALUES ("
                                     + "'"
                                     + wayId
                                     + "');";
                             String errorMsg = "SQL error: cannot create new record in table streets.";
+
                             CommonJdbcMethods.executeStatement(stmt,
                                     sqlStatement, errorMsg);
 
                         } else if (qName.equalsIgnoreCase("nd")) {
 
                             String nodeRef = attributes.getValue("ref");
-
-                            System.out.print("WAY ND     ");
-                            System.out.println("ref: " + nodeRef);
 
                             String sqlStatement = "INSERT INTO street_references (street_id, section_id) VALUES ("
                                     + "'"
@@ -120,6 +110,7 @@ public class ReadXMLFile {
                                     + nodeRef
                                     + "');";
                             String errorMsg = "SQL error: cannot create new record in table street_references.";
+
                             CommonJdbcMethods.executeStatement(stmt,
                                     sqlStatement, errorMsg);
 
@@ -129,15 +120,13 @@ public class ReadXMLFile {
 
                             String nameOfStreet = attributes.getValue("v");
 
-                            System.out.print("WAY TAG    ");
-                            System.out.println("street: " + nameOfStreet);
-
                             String sqlStatement = "UPDATE streets SET name_of_street='"
                                     + nameOfStreet
                                     + "' WHERE street_id="
                                     + wayId
                                     + ";";
                             String errorMsg = "SQL error: cannot update table streets.";
+
                             CommonJdbcMethods.executeStatement(stmt,
                                     sqlStatement, errorMsg);
 
@@ -157,6 +146,7 @@ public class ReadXMLFile {
             saxParser
                     .parse("d:\\Programs/repo/parse_hungary_map/hungary_map/hungary-latest.osm",
                             handler);
+            System.out.println("Parsing is done!");
 
         } catch (Exception e) {
             e.printStackTrace();
