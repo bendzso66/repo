@@ -13,17 +13,67 @@ import org.xml.sax.helpers.DefaultHandler;
 
 public class ReadXMLFile {
 
+    private static final String OSM_FILE_PATH = "d:\\Programs/repo/parse_hungary_map/hungary_map/hungary-latest.osm";
+
     private static final String DB_CLASS_NAME = "com.mysql.jdbc.Driver";
     private static final String CONNECTION = "jdbc:mysql://127.0.0.1/smart_parking";
+    private static final String USER = "user";
     private static final String userName = "root";
-    private static final String password = "";
+    private static final String PASSWORD = "password";
+    private static final String pass = "";
+
+    private static final String NODE = "node";
+    private static final String TAG = "tag";
+    private static final String WAY = "way";
+    private static final String ND = "nd";
+    private static final String PARKING = "parking";
+    private static final String V = "v";
+    private static final String NAME = "name";
+    private static final String K = "k";
+
+    private static final String ID = "id";
+    private static final String LAT = "lat";
+    private static final String LON = "lon";
+    private static final String REF = "ref";
+
+    private static final String INSERT_INTO = "INSERT INTO ";
+    private static final String UPDATE = "UPDATE ";
+    private static final String VALUES = "VALUES (";
+    private static final String SET = "SET ";
+    private static final String WHERE = "WHERE ";
+    private static final String QUOTATION_MARK = "'";
+    private static final String QUOTATION_MARKS_WITH_COMMA = "','";
+    private static final String CLOSING_BRACKET = "');";
+    private static final String SEMICOLON = ";";
+
+    private static final String STREET_SECTIONS_TABLE = "street_sections ";
+    private static final String STREET_SECTIONS_TABLE_HEADERS = "(section_id, latitude, longitude) ";
+    private static final String PARKING_EQUALS_ONE = "parking=1 ";
+    private static final String SECTION_ID_EQUALS = "section_id= ";
+
+    private static final String STREETS_TABLE = "streets ";
+    private static final String STREETS_TABLE_HEADER = "(street_id) ";
+    private static final String NAME_OF_STREET_EQUALS = "name_of_street=";
+    private static final String STREET_ID_EQUALS = "street_id=";
+
+    private static final String STREET_REFERENCES_TABLE = "street_references ";
+    private static final String STREET_REFERENCES_TABLE_HEADERS = "(street_id, section_id) ";
+
+    private static final String SPACE = " ";
+
+    private static final String STREET_SECTIONS_NEW_RECORD_ERROR = "SQL error: cannot create new record in table street_sections.";
+    private static final String STREET_SECTIONS_UPDATE_ERROR = "SQL error: cannot update table street_sections.";
+    private static final String STREETS_NEW_RECORD_ERROR = "SQL error: cannot create new record in table streets.";
+    private static final String STREETS_UPDATE_ERROR = "SQL error: cannot update table streets.";
+    private static final String STREET_REFERENCES_NEW_RECORD_ERROR = "SQL error: cannot create new record in table street_references.";
+    private static final String CONNECTION_ERROR = "SQL error: cannot create the connection.";
 
     public static void main(String argv[]) throws ClassNotFoundException {
 
         Class.forName(DB_CLASS_NAME);
         final Properties p = new Properties();
-        p.put("user", userName);
-        p.put("password", password);
+        p.put(USER, userName);
+        p.put(PASSWORD, pass);
 
         try {
 
@@ -49,92 +99,109 @@ public class ReadXMLFile {
                         c = DriverManager.getConnection(CONNECTION, p);
                         stmt = c.createStatement();
 
-                        if (qName.equalsIgnoreCase("node")) {
+                        if (qName.equalsIgnoreCase(NODE)) {
 
                             getNameAttr = false;
                             getParkingAttr = true;
 
-                            nodeId = attributes.getValue("id");
-                            String nodeLat = attributes.getValue("lat");
-                            String nodeLon = attributes.getValue("lon");
+                            nodeId = attributes.getValue(ID);
+                            String nodeLat = attributes.getValue(LAT);
+                            String nodeLon = attributes.getValue(LON);
 
-                            String sqlStatement = "INSERT INTO street_sections (section_id, latitude, longitude) VALUES ("
-                                    + "'"
+                            String sqlStatement = INSERT_INTO
+                                    + STREET_SECTIONS_TABLE
+                                    + STREET_SECTIONS_TABLE_HEADERS
+                                    + VALUES
+                                    + QUOTATION_MARK
                                     + nodeId
-                                    + "','"
+                                    + QUOTATION_MARKS_WITH_COMMA
                                     + nodeLat
-                                    + "','"
+                                    + QUOTATION_MARKS_WITH_COMMA
                                     + nodeLon
-                                    + "');";
-                            String errorMsg = "SQL error: cannot create new record in table street_sections.";
+                                    + CLOSING_BRACKET;
 
                             CommonJdbcMethods.executeStatement(stmt,
-                                    sqlStatement, errorMsg);
+                                    sqlStatement,
+                                    STREET_SECTIONS_NEW_RECORD_ERROR);
 
-                        } else if (qName.equalsIgnoreCase("tag")
-                                && attributes.getValue("v").equals("parking")
+                        } else if (qName.equalsIgnoreCase(TAG)
+                                && attributes.getValue(V).equals(PARKING)
                                 && getParkingAttr) {
 
-                            String sqlStatement = "UPDATE street_sections SET parking=1 WHERE section_id="
+                            String sqlStatement = UPDATE
+                                    + STREET_SECTIONS_TABLE
+                                    + SET
+                                    + PARKING_EQUALS_ONE
+                                    + WHERE
+                                    + SECTION_ID_EQUALS
                                     + nodeId
-                                    + ";";
-                            String errorMsg = "SQL error: cannot update table street_sections.";
+                                    + SEMICOLON;
 
                             CommonJdbcMethods.executeStatement(stmt,
-                                    sqlStatement, errorMsg);
+                                    sqlStatement, STREET_SECTIONS_UPDATE_ERROR);
 
-                        } else if (qName.equalsIgnoreCase("way")) {
+                        } else if (qName.equalsIgnoreCase(WAY)) {
 
                             getNameAttr = true;
                             getParkingAttr = false;
 
-                            wayId = attributes.getValue("id");
+                            wayId = attributes.getValue(ID);
 
-                            String sqlStatement = "INSERT INTO streets (street_id) VALUES ("
-                                    + "'"
+                            String sqlStatement = INSERT_INTO
+                                    + STREETS_TABLE
+                                    + STREETS_TABLE_HEADER
+                                    + VALUES
+                                    + QUOTATION_MARK
                                     + wayId
-                                    + "');";
-                            String errorMsg = "SQL error: cannot create new record in table streets.";
+                                    + CLOSING_BRACKET;
 
                             CommonJdbcMethods.executeStatement(stmt,
-                                    sqlStatement, errorMsg);
+                                    sqlStatement, STREETS_NEW_RECORD_ERROR);
 
-                        } else if (qName.equalsIgnoreCase("nd")) {
+                        } else if (qName.equalsIgnoreCase(ND)) {
 
-                            String nodeRef = attributes.getValue("ref");
+                            String nodeRef = attributes.getValue(REF);
 
-                            String sqlStatement = "INSERT INTO street_references (street_id, section_id) VALUES ("
-                                    + "'"
+                            String sqlStatement = INSERT_INTO
+                                    + STREET_REFERENCES_TABLE
+                                    + STREET_REFERENCES_TABLE_HEADERS
+                                    + VALUES
+                                    + QUOTATION_MARK
                                     + wayId
-                                    + "','"
+                                    + QUOTATION_MARKS_WITH_COMMA
                                     + nodeRef
-                                    + "');";
-                            String errorMsg = "SQL error: cannot create new record in table street_references.";
+                                    + CLOSING_BRACKET;
 
                             CommonJdbcMethods.executeStatement(stmt,
-                                    sqlStatement, errorMsg);
+                                    sqlStatement,
+                                    STREET_REFERENCES_NEW_RECORD_ERROR);
 
-                        } else if (qName.equalsIgnoreCase("tag")
-                                && attributes.getValue("k").equals("name")
+                        } else if (qName.equalsIgnoreCase(TAG)
+                                && attributes.getValue(K).equals(NAME)
                                 && getNameAttr) {
 
-                            String nameOfStreet = attributes.getValue("v");
+                            String nameOfStreet = attributes.getValue(V);
 
-                            String sqlStatement = "UPDATE streets SET name_of_street='"
+                            String sqlStatement = UPDATE
+                                    + STREETS_TABLE
+                                    + SET
+                                    + NAME_OF_STREET_EQUALS
+                                    + QUOTATION_MARK
                                     + nameOfStreet
-                                    + "' WHERE street_id="
+                                    + QUOTATION_MARK
+                                    + SPACE
+                                    + WHERE
+                                    + STREET_ID_EQUALS
                                     + wayId
-                                    + ";";
-                            String errorMsg = "SQL error: cannot update table streets.";
+                                    + SEMICOLON;
 
                             CommonJdbcMethods.executeStatement(stmt,
-                                    sqlStatement, errorMsg);
+                                    sqlStatement, STREETS_UPDATE_ERROR);
 
                         }
 
                     } catch (SQLException e) {
-                        System.out
-                                .println("SQL error: cannot create the connection.");
+                        System.out.println(CONNECTION_ERROR);
                         e.printStackTrace();
                     } finally {
                         CommonJdbcMethods.closeConnections(c, stmt);
@@ -143,9 +210,7 @@ public class ReadXMLFile {
 
             };
 
-            saxParser
-                    .parse("d:\\Programs/repo/parse_hungary_map/hungary_map/hungary-latest.osm",
-                            handler);
+            saxParser.parse(OSM_FILE_PATH, handler);
             System.out.println("Parsing is done!");
 
         } catch (Exception e) {
