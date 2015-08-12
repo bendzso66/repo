@@ -5,6 +5,10 @@ import java.sql.Statement;
 
 public class CommonJdbcMethods {
 
+    private static final String CLOSE_RESULTSET_ERROR = "SQL error: cannot close the resultset.";
+    private static final String CLOSE_STATEMENT_ERROR = "SQL error: cannot close the statement.";
+    private static final String CLOSE_CONNECTION_ERROR = "SQL error: cannot close the connection.";
+
     public static void executeStatement(Statement stmt, String sqlStmt,
             String errorMsg) {
         try {
@@ -21,7 +25,7 @@ public class CommonJdbcMethods {
             try {
                 stmt.close();
             } catch (SQLException e) {
-                System.out.println("SQL error: can not close the statement.");
+                System.out.println(CLOSE_STATEMENT_ERROR);
                 e.printStackTrace();
             }
         }
@@ -30,7 +34,7 @@ public class CommonJdbcMethods {
             try {
                 conn.close();
             } catch (SQLException e) {
-                System.out.println("SQL error: can not close the connection.");
+                System.out.println(CLOSE_CONNECTION_ERROR);
                 e.printStackTrace();
             }
         }
@@ -42,7 +46,7 @@ public class CommonJdbcMethods {
             try {
                 rs.close();
             } catch (SQLException e) {
-                System.out.println("SQL error: can not close the resultset.");
+                System.out.println(CLOSE_RESULTSET_ERROR);
                 e.printStackTrace();
             }
         }
@@ -51,7 +55,7 @@ public class CommonJdbcMethods {
             try {
                 stmt.close();
             } catch (SQLException e) {
-                System.out.println("SQL error: can not close the statement.");
+                System.out.println(CLOSE_STATEMENT_ERROR);
                 e.printStackTrace();
             }
         }
@@ -60,7 +64,7 @@ public class CommonJdbcMethods {
             try {
                 conn.close();
             } catch (SQLException e) {
-                System.out.println("SQL error: can not close the connection.");
+                System.out.println(CLOSE_CONNECTION_ERROR);
                 e.printStackTrace();
             }
         }
