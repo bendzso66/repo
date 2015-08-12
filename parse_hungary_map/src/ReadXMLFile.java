@@ -67,6 +67,7 @@ public class ReadXMLFile {
     private static final String STREETS_UPDATE_ERROR = "SQL error: cannot update table streets.";
     private static final String STREET_REFERENCES_NEW_RECORD_ERROR = "SQL error: cannot create new record in table street_references.";
     private static final String CONNECTION_ERROR = "SQL error: cannot create the connection.";
+    private static final String SAX_ERROR = "SAX Parser error: cannot create the parser or the factory.";
 
     public static void main(String argv[]) throws ClassNotFoundException {
 
@@ -79,134 +80,140 @@ public class ReadXMLFile {
 
             SAXParserFactory factory = SAXParserFactory.newInstance();
             SAXParser saxParser = factory.newSAXParser();
+            try {
+                Connection c = DriverManager.getConnection(CONNECTION, p);
+                final Statement stmt = c.createStatement();
 
-            Connection c = DriverManager.getConnection(CONNECTION, p);
-            final Statement stmt = c.createStatement();
+                DefaultHandler handler = new DefaultHandler() {
 
-            DefaultHandler handler = new DefaultHandler() {
+                    private boolean getNameAttr = false;
+                    private boolean getParkingAttr = false;
+                    private String nodeId = null;
+                    private String wayId = null;
+                    private Integer counter = 0;
 
-                private boolean getNameAttr = false;
-                private boolean getParkingAttr = false;
-                private String nodeId = null;
-                private String wayId = null;
-                private Integer counter = 0;
+                    @Override
+                    public void startElement(String uri, String localName,
+                            String qName, Attributes attributes)
+                            throws SAXException {
 
-                @Override
-                public void startElement(String uri, String localName,
-                        String qName, Attributes attributes)
-                        throws SAXException {
+                        counter++;
+                        System.out.println(counter);
 
-                    counter++;
-                    System.out.println(counter);
+                        if (qName.equalsIgnoreCase(NODE)) {
 
-                    if (qName.equalsIgnoreCase(NODE)) {
+                            getNameAttr = false;
+                            getParkingAttr = true;
 
-                        getNameAttr = false;
-                        getParkingAttr = true;
+                            nodeId = attributes.getValue(ID);
+                            String nodeLat = attributes.getValue(LAT);
+                            String nodeLon = attributes.getValue(LON);
 
-                        nodeId = attributes.getValue(ID);
-                        String nodeLat = attributes.getValue(LAT);
-                        String nodeLon = attributes.getValue(LON);
+                            String sqlStatement = INSERT_INTO
+                                    + STREET_SECTIONS_TABLE
+                                    + STREET_SECTIONS_TABLE_HEADERS
+                                    + VALUES
+                                    + QUOTATION_MARK
+                                    + nodeId
+                                    + QUOTATION_MARKS_WITH_COMMA
+                                    + nodeLat
+                                    + QUOTATION_MARKS_WITH_COMMA
+                                    + nodeLon
+                                    + CLOSING_BRACKET;
 
-                        String sqlStatement = INSERT_INTO
-                                + STREET_SECTIONS_TABLE
-                                + STREET_SECTIONS_TABLE_HEADERS
-                                + VALUES
-                                + QUOTATION_MARK
-                                + nodeId
-                                + QUOTATION_MARKS_WITH_COMMA
-                                + nodeLat
-                                + QUOTATION_MARKS_WITH_COMMA
-                                + nodeLon
-                                + CLOSING_BRACKET;
+                            CommonJdbcMethods.executeStatement(stmt,
+                                    sqlStatement,
+                                    STREET_SECTIONS_NEW_RECORD_ERROR);
 
-                        CommonJdbcMethods.executeStatement(stmt, sqlStatement,
-                                STREET_SECTIONS_NEW_RECORD_ERROR);
+                        } else if (qName.equalsIgnoreCase(TAG)
+                                && attributes.getValue(V).equals(PARKING)
+                                && getParkingAttr) {
 
-                    } else if (qName.equalsIgnoreCase(TAG)
-                            && attributes.getValue(V).equals(PARKING)
-                            && getParkingAttr) {
+                            String sqlStatement = UPDATE
+                                    + STREET_SECTIONS_TABLE
+                                    + SET
+                                    + PARKING_EQUALS_ONE
+                                    + WHERE
+                                    + SECTION_ID_EQUALS
+                                    + nodeId
+                                    + SEMICOLON;
 
-                        String sqlStatement = UPDATE
-                                + STREET_SECTIONS_TABLE
-                                + SET
-                                + PARKING_EQUALS_ONE
-                                + WHERE
-                                + SECTION_ID_EQUALS
-                                + nodeId
-                                + SEMICOLON;
+                            CommonJdbcMethods.executeStatement(stmt,
+                                    sqlStatement, STREET_SECTIONS_UPDATE_ERROR);
 
-                        CommonJdbcMethods.executeStatement(stmt, sqlStatement,
-                                STREET_SECTIONS_UPDATE_ERROR);
+                        } else if (qName.equalsIgnoreCase(WAY)) {
 
-                    } else if (qName.equalsIgnoreCase(WAY)) {
+                            getNameAttr = true;
+                            getParkingAttr = false;
 
-                        getNameAttr = true;
-                        getParkingAttr = false;
+                            wayId = attributes.getValue(ID);
 
-                        wayId = attributes.getValue(ID);
+                            String sqlStatement = INSERT_INTO
+                                    + STREETS_TABLE
+                                    + STREETS_TABLE_HEADER
+                                    + VALUES
+                                    + QUOTATION_MARK
+                                    + wayId
+                                    + CLOSING_BRACKET;
 
-                        String sqlStatement = INSERT_INTO
-                                + STREETS_TABLE
-                                + STREETS_TABLE_HEADER
-                                + VALUES
-                                + QUOTATION_MARK
-                                + wayId
-                                + CLOSING_BRACKET;
+                            CommonJdbcMethods.executeStatement(stmt,
+                                    sqlStatement, STREETS_NEW_RECORD_ERROR);
 
-                        CommonJdbcMethods.executeStatement(stmt, sqlStatement,
-                                STREETS_NEW_RECORD_ERROR);
+                        } else if (qName.equalsIgnoreCase(ND)) {
 
-                    } else if (qName.equalsIgnoreCase(ND)) {
+                            String nodeRef = attributes.getValue(REF);
 
-                        String nodeRef = attributes.getValue(REF);
+                            String sqlStatement = INSERT_INTO
+                                    + STREET_REFERENCES_TABLE
+                                    + STREET_REFERENCES_TABLE_HEADERS
+                                    + VALUES
+                                    + QUOTATION_MARK
+                                    + wayId
+                                    + QUOTATION_MARKS_WITH_COMMA
+                                    + nodeRef
+                                    + CLOSING_BRACKET;
 
-                        String sqlStatement = INSERT_INTO
-                                + STREET_REFERENCES_TABLE
-                                + STREET_REFERENCES_TABLE_HEADERS
-                                + VALUES
-                                + QUOTATION_MARK
-                                + wayId
-                                + QUOTATION_MARKS_WITH_COMMA
-                                + nodeRef
-                                + CLOSING_BRACKET;
+                            CommonJdbcMethods.executeStatement(stmt,
+                                    sqlStatement,
+                                    STREET_REFERENCES_NEW_RECORD_ERROR);
 
-                        CommonJdbcMethods.executeStatement(stmt, sqlStatement,
-                                STREET_REFERENCES_NEW_RECORD_ERROR);
+                        } else if (qName.equalsIgnoreCase(TAG)
+                                && attributes.getValue(K).equals(NAME)
+                                && getNameAttr) {
 
-                    } else if (qName.equalsIgnoreCase(TAG)
-                            && attributes.getValue(K).equals(NAME)
-                            && getNameAttr) {
+                            String nameOfStreet = attributes.getValue(V);
 
-                        String nameOfStreet = attributes.getValue(V);
+                            String sqlStatement = UPDATE
+                                    + STREETS_TABLE
+                                    + SET
+                                    + NAME_OF_STREET_EQUALS
+                                    + QUOTATION_MARK
+                                    + nameOfStreet
+                                    + QUOTATION_MARK
+                                    + SPACE
+                                    + WHERE
+                                    + STREET_ID_EQUALS
+                                    + wayId
+                                    + SEMICOLON;
 
-                        String sqlStatement = UPDATE
-                                + STREETS_TABLE
-                                + SET
-                                + NAME_OF_STREET_EQUALS
-                                + QUOTATION_MARK
-                                + nameOfStreet
-                                + QUOTATION_MARK
-                                + SPACE
-                                + WHERE
-                                + STREET_ID_EQUALS
-                                + wayId
-                                + SEMICOLON;
+                            CommonJdbcMethods.executeStatement(stmt,
+                                    sqlStatement, STREETS_UPDATE_ERROR);
 
-                        CommonJdbcMethods.executeStatement(stmt, sqlStatement,
-                                STREETS_UPDATE_ERROR);
+                        }
 
                     }
+                };
 
-                }
-            };
-
-            saxParser.parse(OSM_FILE_PATH, handler);
-            System.out.println("Parsing is done!");
-            CommonJdbcMethods.closeConnections(c, stmt);
-            System.out.println("SQL connections are closed!");
-
+                saxParser.parse(OSM_FILE_PATH, handler);
+                System.out.println("Parsing is done!");
+                CommonJdbcMethods.closeConnections(c, stmt);
+                System.out.println("SQL connections are closed!");
+            } catch (SQLException e) {
+                System.out.println(CONNECTION_ERROR);
+                e.printStackTrace();
+            }
         } catch (Exception e) {
+            System.out.println(SAX_ERROR);
             e.printStackTrace();
         }
 
