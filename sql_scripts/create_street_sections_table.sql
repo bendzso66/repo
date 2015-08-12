@@ -1,5 +1,5 @@
 CREATE table street_sections (
-    section_id INTEGER NOT NULL,
+    section_id BIGINT(20) NOT NULL,
     latitude REAL,
     longitude REAL,
     parking BOOLEAN DEFAULT 0,
