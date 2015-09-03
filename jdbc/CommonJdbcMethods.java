@@ -23,7 +23,7 @@ public class CommonJdbcMethods {
     }
 
     public static ResultSet executeQueryStatement(Statement stmt,
-            String sqlStmt, String errorMsg) {
+            String sqlStmt, String errorMsg) throws ForwardedSqlException {
         ResultSet rs = null;
         try {
             rs = stmt.executeQuery(sqlStmt);
@@ -31,6 +31,7 @@ public class CommonJdbcMethods {
             System.out.println(errorMsg);
             System.out.println(sqlStmt);
             e.printStackTrace();
+            throw new ForwardedSqlException();
         }
         return rs;
     }

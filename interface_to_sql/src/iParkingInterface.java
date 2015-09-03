@@ -128,7 +128,9 @@ public class iParkingInterface {
 
                 } catch (SQLException e) {
                     e.printStackTrace();
-                    return "SQL_SERVER_ERROR";
+                    return "SQL_CONNECTION_ERROR";
+                } catch (ForwardedSqlException e) {
+                    return "SQL_QUERY_ERROR";
                 } finally {
                     CommonJdbcMethods.closeConnections(c, stmt, rs);
                 }
@@ -199,7 +201,9 @@ public class iParkingInterface {
                             + address
                             + "');";
                     String sqlQueryInParkingLotsTableError = "SQL error: update in smartparking_parking_lots was unsuccessful.";
-                    CommonJdbcMethods.executeUpdateStatement(stmt, sqlQueryInParkingLotsTable, sqlQueryInParkingLotsTableError);
+                    CommonJdbcMethods.executeUpdateStatement(stmt,
+                            sqlQueryInParkingLotsTable,
+                            sqlQueryInParkingLotsTableError);
 
                     return "SUCCESSFULL_REQUEST";
                 } catch (SQLException e) {
@@ -337,41 +341,48 @@ public class iParkingInterface {
     }
 
     private static List<rowInParkingLots> getrowsInParkingLots(ResultSet rs,
-            double lat1, double lon1, double radius) throws SQLException {
+            double lat1, double lon1, double radius)
+            throws ForwardedSqlException {
 
         ArrayList<rowInParkingLots> lst = new ArrayList<rowInParkingLots>();
         rowInParkingLots row = null;
         Double distance = null;
+        try {
+            while (rs.next()) {
+                double dLat = Math.toRadians(Double.parseDouble(rs
+                        .getString("latitude")) - lat1);
+                double dLon = Math.toRadians(Double.parseDouble(rs
+                        .getString("longitude")) - lon1);
+                double a = Math.sin(dLat / 2)
+                        * Math.sin(dLat / 2)
+                        + Math.cos(Math.toRadians(lat1))
+                        * Math.cos(Math.toRadians(Double.parseDouble(rs
+                                .getString("latitude"))))
+                        * Math.sin(dLon / 2)
+                        * Math.sin(dLon / 2);
+                double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                distance = R * c;
+                if (distance <= radius
+                        & rs.getString("parking_lot_availability").equals(
+                                "free")) {
+                    row = new rowInParkingLots();
+                    row.setId(rs.getInt("ID"));
+                    row.setGpsTime(rs.getLong("time_of_submission"));
+                    row.setLatitude(rs.getDouble("latitude"));
+                    row.setLongitude(rs.getDouble("longitude"));
+                    row.setUserId(rs.getLong("id"));
+                    row.setParkingLotAvailability(rs
+                            .getString("parking_lot_availability"));
+                    row.setAddress(rs.getString("address"));
+                    row.setDistance(distance);
 
-        while (rs.next()) {
-            double dLat = Math.toRadians(Double.parseDouble(rs
-                    .getString("latitude")) - lat1);
-            double dLon = Math.toRadians(Double.parseDouble(rs
-                    .getString("longitude")) - lon1);
-            double a = Math.sin(dLat / 2)
-                    * Math.sin(dLat / 2)
-                    + Math.cos(Math.toRadians(lat1))
-                    * Math.cos(Math.toRadians(Double.parseDouble(rs
-                            .getString("latitude"))))
-                    * Math.sin(dLon / 2)
-                    * Math.sin(dLon / 2);
-            double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            distance = R * c;
-            if (distance <= radius
-                    & rs.getString("parking_lot_availability").equals("free")) {
-                row = new rowInParkingLots();
-                row.setId(rs.getInt("ID"));
-                row.setGpsTime(rs.getLong("time_of_submission"));
-                row.setLatitude(rs.getDouble("latitude"));
-                row.setLongitude(rs.getDouble("longitude"));
-                row.setUserId(rs.getLong("id"));
-                row.setParkingLotAvailability(rs
-                        .getString("parking_lot_availability"));
-                row.setAddress(rs.getString("address"));
-                row.setDistance(distance);
-
-                lst.add(row);
+                    lst.add(row);
+                }
             }
+        } catch (SQLException e) {
+            System.out.println("SQL error: cannot create the list of parking lots.");
+            e.printStackTrace();
+            throw new ForwardedSqlException();
         }
         Collections.sort(lst);
         return lst;
