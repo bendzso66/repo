@@ -144,35 +144,33 @@ public class iParkingInterface {
                 Connection c = null;
                 Statement stmt = null;
 
-                int userId = 0;
                 Set<String> queryParams = request.queryParams();
+
+                int userId;
+                if (queryParams.contains("id")) {
+                    userId = Integer.parseInt(request.queryParams("id"));
+                } else {
+                    return "MISSING_USER_ID";
+                }
+
                 try {
                     c = DriverManager.getConnection(CONNECTION, p);
                     stmt = c.createStatement();
 
-                    if (queryParams.contains("id")) {
-                        userId = Integer.parseInt(request.queryParams("id"));
-                        ResultSet rs = stmt
-                                .executeQuery("SELECT id, last_login FROM vehicle_data.smartparking_users WHERE id='"
-                                        + userId
-                                        + "';");
-                        rs.last();
-                        int size = rs.getRow();
-                        if (size == 0) {
-                            return "INVALID_ID";
-                        } else if (size == 1) {
-                            if (rs.getLong("last_login") + 0 < System
-                                    .currentTimeMillis()) {
-                                return "NOT_LOGED_IN";
-                            } else {
-                                stmt.execute("UPDATE vehicle_data.smartparking_users SET recommended_lots = recommended_lots + 1 WHERE id='"
-                                        + userId
-                                        + "';");
-                            }
-                        } else {
-                            // This should never happen!
-                            return "DUPLICATED_USER";
-                        }
+                    try {
+                        CommonJdbcMethods.manageUserParameters(userId, stmt,
+                                "recommended_lots");
+                    } catch (InvalidIdException e) {
+                        return e.getMessage();
+                    } catch (DuplicatedUserException e) {
+                        return e.getMessage();
+                    } catch (InvalidLoginTimeException e) {
+                        return e.getMessage();
+                    } catch (NotLoggedInException e) {
+                        return e.getMessage();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return "LOGIN_ERROR";
                     }
 
                     String lat = request.queryParams("lat");
@@ -186,7 +184,7 @@ public class iParkingInterface {
                         address = "no address";
                     }
 
-                    stmt.execute("INSERT INTO vehicle_data.smartparking_parking_lots (time_of_submission, latitude, longitude, id, parking_lot_availability, address) VALUES ("
+                    String sqlQueryInParkingLotsTable = "INSERT INTO vehicle_data.smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address) VALUES ("
                             + "'"
                             + System.currentTimeMillis()
                             + "','"
@@ -199,29 +197,15 @@ public class iParkingInterface {
                             + request.queryParams("avail")
                             + "','"
                             + address
-                            + "');");
-
-                    stmt.close();
-                    c.close();
+                            + "');";
+                    String sqlQueryInParkingLotsTableError = "SQL error: update in smartparking_parking_lots was unsuccessful.";
+                    CommonJdbcMethods.executeUpdateStatement(stmt, sqlQueryInParkingLotsTable, sqlQueryInParkingLotsTableError);
 
                     return "SUCCESSFULL_REQUEST";
                 } catch (SQLException e) {
                     return "SQL_SERVER_ERROR";
                 } finally {
-                    try {
-                        if (stmt != null) {
-                            stmt.close();
-                        }
-                    } catch (SQLException se2) {
-                        se2.printStackTrace();
-                    }
-                    try {
-                        if (c != null) {
-                            c.close();
-                        }
-                    } catch (SQLException se) {
-                        se.printStackTrace();
-                    }
+                    CommonJdbcMethods.closeConnections(c, stmt);
                 }
             }
 
