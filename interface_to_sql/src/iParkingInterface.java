@@ -115,7 +115,7 @@ public class iParkingInterface {
                             sqlQueryFromParkingLotsTableErrorMsg);
 
                     if (rs == null) {
-                        return "ResultSetIsNull";
+                        return "RESULT_SET_IS_NULL";
                     }
 
                     List<rowInParkingLots> lst = getrowsInParkingLots(rs,
@@ -128,7 +128,7 @@ public class iParkingInterface {
 
                 } catch (SQLException e) {
                     e.printStackTrace();
-                    return "SqlServerError";
+                    return "SQL_SERVER_ERROR";
                 } finally {
                     CommonJdbcMethods.closeConnections(c, stmt, rs);
                 }
