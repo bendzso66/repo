@@ -46,7 +46,7 @@ public class CommonJdbcMethods {
         }
     }
 
-    public static double getUserParameters(int userId, Statement stmt,
+    public static double manageUserParameters(int userId, Statement stmt,
             String updateableUserField) throws Exception {
 
         int size = 0;

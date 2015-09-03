@@ -84,7 +84,7 @@ public class iParkingInterface {
                         int userId = Integer
                                 .parseInt(request.queryParams("id"));
                         try {
-                            radius = CommonJdbcMethods.getUserParameters(
+                            radius = CommonJdbcMethods.manageUserParameters(
                                     userId, stmt, "lot_requests");
                         } catch (InvalidIdException e) {
                             return e.getMessage();
