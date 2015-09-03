@@ -43,14 +43,17 @@ public class iParkingInterface {
     public static void main(String[] args) throws ClassNotFoundException,
             SQLException {
 
-        /*
-         * try { System.out.println("Enter MySQL login name:"); BufferedReader
-         * in = new BufferedReader(new InputStreamReader( System.in)); userName
-         * = in.readLine(); System.out.println("Enter password:"); in = new
-         * BufferedReader(new InputStreamReader(System.in)); password =
-         * in.readLine(); } catch (IOException e) {
-         * System.out.println("IOException has been caught" + e); }
-         */
+        // try {
+        // System.out.println("Enter MySQL login name:");
+        // BufferedReader in = new BufferedReader(new InputStreamReader(
+        // System.in));
+        // userName = in.readLine();
+        // System.out.println("Enter password:");
+        // in = new BufferedReader(new InputStreamReader(System.in));
+        // password = in.readLine();
+        // } catch (IOException e) {
+        // System.out.println("IOException has been caught: " + e);
+        // }
 
         Class.forName(DB_CLASS_NAME);
         final Properties p = new Properties();
@@ -84,17 +87,17 @@ public class iParkingInterface {
                             radius = CommonJdbcMethods.getUserParameters(
                                     userId, stmt, "lot_requests");
                         } catch (InvalidIdException e) {
-                            return e;
+                            return e.getMessage();
                         } catch (DuplicatedUserException e) {
-                            return e;
+                            return e.getMessage();
                         } catch (InvalidLoginTimeException e) {
-                            return e;
+                            return e.getMessage();
                         } catch (NotLoggedInException e) {
-                            return e;
+                            return e.getMessage();
                         } catch (Exception e) {
-                            return e;
+                            e.printStackTrace();
+                            return "LOGIN_ERROR";
                         }
-
                     }
 
                     if (queryParams.contains("rad")) {
@@ -110,7 +113,7 @@ public class iParkingInterface {
                     rs = CommonJdbcMethods.executeQueryStatement(stmt,
                             sqlQueryFromParkingLotsTable,
                             sqlQueryFromParkingLotsTableErrorMsg);
-                    
+
                     if (rs == null) {
                         return "ResultSetIsNull";
                     }

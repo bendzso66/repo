@@ -69,9 +69,9 @@ public class CommonJdbcMethods {
                 lastLoginTime = rs.getLong("last_login");
 
                 if (lastLoginTime == 0) {
-                    throw new InvalidLoginTimeException();
+                    throw new InvalidLoginTimeException("INVALID_LOGIN_TIME");
                 } else if (lastLoginTime + ONE_DAY < System.currentTimeMillis()) {
-                    throw new NotLoggedInException();
+                    throw new NotLoggedInException("NOT_LOGGED_IN");
                 } else {
                     radius = rs.getDouble("search_range");
                     String sqlUpdateInUsersTable = "UPDATE vehicle_data.smartparking_users SET "
@@ -88,10 +88,10 @@ public class CommonJdbcMethods {
                             sqlUpdateInUsersTableErrorMsg);
                 }
             } else if (size == 0) {
-                throw new InvalidIdException();
+                throw new InvalidIdException("INVALID_ID");
             } else {
                 // This should never happen!
-                throw new DuplicatedUserException();
+                throw new DuplicatedUserException("DUPLICATED_USER");
             }
 
         } catch (SQLException e) {
