@@ -11,17 +11,6 @@ public class CommonJdbcMethods {
     private static final String CLOSE_STATEMENT_ERROR = "SQL error: cannot close the statement.";
     private static final String CLOSE_CONNECTION_ERROR = "SQL error: cannot close the connection.";
 
-    public static void executeStatement(Statement stmt, String sqlStmt,
-            String errorMsg) {
-        try {
-            stmt.execute(sqlStmt);
-        } catch (SQLException e) {
-            System.out.println(errorMsg);
-            System.out.println(sqlStmt);
-            e.printStackTrace();
-        }
-    }
-
     public static ResultSet executeQueryStatement(Statement stmt,
             String sqlStmt, String errorMsg) throws ForwardedSqlException {
         ResultSet rs = null;
