@@ -230,12 +230,12 @@ public class iParkingInterface {
                 // TODO check password condition
                 String pass = request.queryParams("pass");
                 double radius = Double.parseDouble(request.queryParams("rad"));
-                int userId;
                 try {
                     c = DriverManager.getConnection(CONNECTION, p);
                     stmt = c.createStatement();
 
-                    String sqlUpdateQueryInUsersTable = "INSERT INTO vehicle_data.smartparking_users (email, password, search_range, last_login) "
+                    long currentTime = System.currentTimeMillis();
+                    String sqlUpdateQueryInUsersTable = "INSERT INTO vehicle_data.smartparking_users (email, password, search_range, last_login, time_of_submission) "
                             + "VALUES ('"
                             + mail
                             + "','"
@@ -243,7 +243,9 @@ public class iParkingInterface {
                             + "','"
                             + radius
                             + "','"
-                            + System.currentTimeMillis()
+                            + currentTime
+                            + "','"
+                            + +currentTime
                             + "');";
                     String sqlUpdateQueryInUsersTableError = "SQL error: update in smartparking_users was unsuccessful.";
                     CommonJdbcMethods.executeUpdateStatement(stmt,
@@ -258,7 +260,7 @@ public class iParkingInterface {
                             sqlQueryInUsersTable, sqlQueryInUsersTableError);
 
                     rs.next();
-                    userId = rs.getInt("id");
+                    int userId = rs.getInt("id");
 
                     return userId;
                 } catch (SQLException e) {
