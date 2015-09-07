@@ -26,13 +26,14 @@ public class CommonJdbcMethods {
     }
 
     public static void executeUpdateStatement(Statement stmt, String sqlStmt,
-            String errorMsg) {
+            String errorMsg) throws ForwardedSqlException {
         try {
             stmt.executeUpdate(sqlStmt);
         } catch (SQLException e) {
             System.out.println(errorMsg);
             System.out.println(sqlStmt);
             e.printStackTrace();
+            throw new ForwardedSqlException();
         }
     }
 

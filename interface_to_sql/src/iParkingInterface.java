@@ -208,6 +208,8 @@ public class iParkingInterface {
                     return "SUCCESSFULL_REQUEST";
                 } catch (SQLException e) {
                     return "SQL_SERVER_ERROR";
+                } catch (ForwardedSqlException e) {
+                    return "SQL_QUERY_ERROR";
                 } finally {
                     CommonJdbcMethods.closeConnections(c, stmt);
                 }
