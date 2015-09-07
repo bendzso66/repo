@@ -224,6 +224,7 @@ public class iParkingInterface {
 
                 Connection c = null;
                 Statement stmt = null;
+                ResultSet rs = null;
 
                 String mail = request.queryParams("mail");
                 // TODO check password condition
@@ -234,7 +235,7 @@ public class iParkingInterface {
                     c = DriverManager.getConnection(CONNECTION, p);
                     stmt = c.createStatement();
 
-                    stmt.execute("INSERT INTO vehicle_data.smartparking_users (email, password, search_range, last_login, recommended_lots, lot_requests) "
+                    String sqlUpdateQueryInUsersTable = "INSERT INTO vehicle_data.smartparking_users (email, password, search_range, last_login, recommended_lots, lot_requests) "
                             + "VALUES ('"
                             + mail
                             + "','"
@@ -243,36 +244,29 @@ public class iParkingInterface {
                             + radius
                             + "','"
                             + System.currentTimeMillis()
-                            + "','0','0');");
-                    ResultSet rs = stmt
-                            .executeQuery("SELECT id FROM vehicle_data.smartparking_users WHERE email = '"
-                                    + mail
-                                    + "';");
+                            + "','0','0');";
+                    String sqlUpdateQueryInUsersTableError = "SQL error: update in smartparking_users was unsuccessful.";
+                    CommonJdbcMethods.executeUpdateStatement(stmt,
+                            sqlUpdateQueryInUsersTable,
+                            sqlUpdateQueryInUsersTableError);
+
+                    String sqlQueryInUsersTable = "SELECT id FROM vehicle_data.smartparking_users WHERE email = '"
+                            + mail
+                            + "';";
+                    String sqlQueryInUsersTableError = "SQL error: query in smartparking_users was unsuccessful.";
+                    rs = CommonJdbcMethods.executeQueryStatement(stmt,
+                            sqlQueryInUsersTable, sqlQueryInUsersTableError);
+
                     rs.next();
                     userId = rs.getInt("id");
 
-                    rs.close();
-                    stmt.close();
-                    c.close();
-
                     return userId;
                 } catch (SQLException e) {
-                    return "USED_MAIL_ADDRESS";
+                    return "SQL_SERVER_ERROR";
+                } catch (ForwardedSqlException e) {
+                    return "SQL_QUERY_ERROR";
                 } finally {
-                    try {
-                        if (stmt != null) {
-                            stmt.close();
-                        }
-                    } catch (SQLException se2) {
-                        se2.printStackTrace();
-                    }
-                    try {
-                        if (c != null) {
-                            c.close();
-                        }
-                    } catch (SQLException se) {
-                        se.printStackTrace();
-                    }
+                    CommonJdbcMethods.closeConnections(c, stmt, rs);
                 }
             }
 
@@ -382,7 +376,8 @@ public class iParkingInterface {
                 }
             }
         } catch (SQLException e) {
-            System.out.println("SQL error: cannot create the list of parking lots.");
+            System.out
+                    .println("SQL error: cannot create the list of parking lots.");
             e.printStackTrace();
             throw new ForwardedSqlException();
         }
