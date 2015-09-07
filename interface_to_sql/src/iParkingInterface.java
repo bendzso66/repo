@@ -235,7 +235,7 @@ public class iParkingInterface {
                     c = DriverManager.getConnection(CONNECTION, p);
                     stmt = c.createStatement();
 
-                    String sqlUpdateQueryInUsersTable = "INSERT INTO vehicle_data.smartparking_users (email, password, search_range, last_login, recommended_lots, lot_requests) "
+                    String sqlUpdateQueryInUsersTable = "INSERT INTO vehicle_data.smartparking_users (email, password, search_range, last_login) "
                             + "VALUES ('"
                             + mail
                             + "','"
@@ -244,7 +244,7 @@ public class iParkingInterface {
                             + radius
                             + "','"
                             + System.currentTimeMillis()
-                            + "','0','0');";
+                            + "');";
                     String sqlUpdateQueryInUsersTableError = "SQL error: update in smartparking_users was unsuccessful.";
                     CommonJdbcMethods.executeUpdateStatement(stmt,
                             sqlUpdateQueryInUsersTable,
