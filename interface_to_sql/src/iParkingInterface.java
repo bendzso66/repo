@@ -287,6 +287,7 @@ public class iParkingInterface {
 
                 Connection c = null;
                 Statement stmt = null;
+                ResultSet rs = null;
 
                 String mail = request.queryParams("mail");
                 String pass = request.queryParams("pass");
@@ -298,7 +299,7 @@ public class iParkingInterface {
                             + mail
                             + "';";
                     String sqlQueryInUsersTableError = "SQL error: query in smartparking_users was unsuccessful.";
-                    ResultSet rs = CommonJdbcMethods.executeQueryStatement(
+                    rs = CommonJdbcMethods.executeQueryStatement(
                             stmt, sqlQueryInUsersTable,
                             sqlQueryInUsersTableError);
 
@@ -335,7 +336,7 @@ public class iParkingInterface {
                 } catch (ForwardedSqlException e) {
                     return "SQL_QUERY_ERROR";
                 } finally {
-                    CommonJdbcMethods.closeConnections(c, stmt);
+                    CommonJdbcMethods.closeConnections(c, stmt, rs);
                 }
             }
 
