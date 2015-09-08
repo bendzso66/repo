@@ -46,17 +46,17 @@ public class ReadXMLFile {
     private static final String CLOSING_BRACKET = "');";
     private static final String SEMICOLON = ";";
 
-    private static final String STREET_SECTIONS_TABLE = "street_sections ";
+    private static final String STREET_SECTIONS_TABLE = "vehicle_data.street_sections ";
     private static final String STREET_SECTIONS_TABLE_HEADERS = "(section_id, latitude, longitude) ";
     private static final String PARKING_EQUALS_ONE = "parking=1 ";
     private static final String SECTION_ID_EQUALS = "section_id= ";
 
-    private static final String STREETS_TABLE = "streets ";
+    private static final String STREETS_TABLE = "vehicle_data.streets ";
     private static final String STREETS_TABLE_HEADER = "(street_id) ";
     private static final String NAME_OF_STREET_EQUALS = "name_of_street=";
     private static final String STREET_ID_EQUALS = "street_id=";
 
-    private static final String STREET_REFERENCES_TABLE = "street_references ";
+    private static final String STREET_REFERENCES_TABLE = "vehicle_data.street_references ";
     private static final String STREET_REFERENCES_TABLE_HEADERS = "(street_id, section_id) ";
 
     private static final String SPACE = " ";
@@ -121,9 +121,14 @@ public class ReadXMLFile {
                                     + nodeLon
                                     + CLOSING_BRACKET;
 
-                            CommonJdbcMethods.executeStatement(stmt,
-                                    sqlStatement,
-                                    STREET_SECTIONS_NEW_RECORD_ERROR);
+                            try {
+                                CommonJdbcMethods.executeUpdateStatement(stmt,
+                                        sqlStatement,
+                                        STREET_SECTIONS_NEW_RECORD_ERROR);
+                            } catch (ForwardedSqlException e) {
+                                e.printStackTrace();
+                                System.exit(1);
+                            }
 
                         } else if (qName.equalsIgnoreCase(TAG)
                                 && attributes.getValue(V).equals(PARKING)
@@ -138,8 +143,13 @@ public class ReadXMLFile {
                                     + nodeId
                                     + SEMICOLON;
 
-                            CommonJdbcMethods.executeStatement(stmt,
-                                    sqlStatement, STREET_SECTIONS_UPDATE_ERROR);
+                            try {
+                                CommonJdbcMethods.executeUpdateStatement(stmt,
+                                        sqlStatement, STREET_SECTIONS_UPDATE_ERROR);
+                            } catch (ForwardedSqlException e) {
+                                e.printStackTrace();
+                                System.exit(1);
+                            }
 
                         } else if (qName.equalsIgnoreCase(WAY)) {
 
@@ -156,8 +166,13 @@ public class ReadXMLFile {
                                     + wayId
                                     + CLOSING_BRACKET;
 
-                            CommonJdbcMethods.executeStatement(stmt,
-                                    sqlStatement, STREETS_NEW_RECORD_ERROR);
+                            try {
+                                CommonJdbcMethods.executeUpdateStatement(stmt,
+                                        sqlStatement, STREETS_NEW_RECORD_ERROR);
+                            } catch (ForwardedSqlException e) {
+                                e.printStackTrace();
+                                System.exit(1);
+                            }
 
                         } else if (qName.equalsIgnoreCase(ND)) {
 
@@ -173,9 +188,14 @@ public class ReadXMLFile {
                                     + nodeRef
                                     + CLOSING_BRACKET;
 
-                            CommonJdbcMethods.executeStatement(stmt,
-                                    sqlStatement,
-                                    STREET_REFERENCES_NEW_RECORD_ERROR);
+                            try {
+                                CommonJdbcMethods.executeUpdateStatement(stmt,
+                                        sqlStatement,
+                                        STREET_REFERENCES_NEW_RECORD_ERROR);
+                            } catch (ForwardedSqlException e) {
+                                e.printStackTrace();
+                                System.exit(1);
+                            }
 
                         } else if (qName.equalsIgnoreCase(TAG)
                                 && attributes.getValue(K).equals(NAME)
@@ -196,8 +216,13 @@ public class ReadXMLFile {
                                     + wayId
                                     + SEMICOLON;
 
-                            CommonJdbcMethods.executeStatement(stmt,
-                                    sqlStatement, STREETS_UPDATE_ERROR);
+                            try {
+                                CommonJdbcMethods.executeUpdateStatement(stmt,
+                                        sqlStatement, STREETS_UPDATE_ERROR);
+                            } catch (ForwardedSqlException e) {
+                                e.printStackTrace();
+                                System.exit(1);
+                            }
 
                         }
 
