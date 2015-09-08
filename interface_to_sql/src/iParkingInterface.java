@@ -226,6 +226,7 @@ public class iParkingInterface {
                 Statement stmt = null;
                 ResultSet rs = null;
 
+                // TODO check email
                 String mail = request.queryParams("mail");
                 // TODO check password condition
                 String pass = request.queryParams("pass");
@@ -279,7 +280,6 @@ public class iParkingInterface {
 
         });
 
-        // TODO close connections
         get(new Route("/login") {
 
             @Override
@@ -292,24 +292,36 @@ public class iParkingInterface {
                 String pass = request.queryParams("pass");
 
                 try {
-                    ResultSet rs = stmt
-                            .executeQuery("SELECT id, password FROM vehicle_data.smartparking_users WHERE email='"
-                                    + mail
-                                    + "';");
+                    c = DriverManager.getConnection(CONNECTION, p);
+                    stmt = c.createStatement();
+                    String sqlQueryInUsersTable = "SELECT id, password FROM vehicle_data.smartparking_users WHERE email='"
+                            + mail
+                            + "';";
+                    String sqlQueryInUsersTableError = "SQL error: query in smartparking_users was unsuccessful.";
+                    ResultSet rs = CommonJdbcMethods.executeQueryStatement(
+                            stmt, sqlQueryInUsersTable,
+                            sqlQueryInUsersTableError);
+
                     rs.last();
                     int size = rs.getRow();
+
                     if (size == 0) {
-                        return "INVALID_MAIL";
+                        return "UNREGISTERED_EMAIL";
                     } else if (size == 1) {
                         if (pass.equals(rs.getString("password"))) {
                             int userId = rs.getInt("id");
-                            stmt.execute("UPDATE vehicle_data.smartparking_users SET last_login='"
+                            String sqlUpdateQueryInUsersTable = "UPDATE vehicle_data.smartparking_users SET last_login='"
                                     + System.currentTimeMillis()
                                     + "' WHERE email='"
                                     + mail
                                     + "'AND password='"
                                     + pass
-                                    + "';");
+                                    + "';";
+                            String sqlUpdateQueryInUsersTableError = "SQL error: update in smartparking_users was unsuccessful.";
+                            CommonJdbcMethods.executeUpdateStatement(stmt,
+                                    sqlUpdateQueryInUsersTable,
+                                    sqlUpdateQueryInUsersTableError);
+
                             return userId;
                         } else {
                             return "WRONG_PASSWORD";
@@ -320,6 +332,10 @@ public class iParkingInterface {
                     }
                 } catch (SQLException e) {
                     return "SQL_SERVER_ERROR";
+                } catch (ForwardedSqlException e) {
+                    return "SQL_QUERY_ERROR";
+                } finally {
+                    CommonJdbcMethods.closeConnections(c, stmt);
                 }
             }
 
