@@ -33,7 +33,7 @@ public class CommonJdbcMethods {
             System.out.println(errorMsg);
             System.out.println(sqlStmt);
             e.printStackTrace();
-            throw new ForwardedSqlException();
+            throw new ForwardedSqlException(e);
         }
     }
 

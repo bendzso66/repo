@@ -266,7 +266,12 @@ public class iParkingInterface {
                 } catch (SQLException e) {
                     return "SQL_SERVER_ERROR";
                 } catch (ForwardedSqlException e) {
-                    return "SQL_QUERY_ERROR";
+                    String pattern = "com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException: Duplicate entry '*@*.*' for key 'email'";
+                    if (e.getCause().toString().matches(pattern)) {
+                        return "EMAIL_IS_ALREADY_REGISTERED";
+                    } else {
+                        return "SQL_QUERY_ERROR";
+                    }
                 } finally {
                     CommonJdbcMethods.closeConnections(c, stmt, rs);
                 }
