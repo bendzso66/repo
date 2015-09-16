@@ -26,6 +26,8 @@ import spark.Route;
 
 import com.google.gson.Gson;
 
+import hu.bme.hit.smartparking.jdbc.*;
+
 public class SmartParkingServlet {
 
     private static final String DB_CLASS_NAME = "com.mysql.jdbc.Driver";
