@@ -1,3 +1,5 @@
+package hu.bme.hit.smartparking.jdbc;
+
 public class InvalidLoginTimeException extends Exception {
 
     private static final long serialVersionUID = 1153999873461016605L;

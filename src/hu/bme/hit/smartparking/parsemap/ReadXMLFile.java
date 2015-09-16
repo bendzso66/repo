@@ -1,3 +1,5 @@
+package hu.bme.hit.smartparking.parsemap;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -10,6 +12,8 @@ import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+
+import hu.bme.hit.smartparking.jdbc.*;
 
 public class ReadXMLFile {
 

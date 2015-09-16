@@ -1,3 +1,5 @@
+package hu.bme.hit.smartparking.jdbc;
+
 public class DuplicatedUserException extends Exception {
 
     private static final long serialVersionUID = 6044993918719437082L;

@@ -1,3 +1,5 @@
+package hu.bme.hit.smartparking.jdbc;
+
 public class ForwardedSqlException extends Exception {
 
     private static final long serialVersionUID = -453486785241680170L;

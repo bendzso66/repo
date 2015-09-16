@@ -1,3 +1,5 @@
+package hu.bme.hit.smartparking.servlet;
+
 public class rowInParkingLots implements Comparable<rowInParkingLots> {
 
     private int ID;

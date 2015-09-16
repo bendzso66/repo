@@ -1,3 +1,5 @@
+package hu.bme.hit.smartparking.jdbc;
+
 public class NotLoggedInException extends Exception {
 
     private static final long serialVersionUID = -3045144497357043959L;

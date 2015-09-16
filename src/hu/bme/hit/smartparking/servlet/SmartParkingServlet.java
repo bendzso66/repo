@@ -1,3 +1,5 @@
+package hu.bme.hit.smartparking.servlet;
+
 import static spark.Spark.get;
 
 import java.io.BufferedReader;

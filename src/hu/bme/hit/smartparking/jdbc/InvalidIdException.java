@@ -1,3 +1,5 @@
+package hu.bme.hit.smartparking.jdbc;
+
 public class InvalidIdException extends Exception {
 
     private static final long serialVersionUID = 6918883092769788641L;

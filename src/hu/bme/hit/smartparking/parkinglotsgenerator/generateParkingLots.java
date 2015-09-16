@@ -1,3 +1,5 @@
+package hu.bme.hit.smartparking.parkinglotsgenerator;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
