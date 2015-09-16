@@ -24,10 +24,10 @@ import spark.Route;
 
 import com.google.gson.Gson;
 
-public class iParkingInterface {
+public class SmartParkingServlet {
 
     private static final String DB_CLASS_NAME = "com.mysql.jdbc.Driver";
-    private static final String CONNECTION = "jdbc:mysql://localhost/smart_parking";
+    private static final String CONNECTION = "jdbc:mysql://localhost/vehicle_data";
     // private static final String CONNECTION =
     // "jdbc:mysql://impala.aut.bme.hu/vehicle_data";
     private static final int R = 6371; // corrected earth radius, km

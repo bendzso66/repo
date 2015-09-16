@@ -10,4 +10,4 @@ java -cp .:jetty-webapp-7.3.0.v20110203.jar                     \
           :spark-0.9.9.4-SNAPSHOT-sources.jar                   \
           :gson-2.2.4.jar:gson-2.2.4.jar                        \
           :org.json-20120521.jar                                \
-    iParkingInterface
+    SmartParkingServlet
