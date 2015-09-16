@@ -20,11 +20,11 @@ public class ReadXMLFile {
     private static final String OSM_FILE_PATH = "d:\\Programs/repo/res/hungary_map/hungary-latest.osm";
 
     private static final String DB_CLASS_NAME = "com.mysql.jdbc.Driver";
-    private static final String CONNECTION = "jdbc:mysql://127.0.0.1/smart_parking";
+    private static final String CONNECTION = "jdbc:mysql://127.0.0.1/vehicle_data";
     private static final String USER = "user";
-    private static final String userName = "root";
+    private static final String userName = "smartparking";
     private static final String PASSWORD = "password";
-    private static final String pass = "";
+    private static final String pass = "spict2015";
 
     private static final String NODE = "node";
     private static final String TAG = "tag";
