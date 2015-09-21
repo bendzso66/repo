@@ -5,7 +5,6 @@ import static spark.Spark.get;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -15,10 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
-import java.util.Scanner;
 import java.util.Set;
-
-import org.json.JSONObject;
 
 import spark.Request;
 import spark.Response;
@@ -27,6 +23,7 @@ import spark.Route;
 import com.google.gson.Gson;
 
 import hu.bme.hit.smartparking.jdbc.*;
+import hu.bme.hit.smartparking.map.*;
 
 public class SmartParkingServlet {
 
@@ -37,12 +34,6 @@ public class SmartParkingServlet {
     private static final int R = 6371; // corrected earth radius, km
     private static String userName;
     private static String password;
-
-    private static final String GEOCODING_COORDS_URL = "https://maps.googleapis.com/maps/api/geocode/json?latlng=";
-    private static final String GEOCODING_ADDRESS_URL = "https://maps.googleapis.com/maps/api/geocode/json?address=";
-    private static final String COMMA_IN_URL = "%2C";
-    private static final String KEY_STRING = "&key=";
-    private static final String API_KEY = "AIzaSyBGcrE7i3y8AsCY5R7ZEHIWB3jRDMMkIlo";
 
     public static void main(String[] args) throws ClassNotFoundException,
             SQLException {
@@ -184,7 +175,7 @@ public class SmartParkingServlet {
 
                     String address;
                     try {
-                        address = geocoding(lat, lon);
+                        address = MapHandler.geocoding(lat, lon);
                         address = address.replace("'", "");
                     } catch (IOException e) {
                         address = "no address";
@@ -303,9 +294,8 @@ public class SmartParkingServlet {
                             + mail
                             + "';";
                     String sqlQueryInUsersTableError = "SQL error: query in smartparking_users was unsuccessful.";
-                    rs = CommonJdbcMethods.executeQueryStatement(
-                            stmt, sqlQueryInUsersTable,
-                            sqlQueryInUsersTableError);
+                    rs = CommonJdbcMethods.executeQueryStatement(stmt,
+                            sqlQueryInUsersTable, sqlQueryInUsersTableError);
 
                     rs.last();
                     int size = rs.getRow();
@@ -353,7 +343,7 @@ public class SmartParkingServlet {
                 String address = request.queryParams("address");
                 String coords;
                 try {
-                    coords = geocoding(address);
+                    coords = MapHandler.geocoding(address);
                 } catch (IOException e) {
                     coords = "NO_COORDS";
                 }
@@ -411,61 +401,6 @@ public class SmartParkingServlet {
         }
         Collections.sort(lst);
         return lst;
-    }
-
-    public static String geocoding(String lat, String lon) throws IOException {
-        URL url = new URL(GEOCODING_COORDS_URL
-                + lat
-                + COMMA_IN_URL
-                + lon
-                + KEY_STRING
-                + API_KEY);
-        Scanner scan = new Scanner(url.openStream());
-        String str = new String();
-
-        while (scan.hasNext()) {
-            str += scan.nextLine();
-        }
-        scan.close();
-
-        JSONObject obj = new JSONObject(str);
-        if (!obj.getString("status").equals("OK")) {
-            return "no address";
-        } else {
-            JSONObject res = obj.getJSONArray("results").getJSONObject(0);
-            String formattedAddress = res.getString("formatted_address");
-            String encodedAddress = new String(formattedAddress.getBytes(),
-                    "UTF-8");
-            return encodedAddress;
-        }
-    }
-
-    public static String geocoding(String address) throws IOException {
-        URL url = new URL(GEOCODING_ADDRESS_URL
-                + address
-                + KEY_STRING
-                + API_KEY);
-        Scanner scan = new Scanner(url.openStream());
-        String str = new String();
-
-        while (scan.hasNext()) {
-            str += scan.nextLine();
-        }
-        scan.close();
-
-        JSONObject obj = new JSONObject(str);
-        if (!obj.getString("status").equals("OK")) {
-            return "NO_COORDS";
-        } else {
-            JSONObject res = obj.getJSONArray("results").getJSONObject(0);
-            JSONObject geom = new JSONObject(res.get("geometry").toString());
-            JSONObject loc = new JSONObject(geom.get("location").toString());
-
-            String lat = loc.get("lat").toString();
-            String lon = loc.get("lng").toString();
-
-            return "lat: " + lat + ", lon: " + lon;
-        }
     }
 
 }
