@@ -2,6 +2,9 @@ package hu.bme.hit.smartparking.map;
 
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 import org.json.JSONObject;
@@ -41,11 +44,13 @@ public class MapHandler {
         }
     }
 
-    public static String geocoding(String address) throws IOException {
-        URL url = new URL(GEOCODING_ADDRESS_URL
-                + address
+    public static Map<String, Double> geocoding(String address)
+            throws Exception {
+        String urlString = GEOCODING_ADDRESS_URL
+                + URLEncoder.encode(address, "UTF-8")
                 + KEY_STRING
-                + API_KEY);
+                + API_KEY;
+        URL url = new URL(urlString);
         Scanner scan = new Scanner(url.openStream());
         String str = new String();
 
@@ -56,7 +61,7 @@ public class MapHandler {
 
         JSONObject obj = new JSONObject(str);
         if (!obj.getString("status").equals("OK")) {
-            return "NO_COORDS";
+            throw new Exception();
         } else {
             JSONObject res = obj.getJSONArray("results").getJSONObject(0);
             JSONObject geom = new JSONObject(res.get("geometry").toString());
@@ -65,7 +70,11 @@ public class MapHandler {
             String lat = loc.get("lat").toString();
             String lon = loc.get("lng").toString();
 
-            return "lat: " + lat + ", lon: " + lon;
+            Map<String, Double> result = new HashMap<String, Double>();
+            result.put("lat", Double.parseDouble(lat));
+            result.put("lon", Double.parseDouble(lon));
+
+            return result;
         }
     }
 }

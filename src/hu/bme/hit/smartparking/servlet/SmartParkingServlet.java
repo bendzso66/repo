@@ -13,6 +13,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -28,12 +29,13 @@ import hu.bme.hit.smartparking.map.*;
 public class SmartParkingServlet {
 
     private static final String DB_CLASS_NAME = "com.mysql.jdbc.Driver";
-    private static final String CONNECTION = "jdbc:mysql://localhost/vehicle_data";
     // private static final String CONNECTION =
-    // "jdbc:mysql://impala.aut.bme.hu/vehicle_data";
+    // "jdbc:mysql://localhost/vehicle_data";
+    private static final String CONNECTION = "jdbc:mysql://impala.aut.bme.hu/vehicle_data";
     private static final int R = 6371; // corrected earth radius, km
     private static String userName;
     private static String password;
+    private static final Properties p = new Properties();
 
     public static void main(String[] args) throws ClassNotFoundException,
             SQLException {
@@ -51,7 +53,7 @@ public class SmartParkingServlet {
         // }
 
         Class.forName(DB_CLASS_NAME);
-        final Properties p = new Properties();
+
         // p.put("user", userName);
         // p.put("password", password);
         p.put("user", "smartparking");
@@ -64,71 +66,59 @@ public class SmartParkingServlet {
             @Override
             public Object handle(Request request, Response response) {
 
-                Connection c = null;
-                Statement stmt = null;
-                ResultSet rs = null;
+                double lat = Double.parseDouble(request.queryParams("lat"));
+                double lon = Double.parseDouble(request.queryParams("lon"));
 
-                double radius = 0;
                 Set<String> queryParams = request.queryParams();
 
-                try {
-                    c = DriverManager.getConnection(CONNECTION, p);
-                    stmt = c.createStatement();
-
-                    if (queryParams.contains("id")) {
-                        int userId = Integer
-                                .parseInt(request.queryParams("id"));
-                        try {
-                            radius = CommonJdbcMethods.manageUserParameters(
-                                    userId, stmt, "lot_requests");
-                        } catch (InvalidIdException e) {
-                            return e.getMessage();
-                        } catch (DuplicatedUserException e) {
-                            return e.getMessage();
-                        } catch (InvalidLoginTimeException e) {
-                            return e.getMessage();
-                        } catch (NotLoggedInException e) {
-                            return e.getMessage();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            return "LOGIN_ERROR";
-                        }
-                    }
-
-                    if (queryParams.contains("rad")) {
-                        radius = Double.parseDouble(request.queryParams("rad"));
-                    }
-                    if (radius == 0) {
-                        radius = 0.5;
-                    }
-
-                    // TODO try to find parking lots in SQL
-                    String sqlQueryFromParkingLotsTable = "SELECT * FROM vehicle_data.smartparking_parking_lots;";
-                    String sqlQueryFromParkingLotsTableErrorMsg = "SQL error: query from smartparking_parking_lots was unsuccessful.";
-                    rs = CommonJdbcMethods.executeQueryStatement(stmt,
-                            sqlQueryFromParkingLotsTable,
-                            sqlQueryFromParkingLotsTableErrorMsg);
-
-                    if (rs == null) {
-                        return "RESULT_SET_IS_NULL";
-                    }
-
-                    List<rowInParkingLots> lst = getrowsInParkingLots(rs,
-                            Double.parseDouble(request.queryParams("lat")),
-                            Double.parseDouble(request.queryParams("lon")),
-                            radius);
-
-                    Gson gson = new Gson();
-                    return gson.toJson(lst);
-
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    return "SQL_CONNECTION_ERROR";
-                } catch (ForwardedSqlException e) {
-                    return "SQL_QUERY_ERROR";
-                } finally {
-                    CommonJdbcMethods.closeConnections(c, stmt, rs);
+                int userId = 0;
+                if (queryParams.contains("id")) {
+                    userId = Integer.parseInt(request.queryParams("id"));
                 }
+
+                double radius = 0;
+                if (queryParams.contains("rad")) {
+                    radius = Double.parseDouble(request.queryParams("rad"));
+                }
+
+                return findFreeLot(lat, lon, userId, radius);
+            }
+
+        });
+
+        get(new Route("/findFreeLotFromAddress") {
+
+            @Override
+            public Object handle(Request request, Response response) {
+
+                String address = request.queryParams("address");
+
+                Map<String, Double> coords;
+                Double lat = null;
+                Double lon = null;
+
+                try {
+                    coords = MapHandler.geocoding(address);
+                    lat = coords.get("lat");
+                    lon = coords.get("lon");
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+
+                Set<String> queryParams = request.queryParams();
+
+                int userId = 0;
+                if (queryParams.contains("id")) {
+                    userId = Integer.parseInt(request.queryParams("id"));
+                }
+
+                double radius = 0;
+                if (queryParams.contains("rad")) {
+                    radius = Double.parseDouble(request.queryParams("rad"));
+                }
+
+                return findFreeLot(lat, lon, userId, radius);
             }
 
         });
@@ -336,22 +326,6 @@ public class SmartParkingServlet {
 
         });
 
-        get(new Route("/getAddress") {
-
-            @Override
-            public Object handle(Request request, Response response) {
-                String address = request.queryParams("address");
-                String coords;
-                try {
-                    coords = MapHandler.geocoding(address);
-                } catch (IOException e) {
-                    coords = "NO_COORDS";
-                }
-                return coords;
-            }
-
-        });
-
     }
 
     private static List<rowInParkingLots> getrowsInParkingLots(ResultSet rs,
@@ -401,6 +375,67 @@ public class SmartParkingServlet {
         }
         Collections.sort(lst);
         return lst;
+    }
+
+    private static String findFreeLot(double lat, double lon, int userId,
+            double radius) {
+        Connection c = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            c = DriverManager.getConnection(CONNECTION, p);
+            stmt = c.createStatement();
+
+            if (userId != 0) {
+                try {
+                    double storedRadius = CommonJdbcMethods
+                            .manageUserParameters(userId, stmt, "lot_requests");
+                    if (radius == 0) {
+                        radius = storedRadius;
+                    }
+                } catch (InvalidIdException e) {
+                    return e.getMessage();
+                } catch (DuplicatedUserException e) {
+                    return e.getMessage();
+                } catch (InvalidLoginTimeException e) {
+                    return e.getMessage();
+                } catch (NotLoggedInException e) {
+                    return e.getMessage();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return "LOGIN_ERROR";
+                }
+            }
+
+            if (radius == 0) {
+                radius = 0.5;
+            }
+
+            // TODO try to find parking lots in SQL
+            String sqlQueryFromParkingLotsTable = "SELECT * FROM vehicle_data.smartparking_parking_lots;";
+            String sqlQueryFromParkingLotsTableErrorMsg = "SQL error: query from smartparking_parking_lots was unsuccessful.";
+            rs = CommonJdbcMethods.executeQueryStatement(stmt,
+                    sqlQueryFromParkingLotsTable,
+                    sqlQueryFromParkingLotsTableErrorMsg);
+
+            if (rs == null) {
+                return "RESULT_SET_IS_NULL";
+            }
+
+            List<rowInParkingLots> lst = getrowsInParkingLots(rs, lat, lon, radius);
+
+            Gson gson = new Gson();
+            return gson.toJson(lst);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return "SQL_CONNECTION_ERROR";
+        } catch (ForwardedSqlException e) {
+            return "SQL_QUERY_ERROR";
+        } finally {
+            CommonJdbcMethods.closeConnections(c, stmt, rs);
+        }
     }
 
 }
