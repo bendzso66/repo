@@ -159,7 +159,7 @@ VALUES ('1426544641657','47.505589','19.063085','447','reserved','Teréz körút
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426544641887','47.511749','19.036094','1589','free','Bem József utca 3, 1027 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
-VALUES ('1426544642087','47.484852','19.108595','773','reserved','Degen �?rpád sétány, 1101 Hungary');
+VALUES ('1426544642087','47.484852','19.108595','773','reserved','Degen Árpád sétány, 1101 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426544642287','47.512656','19.100717','321','reserved','Thököly út 107, 1146 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
@@ -321,7 +321,7 @@ VALUES ('1426544658774','47.475903','19.087347','58','reserved','Vágóhíd utca
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426544658985','47.475121','19.113952','629','free','Balkán utca 1a, 1107 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
-VALUES ('1426544659195','47.500943','19.111497','97','reserved','�?rnagy utca 1, 1143 Hungary');
+VALUES ('1426544659195','47.500943','19.111497','97','reserved','Őrnagy utca 1, 1143 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426544659405','47.52441','19.113283','741','free','Argentína tér 3-4, 1147 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
@@ -429,7 +429,7 @@ VALUES ('1426544670810','47.524797','19.045915','1068','reserved','Hajós Alfré
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426544671040','47.473374','19.049717','777','reserved','Baranyai tér 7-8, 1117 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
-VALUES ('1426544671261','47.518374','19.078123','963','reserved','�?llatkerti körút 3, 1146 Hungary');
+VALUES ('1426544671261','47.518374','19.078123','963','reserved','Állatkerti körút 3, 1146 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426544671471','47.518922','19.096173','220','free','Erzsébet királyné útja 10f, 1145 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
@@ -453,7 +453,7 @@ VALUES ('1426544673453','47.485508','19.062123','827','reserved','Lónyay utca 2
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426544673673','47.48755','19.024944','613','reserved','Hegyalja út 60-62, 1118 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
-VALUES ('1426544673883','47.477012','19.013241','1440','free','�?rség utca 6a, 1112 Hungary');
+VALUES ('1426544673883','47.477012','19.013241','1440','free','Őrség utca 6a, 1112 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426544674093','47.485182','19.040755','724','reserved','Kelenhegyi út 56, 1118 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
@@ -523,7 +523,7 @@ VALUES ('1426544681454','47.474897','19.087733','1848','free','Lenkei János utc
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426544681664','47.480181','19.057737','683','free','Budapest University of Technology and Economics, Bertalan Lajos utca 1, 1111 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
-VALUES ('1426544681904','47.50115','19.111447','1799','free','�?rnagy utca 3, 1143 Hungary');
+VALUES ('1426544681904','47.50115','19.111447','1799','free','Őrnagy utca 3, 1143 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426544682144','47.524507','19.11307','1551','free','Balázs utca 8, 1147 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
@@ -559,7 +559,7 @@ VALUES ('1426544685449','47.488492','19.088954','1890','free','Csobánc utca 5-7
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426544685670','47.515065','19.043575','740','free','Hajós Alfréd sétány, 1138 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
-VALUES ('1426544685880','47.478825','19.11235','1079','free','Petz �?rmin sétány, 1101 Hungary');
+VALUES ('1426544685880','47.478825','19.11235','1079','free','Petz Ármin sétány, 1101 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426544686090','47.481629','19.110838','1209','reserved','Karl von Linné sétány, 1101 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
@@ -723,7 +723,7 @@ VALUES ('1426544703213','47.476144','19.087994','791','free','Vágóhíd utca 31
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426544703433','47.477959','19.032089','305','reserved','Karolina út 34-36, 1113 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
-VALUES ('1426544703633','47.501396','19.111388','819','free','�?rnagy utca 3-5, 1143 Hungary');
+VALUES ('1426544703633','47.501396','19.111388','819','free','Őrnagy utca 3-5, 1143 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426544703843','47.524647','19.112763','433','reserved','Balázs utca 10-12, 1147 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
@@ -923,7 +923,7 @@ VALUES ('1426544725573','47.475372','19.087352','828','free','Lenkei János utca
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426544725783','47.474681','19.113054','1683','reserved','Balkán utca 1a, 1107 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
-VALUES ('1426544725994','47.501643','19.111328','933','reserved','�?rnagy utca 5, 1143 Hungary');
+VALUES ('1426544725994','47.501643','19.111328','933','reserved','Őrnagy utca 5, 1143 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426544726214','47.521839','19.108284','1321','free','Gervay utca 9, 1147 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
@@ -1127,7 +1127,7 @@ VALUES ('1426544748299','47.474067','19.08658','1577','free','Fehér Holló utca
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426544748499','47.471709','19.111377','1588','reserved','Ceglédi út 1, 1107 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
-VALUES ('1426544748709','47.50189','19.111269','1180','free','�?rnagy utca 9, 1143 Hungary');
+VALUES ('1426544748709','47.50189','19.111269','1180','free','Őrnagy utca 9, 1143 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426544748919','47.52429','19.105799','1846','reserved','Czobor utca 18-36, 1147 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
@@ -1159,7 +1159,7 @@ VALUES ('1426544751812','47.475703','19.046861','1891','reserved','Fehérvári �
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426544752022','47.492096','19.108811','1665','reserved','Hungária körút 10-16, 1087 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
-VALUES ('1426544752222','47.51872','19.080372','1446','free','�?llatkerti körút 3, 1146 Hungary');
+VALUES ('1426544752222','47.51872','19.080372','1446','free','Állatkeri körút 3, 1146 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426544752422','47.473779','19.107524','1073','reserved','Räde Károly sétány, 1101 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
@@ -1203,7 +1203,7 @@ VALUES ('1426544756626','47.512456','19.093279','1203','free','Ajtósi Dürer so
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426544756836','47.503076','19.104654','972','reserved','Stefánia út 15, 1143 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
-VALUES ('1426544758927','47.521615','19.038068','1826','free','�?rpád fejedelem útja 15-20, 1023 Hungary');
+VALUES ('1426544758927','47.521615','19.038068','1826','free','Árpád fejedelem útja 15-20, 1023 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426544759118','47.477034','19.055977','91','free','Stoczek utca 19, 1111 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
@@ -1277,7 +1277,7 @@ VALUES ('1426544766334','47.485625','19.032334','1298','reserved','Gombócz Zolt
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426544766575','47.485354','19.040473','1792','free','Kelenhegyi út 58, 1118 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
-VALUES ('1426544766775','47.476658','19.012775','1751','free','�?rség utca 8-10, 1112 Hungary');
+VALUES ('1426544766775','47.476658','19.012775','1751','free','Őrség utca 8-10, 1112 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426544766995','47.517302','19.020934','448','free','Tapolcsányi utca 14-16, 1022 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
@@ -1327,7 +1327,7 @@ VALUES ('1426544771529','47.474282','19.08639','1359','free','Fehér Holló utca
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426544771740','47.496156','19.033511','1230','reserved','Krisztina körút 77, 1016 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
-VALUES ('1426544771930','47.502176','19.1112','417','reserved','�?rnagy utca 11-13, 1143 Hungary');
+VALUES ('1426544771930','47.502176','19.1112','417','reserved','Őrnagy utca 11-13, 1143 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426544772160','47.522241','19.108724','125','free','Gervay utca 13, 1147 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
@@ -1379,7 +1379,7 @@ VALUES ('1426544777145','47.490295','19.105117','1347','free','Salgótarjáni ut
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426544777385','47.506817','19.105147','366','free','Egressy út 20-24, 1149 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
-VALUES ('1426544777615','47.490309','19.114294','28','reserved','M�?V telep 25-26, 1101 Hungary');
+VALUES ('1426544777615','47.490309','19.114294','28','reserved','MÁV telep 25-26, 1101 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426544777835','47.499219','19.054614','1550','reserved','József Attila utca 24, 1051 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
@@ -1459,7 +1459,7 @@ VALUES ('1426544785786','47.484529','19.061051','1263','reserved','Czuczor utca 
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426544786026','47.473032','19.034306','738','reserved','Bartók Béla út 103, 1113 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
-VALUES ('1426544786226','47.47591','19.011846','860','free','�?rség utca 18-20, 1118 Hungary');
+VALUES ('1426544786226','47.47591','19.011846','860','free','Őrség utca 18-20, 1118 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426544786446','47.50205','19.039766','1357','free','Bem rakpart 14, 1011 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
@@ -1557,7 +1557,7 @@ VALUES ('1426544796566','47.489403','19.0905','135','reserved','Baross utca 132,
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426544796827','47.499386','19.078897','1888','free','Huszár Street, 1074 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
-VALUES ('1426544797047','47.498358','19.040154','915','free','Clark �?dám tér 1-2, 1013 Hungary');
+VALUES ('1426544797047','47.498358','19.040154','915','free','Clark Ádám tér 1-2, 1013 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426544797287','47.510789','19.09804','634','free','Thököly út 91, 1146 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
@@ -1765,7 +1765,7 @@ VALUES ('1426544819125','47.522451','19.031858','941','free','Sarolta utca 3-5, 
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426544819325','47.525377','19.037837','1193','free','Lajos utca 10-12, 1023 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
-VALUES ('1426544819536','47.481845','19.10688','828','free','Boros �?dám sétány, 1101 Hungary');
+VALUES ('1426544819536','47.481845','19.10688','828','free','Boros Ádám sétány, 1101 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426544819746','47.482695','19.114539','706','reserved','Kárpáti Zoltán sétány, 1101 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
@@ -2057,7 +2057,7 @@ VALUES ('1426544850898','47.48453','19.069382','827','reserved','Ferenc körút 
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426544851139','47.486937','19.023258','962','reserved','Jagelló út 4b, 1118 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
-VALUES ('1426544851379','47.477232','19.013649','837','free','�?rség utca 2a, 1112 Hungary');
+VALUES ('1426544851379','47.477232','19.013649','837','free','Őrség utca 2a, 1112 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426544851589','47.505097','19.038255','408','reserved','Fő utca 37c, 1011 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
@@ -2957,7 +2957,7 @@ VALUES ('1426544950644','47.499085','19.044209','452','free','Széchenyi Lánch�
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426544950874','47.497392','19.055165','489','reserved','Deák Ferenc tér M, 1052 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
-VALUES ('1426544951084','47.518633','19.079575','999','free','�?llatkerti körút 3, 1146 Hungary');
+VALUES ('1426544951084','47.518633','19.079575','999','free','Állatkeri körút 3, 1146 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426544951294','47.514713','19.040319','704','reserved','Margit híd, 1027 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
@@ -3139,7 +3139,7 @@ VALUES ('1426544971230','47.497854','19.020202','1812','free','Istenhegyi út 2a
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426544971440','47.504397','19.018834','1136','free','Csaba utca 11a, 1122 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
-VALUES ('1426544971660','47.516469','19.039113','1831','reserved','�?rpád fejedelem útja 3, 1023 Hungary');
+VALUES ('1426544971660','47.516469','19.039113','1831','reserved','Árpád fejedelem útja 3, 1023 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426544971871','47.488842','19.095848','272','reserved','Kőbányai út 2-10, 1087 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
@@ -3157,7 +3157,7 @@ VALUES ('1426544973292','47.489375','19.089923','1859','free','Baross utca 130-1
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426544973542','47.504968','19.024353','289','reserved','Krisztina körút 21, 1122 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
-VALUES ('1426544973742','47.51863','19.079205','1483','reserved','�?llatkerti körút 3, 1146 Hungary');
+VALUES ('1426544973742','47.51863','19.079205','1483','reserved','Állatkeri körút 3, 1146 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426544974012','47.514703','19.039949','802','free','Margit híd, 1027 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
@@ -3245,7 +3245,7 @@ VALUES ('1426544983124','47.511829','19.108583','1781','free','Újvidék tér 9,
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426544983344','47.477051','19.084104','1129','free','Fehér Holló utca 1, 1097 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
-VALUES ('1426544983564','47.514723','19.038715','584','free','�?rpád fejedelem útja 1, 1023 Hungary');
+VALUES ('1426544983564','47.514723','19.038715','584','free','Árpád fejedelem útja 1, 1023 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426544983764','47.490425','19.078087','1176','reserved','Szűz utca 3, 1086 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
@@ -3375,7 +3375,7 @@ VALUES ('1426544997428','47.514483','19.036943','606','free','Margit körút 6, 
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426544997648','47.489685','19.035952','1692','reserved','Hegyalja út 1, 1016 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
-VALUES ('1426544997868','47.519518','19.084162','366','reserved','�?llatkerti körút 16, 1146 Hungary');
+VALUES ('1426544997868','47.519518','19.084162','366','reserved','Állatkeri körút 16, 1146 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426544998590','47.49996','19.10581','755','reserved','Kerepesi út 33, 1087 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
@@ -3423,7 +3423,7 @@ VALUES ('1426545003431','47.502347','19.08641','1509','reserved','Murányi utca 
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426545003641','47.499117','19.053332','1769','free','József Attila utca 24, 1051 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
-VALUES ('1426545003861','47.515984','19.039288','1299','reserved','�?rpád fejedelem útja 1, 1023 Hungary');
+VALUES ('1426545003861','47.515984','19.039288','1299','reserved','Árpád fejedelem útja 1, 1023 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426545004081','47.524158','19.067501','1599','free','Kassák Lajos utca 47-49, 1134 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
@@ -3823,7 +3823,7 @@ VALUES ('1426545047965','47.507925','19.094196','996','reserved','Thököly út 
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426545048225','47.480702','19.066989','1151','free','Petőfi híd, 1095 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
-VALUES ('1426545048445','47.516273','19.03919','1549','reserved','�?rpád fejedelem útja 3, 1023 Hungary');
+VALUES ('1426545048445','47.516273','19.03919','1549','reserved','Árpád fejedelem útja 3, 1023 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426545048696','47.505296','19.101852','504','reserved','Egressy út 8, 1149 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
@@ -4043,7 +4043,7 @@ VALUES ('1426545072729','47.519309','19.108577','1066','reserved','Bácskai utca
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426545072949','47.511511','19.10745','467','reserved','Újvidék tér 3, 1145 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
-VALUES ('1426545073180','47.514721','19.03853','14','free','�?rpád fejedelem útja 1, 1023 Hungary');
+VALUES ('1426545073180','47.514721','19.03853','14','free','Árpád fejedelem útja 1, 1023 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426545073410','47.498726','19.033855','1833','reserved','Tábor utca 10-12, 1012 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
@@ -4085,7 +4085,7 @@ VALUES ('1426545077383','47.518287','19.024001','1335','reserved','Eszter utca 1
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426545077604','47.523531','19.01535','894','reserved','Törökvész út 25, 1025 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
-VALUES ('1426545077834','47.517992','19.077883','1241','reserved','�?llatkerti körút 4, 1146 Hungary');
+VALUES ('1426545077834','47.517992','19.077883','1241','reserved','Állatkeri körút 4, 1146 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426545078084','47.5049','19.077051','1061','reserved','Dembinszky utca 10, 1071 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
@@ -4135,7 +4135,7 @@ VALUES ('1426545082968','47.498471','19.07525','171','reserved','Rákóczi út 7
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426545083239','47.512617','19.0741','157','reserved','Andrássy út 116, 1062 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
-VALUES ('1426545083459','47.518146','19.038583','1640','reserved','�?rpád fejedelem útja 5, 1023 Hungary');
+VALUES ('1426545083459','47.518146','19.038583','1640','reserved','Árpád fejedelem útja 5, 1023 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426545083679','47.480565','19.066679','872','free','Petőfi híd, 1095 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
@@ -4331,7 +4331,7 @@ VALUES ('1426545105066','47.520304','19.044333','1991','free','Margitsziget 2380
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426545105286','47.502967','19.015419','754','free','Határőr út 44-52, 1122 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
-VALUES ('1426545105497','47.5179','19.038651','1458','reserved','�?rpád fejedelem útja 5, 1023 Hungary');
+VALUES ('1426545105497','47.5179','19.038651','1458','reserved','Árpád fejedelem útja 5, 1023 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426545105747','47.493654','19.029313','777','reserved','Mészáros utca 28, 1016 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
@@ -4405,7 +4405,7 @@ VALUES ('1426545113454','47.508455','19.094903','1646','free','Stefánia út 91,
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426545113674','47.488429','19.108557','1554','free','Hungária körút 4, 1087 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
-VALUES ('1426545113924','47.522099','19.03812','1873','free','�?rpád fejedelem útja 20, 1023 Hungary');
+VALUES ('1426545113924','47.522099','19.03812','1873','free','Árpád fejedelem útja 20, 1023 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
 VALUES ('1426545114164','47.477323','19.061663','1377','reserved','Budai alsó rakpart, 1117 Hungary');
 INSERT INTO smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address)
