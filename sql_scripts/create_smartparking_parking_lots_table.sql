@@ -7,4 +7,5 @@ CREATE table smartparking_parking_lots (
     longitude REAL,
     time_of_submission BIGINT(20),
     PRIMARY KEY(id)
-);
+)
+CHARACTER SET utf8 COLLATE utf8_unicode_ci;

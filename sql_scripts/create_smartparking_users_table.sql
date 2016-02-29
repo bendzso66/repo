@@ -8,4 +8,5 @@ CREATE table smartparking_users (
     email VARCHAR(50) NOT NULL UNIQUE,          # email cím amely egyben a felhasználónév is (szeretnénk ezt külön letárolni?)
     time_of_submission BIGINT(20),
     PRIMARY KEY(id)
-);
+)
+CHARACTER SET utf8 COLLATE utf8_unicode_ci;
