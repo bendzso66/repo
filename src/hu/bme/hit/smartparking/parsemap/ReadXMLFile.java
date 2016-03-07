@@ -73,6 +73,9 @@ public class ReadXMLFile {
     private static final String CONNECTION_ERROR = "SQL error: cannot create the connection.";
     private static final String SAX_ERROR = "SAX Parser error: cannot create the parser or the factory.";
 
+    private static final String PARSING_IS_DONE = "Parsing is done!";
+    private static final String SQL_CONNECTIONS_ARE_CLOSED = "SQL connections are closed!";
+
     public static void main(String argv[]) throws ClassNotFoundException {
 
         Class.forName(DB_CLASS_NAME);
@@ -234,9 +237,9 @@ public class ReadXMLFile {
                 };
 
                 saxParser.parse(OSM_FILE_PATH, handler);
-                System.out.println("Parsing is done!");
+                System.out.println(PARSING_IS_DONE);
                 CommonJdbcMethods.closeConnections(c, stmt);
-                System.out.println("SQL connections are closed!");
+                System.out.println(SQL_CONNECTIONS_ARE_CLOSED);
             } catch (SQLException e) {
                 System.out.println(CONNECTION_ERROR);
                 e.printStackTrace();
