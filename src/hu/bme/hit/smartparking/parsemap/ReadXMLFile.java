@@ -20,7 +20,7 @@ public class ReadXMLFile {
     private static final String OSM_FILE_PATH = "d:\\Programs/repo/res/hungary_map/hungary-latest.osm";
 
     private static final String DB_CLASS_NAME = "com.mysql.jdbc.Driver";
-    private static final String CONNECTION = "jdbc:mysql://127.0.0.1/vehicle_data";
+    private static final String CONNECTION = "jdbc:mysql://127.0.0.1/vehicle_data?useUnicode=yes&characterEncoding=UTF-8";
     private static final String USER = "user";
     private static final String userName = "smartparking";
     private static final String PASSWORD = "password";
