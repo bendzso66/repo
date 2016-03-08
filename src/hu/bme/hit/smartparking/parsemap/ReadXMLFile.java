@@ -34,6 +34,7 @@ public class ReadXMLFile {
     private static final String V = "v";
     private static final String NAME = "name";
     private static final String K = "k";
+    private static final String RELATION = "relation";
 
     private static final String ID = "id";
     private static final String LAT = "lat";
@@ -75,6 +76,7 @@ public class ReadXMLFile {
 
     private static final String PARSING_IS_DONE = "Parsing is done!";
     private static final String SQL_CONNECTIONS_ARE_CLOSED = "SQL connections are closed!";
+    private static final String REFERENCES_ARE_REACHED = "References are reached.";
 
     public static void main(String argv[]) throws ClassNotFoundException {
 
@@ -88,7 +90,7 @@ public class ReadXMLFile {
             SAXParserFactory factory = SAXParserFactory.newInstance();
             SAXParser saxParser = factory.newSAXParser();
             try {
-                Connection c = DriverManager.getConnection(CONNECTION, p);
+                final Connection c = DriverManager.getConnection(CONNECTION, p);
                 final Statement stmt = c.createStatement();
 
                 DefaultHandler handler = new DefaultHandler() {
@@ -231,6 +233,14 @@ public class ReadXMLFile {
                                 System.exit(1);
                             }
 
+                        } else if (qName.equals(RELATION)) {
+                            getNameAttr = false;
+                            getParkingAttr = false;
+                            System.out.println(PARSING_IS_DONE);
+                            System.out.println(REFERENCES_ARE_REACHED);
+                            CommonJdbcMethods.closeConnections(c, stmt);
+                            System.out.println(SQL_CONNECTIONS_ARE_CLOSED);
+                            System.exit(0);
                         }
 
                     }
