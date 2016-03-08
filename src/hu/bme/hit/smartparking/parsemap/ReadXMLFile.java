@@ -208,7 +208,7 @@ public class ReadXMLFile {
                                 && attributes.getValue(K).equals(NAME)
                                 && getNameAttr) {
 
-                            String nameOfStreet = attributes.getValue(V);
+                            String nameOfStreet = attributes.getValue(V).replaceAll("'", "\\\\'");
 
                             String sqlStatement = UPDATE
                                     + STREETS_TABLE
