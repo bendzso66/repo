@@ -31,7 +31,7 @@ public class SmartParkingServlet {
     private static final String DB_CLASS_NAME = "com.mysql.jdbc.Driver";
     // private static final String CONNECTION =
     // "jdbc:mysql://localhost/vehicle_data";
-    private static final String CONNECTION = "jdbc:mysql://impala.aut.bme.hu/vehicle_data";
+    private static final String CONNECTION = "jdbc:mysql://impala.aut.bme.hu/vehicle_data?useUnicode=yes&characterEncoding=UTF-8";
     private static final int R = 6371; // corrected earth radius, km
     private static String userName;
     private static String password;
