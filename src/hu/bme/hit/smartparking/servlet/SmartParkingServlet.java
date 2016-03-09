@@ -29,16 +29,16 @@ import hu.bme.hit.smartparking.map.*;
 public class SmartParkingServlet {
 
     private static final String DB_CLASS_NAME = "com.mysql.jdbc.Driver";
-    private static final String HOST = "impala.aut.bme.hu";
-    private static final String DATABASE = "vehicle_data";
+    private static final String HOST = "localhost";
+    private static final String DATABASE = "smart_parking";
     private static final String CONNECTION = "jdbc:mysql://"
             + HOST
             + "/"
             + DATABASE
             + "?useUnicode=yes&characterEncoding=UTF-8";
     private static final int R = 6371; // corrected earth radius, km
-    private static String userName = "smartparking";
-    private static String password = "spict2015";
+    private static String userName = "parking";
+    private static String password = "parking";
     private static final Properties p = new Properties();
 
     public static void main(String[] args) throws ClassNotFoundException,
