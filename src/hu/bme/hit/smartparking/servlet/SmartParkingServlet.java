@@ -29,12 +29,16 @@ import hu.bme.hit.smartparking.map.*;
 public class SmartParkingServlet {
 
     private static final String DB_CLASS_NAME = "com.mysql.jdbc.Driver";
-    // private static final String CONNECTION =
-    // "jdbc:mysql://localhost/vehicle_data";
-    private static final String CONNECTION = "jdbc:mysql://impala.aut.bme.hu/vehicle_data?useUnicode=yes&characterEncoding=UTF-8";
+    private static final String HOST = "impala.aut.bme.hu";
+    private static final String DATABASE = "vehicle_data";
+    private static final String CONNECTION = "jdbc:mysql://"
+            + HOST
+            + "/"
+            + DATABASE
+            + "?useUnicode=yes&characterEncoding=UTF-8";
     private static final int R = 6371; // corrected earth radius, km
-    private static String userName;
-    private static String password;
+    private static String userName = "smartparking";
+    private static String password = "spict2015";
     private static final Properties p = new Properties();
 
     public static void main(String[] args) throws ClassNotFoundException,
@@ -54,10 +58,8 @@ public class SmartParkingServlet {
 
         Class.forName(DB_CLASS_NAME);
 
-        // p.put("user", userName);
-        // p.put("password", password);
-        p.put("user", "smartparking");
-        p.put("password", "spict2015");
+        p.put("user", userName);
+        p.put("password", password);
         // setPort(5678); //<- Uncomment this if you wan't spark to listen on a
         // port different than 4567.
 
@@ -171,7 +173,9 @@ public class SmartParkingServlet {
                         address = "no address";
                     }
 
-                    String sqlQueryInParkingLotsTable = "INSERT INTO vehicle_data.smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address) VALUES ("
+                    String sqlQueryInParkingLotsTable = "INSERT INTO "
+                            + DATABASE
+                            + ".smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address) VALUES ("
                             + "'"
                             + System.currentTimeMillis()
                             + "','"
@@ -221,7 +225,9 @@ public class SmartParkingServlet {
                     stmt = c.createStatement();
 
                     long currentTime = System.currentTimeMillis();
-                    String sqlUpdateQueryInUsersTable = "INSERT INTO vehicle_data.smartparking_users (email, password, search_range, last_login, time_of_submission) "
+                    String sqlUpdateQueryInUsersTable = "INSERT INTO "
+                            + DATABASE
+                            + ".smartparking_users (email, password, search_range, last_login, time_of_submission) "
                             + "VALUES ('"
                             + mail
                             + "','"
@@ -238,7 +244,9 @@ public class SmartParkingServlet {
                             sqlUpdateQueryInUsersTable,
                             sqlUpdateQueryInUsersTableError);
 
-                    String sqlQueryInUsersTable = "SELECT id FROM vehicle_data.smartparking_users WHERE email = '"
+                    String sqlQueryInUsersTable = "SELECT id FROM "
+                            + DATABASE
+                            + ".smartparking_users WHERE email = '"
                             + mail
                             + "';";
                     String sqlQueryInUsersTableError = "SQL error: query in smartparking_users was unsuccessful.";
@@ -280,7 +288,9 @@ public class SmartParkingServlet {
                 try {
                     c = DriverManager.getConnection(CONNECTION, p);
                     stmt = c.createStatement();
-                    String sqlQueryInUsersTable = "SELECT id, password FROM vehicle_data.smartparking_users WHERE email='"
+                    String sqlQueryInUsersTable = "SELECT id, password FROM "
+                            + DATABASE
+                            + ".smartparking_users WHERE email='"
                             + mail
                             + "';";
                     String sqlQueryInUsersTableError = "SQL error: query in smartparking_users was unsuccessful.";
@@ -295,7 +305,9 @@ public class SmartParkingServlet {
                     } else if (size == 1) {
                         if (pass.equals(rs.getString("password"))) {
                             int userId = rs.getInt("id");
-                            String sqlUpdateQueryInUsersTable = "UPDATE vehicle_data.smartparking_users SET last_login='"
+                            String sqlUpdateQueryInUsersTable = "UPDATE "
+                                    + DATABASE
+                                    + ".smartparking_users SET last_login='"
                                     + System.currentTimeMillis()
                                     + "' WHERE email='"
                                     + mail
@@ -413,7 +425,9 @@ public class SmartParkingServlet {
             }
 
             // TODO try to find parking lots in SQL
-            String sqlQueryFromParkingLotsTable = "SELECT * FROM vehicle_data.smartparking_parking_lots;";
+            String sqlQueryFromParkingLotsTable = "SELECT * FROM "
+                    + DATABASE
+                    + ".smartparking_parking_lots;";
             String sqlQueryFromParkingLotsTableErrorMsg = "SQL error: query from smartparking_parking_lots was unsuccessful.";
             rs = CommonJdbcMethods.executeQueryStatement(stmt,
                     sqlQueryFromParkingLotsTable,
@@ -423,7 +437,8 @@ public class SmartParkingServlet {
                 return "RESULT_SET_IS_NULL";
             }
 
-            List<rowInParkingLots> lst = getrowsInParkingLots(rs, lat, lon, radius);
+            List<rowInParkingLots> lst = getrowsInParkingLots(rs, lat, lon,
+                    radius);
 
             Gson gson = new Gson();
             return gson.toJson(lst);
