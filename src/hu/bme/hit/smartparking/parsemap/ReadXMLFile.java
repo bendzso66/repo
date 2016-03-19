@@ -51,10 +51,10 @@ public class ReadXMLFile {
     private static final String CLOSING_BRACKET = "');";
     private static final String SEMICOLON = ";";
 
-    private static final String STREET_SECTIONS_TABLE = "vehicle_data.street_sections ";
-    private static final String STREET_SECTIONS_TABLE_HEADERS = "(section_id, latitude, longitude) ";
+    private static final String NODES_TABLE = "vehicle_data.nodes ";
+    private static final String NODES_TABLE_HEADERS = "(node_id, latitude, longitude) ";
     private static final String PARKING_EQUALS_ONE = "parking=1 ";
-    private static final String SECTION_ID_EQUALS = "section_id= ";
+    private static final String NODE_ID_EQUALS = "node_id= ";
 
     private static final String STREETS_TABLE = "vehicle_data.streets ";
     private static final String STREETS_TABLE_HEADER = "(street_id) ";
@@ -62,12 +62,12 @@ public class ReadXMLFile {
     private static final String STREET_ID_EQUALS = "street_id=";
 
     private static final String STREET_REFERENCES_TABLE = "vehicle_data.street_references ";
-    private static final String STREET_REFERENCES_TABLE_HEADERS = "(street_id, section_id) ";
+    private static final String STREET_REFERENCES_TABLE_HEADERS = "(street_id, node_id) ";
 
     private static final String SPACE = " ";
 
-    private static final String STREET_SECTIONS_NEW_RECORD_ERROR = "SQL error: cannot create new record in table street_sections.";
-    private static final String STREET_SECTIONS_UPDATE_ERROR = "SQL error: cannot update table street_sections.";
+    private static final String NODES_NEW_RECORD_ERROR = "SQL error: cannot create new record in table nodes.";
+    private static final String NODES_UPDATE_ERROR = "SQL error: cannot update table nodes.";
     private static final String STREETS_NEW_RECORD_ERROR = "SQL error: cannot create new record in table streets.";
     private static final String STREETS_UPDATE_ERROR = "SQL error: cannot update table streets.";
     private static final String STREET_REFERENCES_NEW_RECORD_ERROR = "SQL error: cannot create new record in table street_references.";
@@ -119,8 +119,8 @@ public class ReadXMLFile {
                             String nodeLon = attributes.getValue(LON);
 
                             String sqlStatement = INSERT_INTO
-                                    + STREET_SECTIONS_TABLE
-                                    + STREET_SECTIONS_TABLE_HEADERS
+                                    + NODES_TABLE
+                                    + NODES_TABLE_HEADERS
                                     + VALUES
                                     + QUOTATION_MARK
                                     + nodeId
@@ -133,7 +133,7 @@ public class ReadXMLFile {
                             try {
                                 CommonJdbcMethods.executeUpdateStatement(stmt,
                                         sqlStatement,
-                                        STREET_SECTIONS_NEW_RECORD_ERROR);
+                                        NODES_NEW_RECORD_ERROR);
                             } catch (ForwardedSqlException e) {
                                 e.printStackTrace();
                                 System.exit(1);
@@ -144,17 +144,17 @@ public class ReadXMLFile {
                                 && getParkingAttr) {
 
                             String sqlStatement = UPDATE
-                                    + STREET_SECTIONS_TABLE
+                                    + NODES_TABLE
                                     + SET
                                     + PARKING_EQUALS_ONE
                                     + WHERE
-                                    + SECTION_ID_EQUALS
+                                    + NODE_ID_EQUALS
                                     + nodeId
                                     + SEMICOLON;
 
                             try {
                                 CommonJdbcMethods.executeUpdateStatement(stmt,
-                                        sqlStatement, STREET_SECTIONS_UPDATE_ERROR);
+                                        sqlStatement, NODES_UPDATE_ERROR);
                             } catch (ForwardedSqlException e) {
                                 e.printStackTrace();
                                 System.exit(1);
