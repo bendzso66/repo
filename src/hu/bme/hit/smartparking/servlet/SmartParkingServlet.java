@@ -30,7 +30,7 @@ public class SmartParkingServlet {
 
     private static final String DB_CLASS_NAME = "com.mysql.jdbc.Driver";
     private static final String HOST = "localhost";
-    private static final String DATABASE = "smart_parking";
+    private static final String DATABASE = "vehicle_data";
     private static final String CONNECTION = "jdbc:mysql://"
             + HOST
             + "/"
