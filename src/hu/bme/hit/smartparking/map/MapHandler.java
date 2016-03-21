@@ -9,6 +9,8 @@ import java.util.Scanner;
 
 import org.json.JSONObject;
 
+import hu.bme.hit.smartparking.map.Coordinates;;
+
 public class MapHandler {
 
     private static final String GEOCODING_COORDS_URL = "https://maps.googleapis.com/maps/api/geocode/json?latlng=";
@@ -16,6 +18,8 @@ public class MapHandler {
     private static final String COMMA_IN_URL = "%2C";
     private static final String KEY_STRING = "&key=";
     private static final String API_KEY = "AIzaSyBGcrE7i3y8AsCY5R7ZEHIWB3jRDMMkIlo";
+
+    private static final int R = 6371; // corrected earth radius in km
 
     public static String geocoding(String lat, String lon) throws IOException {
         URL url = new URL(GEOCODING_COORDS_URL
@@ -77,4 +81,20 @@ public class MapHandler {
             return result;
         }
     }
+
+    public static double getDistance(Coordinates startCoords, Coordinates endCoords) {
+        double latDiff = Math.toRadians(startCoords.getLatitude() - endCoords.getLatitude());
+        double lonDiff = Math.toRadians(startCoords.getLongitude() - endCoords.getLongitude());
+        double a = Math.sin(latDiff / 2)
+                * Math.sin(latDiff / 2)
+                + Math.cos(endCoords.getLatitude())
+                * Math.cos(startCoords.getLatitude())
+                * Math.sin(lonDiff / 2)
+                * Math.sin(lonDiff / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        double distance = R * c;
+
+        return distance;
+    }
+
 }
