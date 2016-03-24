@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 import org.json.JSONObject;
 
-public class getAddress {
+public class GetAddress {
 
     private static final String GEOCODING_URL = "https://maps.googleapis.com/maps/api/geocode/json?latlng=";
     private static final String COMMA_IN_URL = "%2C";

@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 import org.json.JSONObject;
 
-public class generateParkingLots {
+public class GenerateParkingLots {
 
     static double maxLong = 19.178057;
     static double minLong = 18.963774;

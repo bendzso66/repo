@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 import org.json.JSONObject;
 
-public class processTrafficDatas {
+public class ProcessTrafficDatas {
 
     static Random randIdAndAvailability = new Random();
 
