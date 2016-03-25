@@ -95,11 +95,12 @@ public class CreateStreetSections {
 
                 ArrayList<Node> nodes = new ArrayList<>();
                 while (nodesResultSet.next()) {
-                    nodes.add(new Node(nodesResultSet.getLong(NODE_ID), nodesResultSet.getDouble(LATITUDE),nodesResultSet.getDouble(LONGITUDE)));
+                    nodes.add(new Node(nodesResultSet.getLong(NODE_ID),
+                            nodesResultSet.getDouble(LATITUDE), nodesResultSet
+                                    .getDouble(LONGITUDE)));
                 }
 
-
-                for(int i = 0, j = 0; i < nodes.size(); i++) {
+                for (int i = 0, j = 0; i < nodes.size(); i++) {
                     Node startNode = nodes.get(j);
                     nodes.remove(j);
 
@@ -108,11 +109,12 @@ public class CreateStreetSections {
                     double minLon = 0;
                     double minDistance = Double.POSITIVE_INFINITY;
 
-                    for(int k = 0; k < nodes.size(); k++) {
+                    for (int k = 0; k < nodes.size(); k++) {
                         Node potentialEndNode = nodes.get(k);
-                        double distance = MapHandler.getDistance(startNode, potentialEndNode);
+                        double distance = MapHandler.getDistance(startNode,
+                                potentialEndNode);
 
-                        if(distance < minDistance) {
+                        if (distance < minDistance) {
                             minNodeId = potentialEndNode.getNodeId();
                             minLat = potentialEndNode.getLatitude();
                             minLon = potentialEndNode.getLongitude();
@@ -120,8 +122,18 @@ public class CreateStreetSections {
                             j = k;
                         }
                     }
-                    System.out.println("StartNode: " + startNode.getNodeId() + " lat: " + startNode.getLatitude() + " lon: " + startNode.getLongitude());
-                    System.out.println("EndNode: " + minNodeId + " lat: " + minLat + " lon: " + minLon);
+                    System.out.println("StartNode: "
+                            + startNode.getNodeId()
+                            + " lat: "
+                            + startNode.getLatitude()
+                            + " lon: "
+                            + startNode.getLongitude());
+                    System.out.println("EndNode: "
+                            + minNodeId
+                            + " lat: "
+                            + minLat
+                            + " lon: "
+                            + minLon);
                     System.out.println("Min distance: " + minDistance);
                     System.out.println("Nect choosen index: " + j);
                 }
