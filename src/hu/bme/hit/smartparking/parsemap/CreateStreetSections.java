@@ -38,16 +38,24 @@ public class CreateStreetSections {
             + "vehicle_data.budapest_nodes_not_null.longitude ";
     private static final String STREET_REFERENCES_TABLE = "vehicle_data.budapest_street_references_not_null ";
     private static final String NODES_TABLE = "vehicle_data.budapest_nodes_not_null ";
+    private static final String STREET_SECTIONS_TABLE = "vehicle_data.budapest_street_sections_not_null ";
+    private static final String STREET_SECTIONS_TABLE_HEADERS = "(street_id,node_id_1,latitude_1,longitude_1,node_id_2,latitude_2,longitude_2,length_of_section) ";
     private static final String JOIN_CONDITION = "vehicle_data.budapest_street_references_not_null.node_id=vehicle_data.budapest_nodes_not_null.node_id ";
     private static final String STREET_ID_EQUALS = "street_id=";
     private static final String NODE_ID = "node_id";
     private static final String LATITUDE = "latitude";
     private static final String LONGITUDE = "longitude";
     private static final String SEMICOLON = ";";
+    private static final String INSERT_INTO = "INSERT INTO ";
+    private static final String VALUES = "VALUES (";
+    private static final String QUOTATION_MARK = "'";
+    private static final String QUOTATION_MARKS_WITH_COMMA = "','";
+    private static final String CLOSING_BRACKET = "');";
 
     private static final String CONNECTION_ERROR = "SQL error: cannot create the connection.";
     private static final String SQL_QUERY_ERROR = "SQL error: cannot execute query.";
     private static final String SQL_CONNECTIONS_ARE_CLOSED = "SQL connections are closed!";
+    private static final String STREET_SECTIONS_NEW_RECORD_ERROR = "SQL error: cannot create new record in table budapest_street_sections_not_null.";
 
     public static void main(String argv[]) throws ClassNotFoundException {
 
@@ -60,6 +68,7 @@ public class CreateStreetSections {
             final Connection c = DriverManager.getConnection(CONNECTION, p);
             final Statement streetsStatement = c.createStatement();
             final Statement nodesStatement = c.createStatement();
+            final Statement streetSectionsStatement = c.createStatement();
 
             String sqlQueryFromStreetsTable = "SELECT street_id FROM "
                     + DATABASE
@@ -71,6 +80,7 @@ public class CreateStreetSections {
                             sqlQueryFromStreetsTableErrorMsg);
             ResultSet nodesResultSet = null;
 
+            int streetCounter = 1;
             while (streetsResultSet.next()) {
                 long streetId = streetsResultSet.getLong("street_id");
 
@@ -100,7 +110,7 @@ public class CreateStreetSections {
                                     .getDouble(LONGITUDE)));
                 }
 
-                int numOfSections =nodes.size() - 1;
+                int numOfSections = nodes.size() - 1;
                 for (int i = 0, j = 0; i < numOfSections; i++) {
                     Node startNode = nodes.get(j);
                     nodes.remove(j);
@@ -123,23 +133,36 @@ public class CreateStreetSections {
                             j = k;
                         }
                     }
-                    System.out.println("StartNode: "
+
+                    String sqlInsertIntoStatement = INSERT_INTO
+                            + STREET_SECTIONS_TABLE
+                            + STREET_SECTIONS_TABLE_HEADERS
+                            + VALUES
+                            + QUOTATION_MARK
+                            + streetId
+                            + QUOTATION_MARKS_WITH_COMMA
                             + startNode.getNodeId()
-                            + " lat: "
+                            + QUOTATION_MARKS_WITH_COMMA
                             + startNode.getLatitude()
-                            + " lon: "
-                            + startNode.getLongitude());
-                    System.out.println("EndNode: "
+                            + QUOTATION_MARKS_WITH_COMMA
+                            + startNode.getLongitude()
+                            + QUOTATION_MARKS_WITH_COMMA
                             + minNodeId
-                            + " lat: "
+                            + QUOTATION_MARKS_WITH_COMMA
                             + minLat
-                            + " lon: "
-                            + minLon);
-                    System.out.println("Min distance: " + minDistance);
-                    System.out.println("Nect choosen index: " + j);
+                            + QUOTATION_MARKS_WITH_COMMA
+                            + minLon
+                            + QUOTATION_MARKS_WITH_COMMA
+                            + minDistance * 1000
+                            + CLOSING_BRACKET;
+                    CommonJdbcMethods.executeUpdateStatement(streetSectionsStatement,
+                            sqlInsertIntoStatement,
+                            STREET_SECTIONS_NEW_RECORD_ERROR);
                 }
+                System.out.println(streetCounter++);
             }
 
+            CommonJdbcMethods.closeConnections(c, streetSectionsStatement);
             CommonJdbcMethods.closeConnections(c, nodesStatement,
                     nodesResultSet);
             CommonJdbcMethods.closeConnections(c, streetsStatement,
