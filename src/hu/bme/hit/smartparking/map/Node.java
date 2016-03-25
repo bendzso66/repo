@@ -1,21 +1,16 @@
 package hu.bme.hit.smartparking.map;
 
-public class Node {
+public class Node extends Coordinates {
 
     private long nodeId;
-    private Coordinates coordinates;
 
-    public Node(long id, Coordinates coords) {
+    public Node(long id, double lat, double lon) {
+        super(lat, lon);
         nodeId = id;
-        coordinates = coords;
     }
 
     public long getNodeId() {
         return nodeId;
-    }
-
-    public Coordinates getCoordinates() {
-        return coordinates;
     }
 
 }

@@ -2,7 +2,6 @@ package hu.bme.hit.smartparking.parsemap;
 
 import hu.bme.hit.smartparking.jdbc.CommonJdbcMethods;
 import hu.bme.hit.smartparking.jdbc.ForwardedSqlException;
-import hu.bme.hit.smartparking.map.Coordinates;
 import hu.bme.hit.smartparking.map.MapHandler;
 import hu.bme.hit.smartparking.map.Node;
 
@@ -96,9 +95,7 @@ public class CreateStreetSections {
 
                 ArrayList<Node> nodes = new ArrayList<>();
                 while (nodesResultSet.next()) {
-                    nodes.add(new Node(nodesResultSet.getLong(NODE_ID),
-                            new Coordinates(nodesResultSet.getDouble(LATITUDE),
-                                    nodesResultSet.getDouble(LONGITUDE))));
+                    nodes.add(new Node(nodesResultSet.getLong(NODE_ID), nodesResultSet.getDouble(LATITUDE),nodesResultSet.getDouble(LONGITUDE)));
                 }
 
 
@@ -112,20 +109,18 @@ public class CreateStreetSections {
                     double minDistance = Double.POSITIVE_INFINITY;
 
                     for(int k = 0; k < nodes.size(); k++) {
-                        Coordinates startCoords = startNode.getCoordinates();
                         Node potentialEndNode = nodes.get(k);
-                        Coordinates potentialEndCoords = potentialEndNode.getCoordinates();
-                        double distance = MapHandler.getDistance(startCoords, potentialEndCoords);
+                        double distance = MapHandler.getDistance(startNode, potentialEndNode);
 
                         if(distance < minDistance) {
                             minNodeId = potentialEndNode.getNodeId();
-                            minLat = potentialEndCoords.getLatitude();
-                            minLon = potentialEndCoords.getLongitude();
+                            minLat = potentialEndNode.getLatitude();
+                            minLon = potentialEndNode.getLongitude();
                             minDistance = distance;
                             j = k;
                         }
                     }
-                    System.out.println("StartNode: " + startNode.getNodeId() + " lat: " + startNode.getCoordinates().getLatitude() + " lon: " + startNode.getCoordinates().getLongitude());
+                    System.out.println("StartNode: " + startNode.getNodeId() + " lat: " + startNode.getLatitude() + " lon: " + startNode.getLongitude());
                     System.out.println("EndNode: " + minNodeId + " lat: " + minLat + " lon: " + minLon);
                     System.out.println("Min distance: " + minDistance);
                     System.out.println("Nect choosen index: " + j);
