@@ -87,8 +87,8 @@ public class MapHandler {
         double lonDiff = Math.toRadians(startCoords.getLongitude() - endCoords.getLongitude());
         double a = Math.sin(latDiff / 2)
                 * Math.sin(latDiff / 2)
-                + Math.cos(endCoords.getLatitude())
-                * Math.cos(startCoords.getLatitude())
+                + Math.cos(Math.toRadians(endCoords.getLatitude()))
+                * Math.cos(Math.toRadians(startCoords.getLatitude()))
                 * Math.sin(lonDiff / 2)
                 * Math.sin(lonDiff / 2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
