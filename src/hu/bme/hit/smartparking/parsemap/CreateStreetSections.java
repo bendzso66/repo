@@ -100,7 +100,8 @@ public class CreateStreetSections {
                                     .getDouble(LONGITUDE)));
                 }
 
-                for (int i = 0, j = 0; i < nodes.size(); i++) {
+                int numOfSections =nodes.size() - 1;
+                for (int i = 0, j = 0; i < numOfSections; i++) {
                     Node startNode = nodes.get(j);
                     nodes.remove(j);
 
