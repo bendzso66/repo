@@ -35,6 +35,7 @@ public class ReadXMLFile {
     private static final String NAME = "name";
     private static final String K = "k";
     private static final String RELATION = "relation";
+    private static final String HIGHWAY = "highway";
 
     private static final String ID = "id";
     private static final String LAT = "lat";
@@ -60,6 +61,7 @@ public class ReadXMLFile {
     private static final String STREETS_TABLE_HEADER = "(street_id) ";
     private static final String NAME_OF_STREET_EQUALS = "name_of_street=";
     private static final String STREET_ID_EQUALS = "street_id=";
+    private static final String HIGHWAY_EQUALS = "highway=";
 
     private static final String STREET_REFERENCES_TABLE = "vehicle_data.street_references ";
     private static final String STREET_REFERENCES_TABLE_HEADERS = "(street_id, node_id) ";
@@ -218,6 +220,33 @@ public class ReadXMLFile {
                                     + NAME_OF_STREET_EQUALS
                                     + QUOTATION_MARK
                                     + nameOfStreet
+                                    + QUOTATION_MARK
+                                    + SPACE
+                                    + WHERE
+                                    + STREET_ID_EQUALS
+                                    + wayId
+                                    + SEMICOLON;
+
+                            try {
+                                CommonJdbcMethods.executeUpdateStatement(stmt,
+                                        sqlStatement, STREETS_UPDATE_ERROR);
+                            } catch (ForwardedSqlException e) {
+                                e.printStackTrace();
+                                System.exit(1);
+                            }
+
+                        } else if (qName.equalsIgnoreCase(TAG)
+                                && attributes.getValue(K).equals(HIGHWAY)
+                                && getNameAttr) {
+
+                            String highWayType = attributes.getValue(V);
+
+                            String sqlStatement = UPDATE
+                                    + STREETS_TABLE
+                                    + SET
+                                    + HIGHWAY_EQUALS
+                                    + QUOTATION_MARK
+                                    + highWayType
                                     + QUOTATION_MARK
                                     + SPACE
                                     + WHERE
