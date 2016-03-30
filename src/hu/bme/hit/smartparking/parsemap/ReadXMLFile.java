@@ -36,6 +36,7 @@ public class ReadXMLFile {
     private static final String K = "k";
     private static final String RELATION = "relation";
     private static final String HIGHWAY = "highway";
+    private static final String PARKING_LANE = "parking:lane";
 
     private static final String ID = "id";
     private static final String LAT = "lat";
@@ -66,6 +67,10 @@ public class ReadXMLFile {
     private static final String STREET_REFERENCES_TABLE = "vehicle_data.street_references ";
     private static final String STREET_REFERENCES_TABLE_HEADERS = "(street_id, node_id) ";
 
+    private static final String PARKING_LANES_TABLE = "vehicle_data.parking_lanes ";
+    private static final String PARKING_LANES_TABLE_HEADERS = "(street_id, side, direction) ";
+
+
     private static final String SPACE = " ";
 
     private static final String NODES_NEW_RECORD_ERROR = "SQL error: cannot create new record in table nodes.";
@@ -75,6 +80,7 @@ public class ReadXMLFile {
     private static final String STREET_REFERENCES_NEW_RECORD_ERROR = "SQL error: cannot create new record in table street_references.";
     private static final String CONNECTION_ERROR = "SQL error: cannot create the connection.";
     private static final String SAX_ERROR = "SAX Parser error: cannot create the parser or the factory.";
+    private static final String PARKING_LANE_NEW_RECORD_ERROR = "SQL error: cannot update table parking_lanes.";
 
     private static final String PARSING_IS_DONE = "Parsing is done!";
     private static final String SQL_CONNECTIONS_ARE_CLOSED = "SQL connections are closed!";
@@ -257,6 +263,40 @@ public class ReadXMLFile {
                             try {
                                 CommonJdbcMethods.executeUpdateStatement(stmt,
                                         sqlStatement, STREETS_UPDATE_ERROR);
+                            } catch (ForwardedSqlException e) {
+                                e.printStackTrace();
+                                System.exit(1);
+                            }
+
+                        } else if (qName.equalsIgnoreCase(TAG)
+                                && attributes.getValue(K).startsWith(PARKING_LANE)
+                                && getNameAttr) {
+
+                            String side = attributes.getValue(K);
+                            String strippedSide;
+                            if (side.length() < 13) {
+                                strippedSide = "";
+                            } else {
+                                strippedSide = side.substring(13);
+                            }
+                            String direction = attributes.getValue(V);
+
+                            String sqlStatement = INSERT_INTO
+                                    + PARKING_LANES_TABLE
+                                    + PARKING_LANES_TABLE_HEADERS
+                                    + VALUES
+                                    + QUOTATION_MARK
+                                    + wayId
+                                    + QUOTATION_MARKS_WITH_COMMA
+                                    + strippedSide
+                                    + QUOTATION_MARKS_WITH_COMMA
+                                    + direction
+                                    + CLOSING_BRACKET;
+
+
+                            try {
+                                CommonJdbcMethods.executeUpdateStatement(stmt,
+                                        sqlStatement, PARKING_LANE_NEW_RECORD_ERROR);
                             } catch (ForwardedSqlException e) {
                                 e.printStackTrace();
                                 System.exit(1);
