@@ -37,6 +37,7 @@ public class ReadXMLFile {
     private static final String RELATION = "relation";
     private static final String HIGHWAY = "highway";
     private static final String PARKING_LANE = "parking:lane";
+    private static final String PARKING_CONDITION = "parking:condition";
 
     private static final String ID = "id";
     private static final String LAT = "lat";
@@ -70,6 +71,8 @@ public class ReadXMLFile {
     private static final String PARKING_LANES_TABLE = "vehicle_data.parking_lanes ";
     private static final String PARKING_LANES_TABLE_HEADERS = "(street_id, side, direction) ";
 
+    private static final String PARKING_CONDITIONS_TABLE = "vehicle_data.parking_conditions ";
+    private static final String PARKING_CONDITIONS_TABLE_HEADERS = "(street_id, side, parking_condition) ";
 
     private static final String SPACE = " ";
 
@@ -81,6 +84,7 @@ public class ReadXMLFile {
     private static final String CONNECTION_ERROR = "SQL error: cannot create the connection.";
     private static final String SAX_ERROR = "SAX Parser error: cannot create the parser or the factory.";
     private static final String PARKING_LANE_NEW_RECORD_ERROR = "SQL error: cannot update table parking_lanes.";
+    private static final String PARKING_CONDITION_NEW_RECORD_ERROR = "SQL error: cannot update table parking_conditions.";
 
     private static final String PARSING_IS_DONE = "Parsing is done!";
     private static final String SQL_CONNECTIONS_ARE_CLOSED = "SQL connections are closed!";
@@ -297,6 +301,40 @@ public class ReadXMLFile {
                             try {
                                 CommonJdbcMethods.executeUpdateStatement(stmt,
                                         sqlStatement, PARKING_LANE_NEW_RECORD_ERROR);
+                            } catch (ForwardedSqlException e) {
+                                e.printStackTrace();
+                                System.exit(1);
+                            }
+
+                        } else if (qName.equalsIgnoreCase(TAG)
+                                && attributes.getValue(K).startsWith(PARKING_CONDITION)
+                                && getNameAttr) {
+
+                            String side = attributes.getValue(K);
+                            String strippedSide;
+                            if (side.length() < 18) {
+                                strippedSide = "";
+                            } else {
+                                strippedSide = side.substring(18);
+                            }
+                            String condition = attributes.getValue(V);
+
+                            String sqlStatement = INSERT_INTO
+                                    + PARKING_CONDITIONS_TABLE
+                                    + PARKING_CONDITIONS_TABLE_HEADERS
+                                    + VALUES
+                                    + QUOTATION_MARK
+                                    + wayId
+                                    + QUOTATION_MARKS_WITH_COMMA
+                                    + strippedSide
+                                    + QUOTATION_MARKS_WITH_COMMA
+                                    + condition
+                                    + CLOSING_BRACKET;
+
+
+                            try {
+                                CommonJdbcMethods.executeUpdateStatement(stmt,
+                                        sqlStatement, PARKING_CONDITION_NEW_RECORD_ERROR);
                             } catch (ForwardedSqlException e) {
                                 e.printStackTrace();
                                 System.exit(1);
