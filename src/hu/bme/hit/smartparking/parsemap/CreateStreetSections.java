@@ -33,14 +33,15 @@ public class CreateStreetSections {
     private static final String ON = "ON ";
     private static final String WHERE = "WHERE ";
     private static final String ORDER_BY = " ORDER BY ";
-    private static final String REQUESTED_FIELDS = "vehicle_data.budapest_street_references_not_null.node_id, "
-            + "vehicle_data.budapest_nodes_not_null.latitude, "
-            + "vehicle_data.budapest_nodes_not_null.longitude ";
-    private static final String STREET_REFERENCES_TABLE = "vehicle_data.budapest_street_references_not_null ";
-    private static final String NODES_TABLE = "vehicle_data.budapest_nodes_not_null ";
-    private static final String STREET_SECTIONS_TABLE = "vehicle_data.budapest_street_sections_not_null ";
+    private static final String ID = "ID ";
+    private static final String REQUESTED_FIELDS = "vehicle_data.budapest_street_references.node_id, "
+            + "vehicle_data.budapest_nodes.latitude, "
+            + "vehicle_data.budapest_nodes.longitude ";
+    private static final String STREET_REFERENCES_TABLE = "vehicle_data.budapest_street_references ";
+    private static final String NODES_TABLE = "vehicle_data.budapest_nodes ";
+    private static final String STREET_SECTIONS_TABLE = "vehicle_data.budapest_street_sections ";
     private static final String STREET_SECTIONS_TABLE_HEADERS = "(street_id,node_id_1,latitude_1,longitude_1,node_id_2,latitude_2,longitude_2,length_of_section) ";
-    private static final String JOIN_CONDITION = "vehicle_data.budapest_street_references_not_null.node_id=vehicle_data.budapest_nodes_not_null.node_id ";
+    private static final String JOIN_CONDITION = "vehicle_data.budapest_street_references.node_id=vehicle_data.budapest_nodes.node_id ";
     private static final String STREET_ID_EQUALS = "street_id=";
     private static final String NODE_ID = "node_id";
     private static final String LATITUDE = "latitude";
@@ -55,7 +56,7 @@ public class CreateStreetSections {
     private static final String CONNECTION_ERROR = "SQL error: cannot create the connection.";
     private static final String SQL_QUERY_ERROR = "SQL error: cannot execute query.";
     private static final String SQL_CONNECTIONS_ARE_CLOSED = "SQL connections are closed!";
-    private static final String STREET_SECTIONS_NEW_RECORD_ERROR = "SQL error: cannot create new record in table budapest_street_sections_not_null.";
+    private static final String STREET_SECTIONS_NEW_RECORD_ERROR = "SQL error: cannot create new record in table budapest_street_sections.";
 
     public static void main(String argv[]) throws ClassNotFoundException {
 
@@ -72,8 +73,8 @@ public class CreateStreetSections {
 
             String sqlQueryFromStreetsTable = "SELECT street_id FROM "
                     + DATABASE
-                    + ".budapest_streets_not_null;";
-            String sqlQueryFromStreetsTableErrorMsg = "SQL error: query from budapest_streets_not_null was unsuccessful.";
+                    + ".budapest_streets;";
+            String sqlQueryFromStreetsTableErrorMsg = "SQL error: query from budapest_streets was unsuccessful.";
             ResultSet streetsResultSet = CommonJdbcMethods
                     .executeQueryStatement(streetsStatement,
                             sqlQueryFromStreetsTable,
@@ -96,9 +97,9 @@ public class CreateStreetSections {
                         + STREET_ID_EQUALS
                         + streetId
                         + ORDER_BY
-                        + LATITUDE
+                        + ID
                         + SEMICOLON;
-                String sqlQueryFromStreetReferencesTableErrorMsg = "SQL error: query from budapest_streets_not_null was unsuccessful.";
+                String sqlQueryFromStreetReferencesTableErrorMsg = "SQL error: query from budapest_streets was unsuccessful.";
                 nodesResultSet = CommonJdbcMethods.executeQueryStatement(
                         nodesStatement, sqlQueryFromStreetReferencesTable,
                         sqlQueryFromStreetReferencesTableErrorMsg);
@@ -111,28 +112,10 @@ public class CreateStreetSections {
                 }
 
                 int numOfSections = nodes.size() - 1;
-                for (int i = 0, j = 0; i < numOfSections; i++) {
-                    Node startNode = nodes.get(j);
-                    nodes.remove(j);
-
-                    long minNodeId = 0;
-                    double minLat = 0;
-                    double minLon = 0;
-                    double minDistance = Double.POSITIVE_INFINITY;
-
-                    for (int k = 0; k < nodes.size(); k++) {
-                        Node potentialEndNode = nodes.get(k);
-                        double distance = MapHandler.getDistance(startNode,
-                                potentialEndNode);
-
-                        if (distance < minDistance) {
-                            minNodeId = potentialEndNode.getNodeId();
-                            minLat = potentialEndNode.getLatitude();
-                            minLon = potentialEndNode.getLongitude();
-                            minDistance = distance;
-                            j = k;
-                        }
-                    }
+                for (int i = 0; i < numOfSections; i++) {
+                    Node startNode = nodes.get(i);
+                    Node endNode = nodes.get(i + 1);
+                    double distance = MapHandler.getDistance(startNode, endNode);
 
                     String sqlInsertIntoStatement = INSERT_INTO
                             + STREET_SECTIONS_TABLE
@@ -147,13 +130,13 @@ public class CreateStreetSections {
                             + QUOTATION_MARKS_WITH_COMMA
                             + startNode.getLongitude()
                             + QUOTATION_MARKS_WITH_COMMA
-                            + minNodeId
+                            + endNode.getNodeId()
                             + QUOTATION_MARKS_WITH_COMMA
-                            + minLat
+                            + endNode.getLatitude()
                             + QUOTATION_MARKS_WITH_COMMA
-                            + minLon
+                            + endNode.getLongitude()
                             + QUOTATION_MARKS_WITH_COMMA
-                            + minDistance * 1000
+                            + distance * 1000
                             + CLOSING_BRACKET;
                     CommonJdbcMethods.executeUpdateStatement(streetSectionsStatement,
                             sqlInsertIntoStatement,
