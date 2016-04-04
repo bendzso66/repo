@@ -49,3 +49,11 @@ INSERT vehicle_data.budapest_nodes_tmp (SELECT * FROM vehicle_data.budapest_node
 WHERE node_id = ANY (SELECT node_id FROM vehicle_data.budapest_street_references));
 DROP TABLE budapest_nodes;
 RENAME TABLE budapest_nodes_tmp TO budapest_nodes;
+
+CREATE TABLE vehicle_data.budapest_parking_conditions LIKE vehicle_data.parking_conditions;
+INSERT vehicle_data.budapest_parking_conditions (SELECT * FROM vehicle_data.parking_conditions
+WHERE street_id = ANY (SELECT street_id FROM vehicle_data.budapest_streets));
+
+CREATE TABLE vehicle_data.budapest_parking_lanes LIKE vehicle_data.parking_lanes;
+INSERT vehicle_data.budapest_parking_lanes (SELECT * FROM vehicle_data.parking_conditions
+WHERE street_id = ANY (SELECT street_id FROM vehicle_data.budapest_streets));
