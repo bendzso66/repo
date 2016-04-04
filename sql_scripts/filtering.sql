@@ -1,17 +1,3 @@
--- count ways in a square around Budapest
-SELECT COUNT(street_id)
-AS num_of_streets_of_budapest
-FROM vehicle_data.streets
-WHERE street_id = ANY (SELECT street_id
-                       FROM vehicle_data.street_references
-                       WHERE node_id = ANY (SELECT node_id
-                                               FROM vehicle_data.nodes
-                                               WHERE latitude < 47.623717
-                                               AND latitude > 47.351792
-                                               AND longitude < 19.358956
-                                               AND longitude > 18.936853)
-					  );
-
 -- filter nodes in a square around Budapest
 CREATE TABLE vehicle_data.budapest_nodes LIKE vehicle_data.nodes;
 INSERT vehicle_data.budapest_nodes SELECT * FROM vehicle_data.nodes
