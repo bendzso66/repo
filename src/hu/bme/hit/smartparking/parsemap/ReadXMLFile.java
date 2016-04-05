@@ -59,28 +59,28 @@ public class ReadXMLFile {
     private static final String PARKING_EQUALS_ONE = "parking=1 ";
     private static final String NODE_ID_EQUALS = "node_id= ";
 
-    private static final String STREETS_TABLE = "vehicle_data.streets ";
-    private static final String STREETS_TABLE_HEADER = "(street_id) ";
-    private static final String NAME_OF_STREET_EQUALS = "name_of_street=";
-    private static final String STREET_ID_EQUALS = "street_id=";
+    private static final String WAYS_TABLE = "vehicle_data.ways ";
+    private static final String WAYS_TABLE_HEADER = "(way_id) ";
+    private static final String NAME_OF_WAY_EQUALS = "name_of_way=";
+    private static final String WAY_ID_EQUALS = "way_id=";
     private static final String HIGHWAY_EQUALS = "highway=";
 
-    private static final String STREET_REFERENCES_TABLE = "vehicle_data.street_references ";
-    private static final String STREET_REFERENCES_TABLE_HEADERS = "(street_id, node_id) ";
+    private static final String WAY_REFERENCES_TABLE = "vehicle_data.way_references ";
+    private static final String WAY_REFERENCES_TABLE_HEADERS = "(way_id, node_id) ";
 
     private static final String PARKING_LANES_TABLE = "vehicle_data.parking_lanes ";
-    private static final String PARKING_LANES_TABLE_HEADERS = "(street_id, side, direction) ";
+    private static final String PARKING_LANES_TABLE_HEADERS = "(way_id, side, direction) ";
 
     private static final String PARKING_CONDITIONS_TABLE = "vehicle_data.parking_conditions ";
-    private static final String PARKING_CONDITIONS_TABLE_HEADERS = "(street_id, side, parking_condition) ";
+    private static final String PARKING_CONDITIONS_TABLE_HEADERS = "(way_id, side, parking_condition) ";
 
     private static final String SPACE = " ";
 
     private static final String NODES_NEW_RECORD_ERROR = "SQL error: cannot create new record in table nodes.";
     private static final String NODES_UPDATE_ERROR = "SQL error: cannot update table nodes.";
-    private static final String STREETS_NEW_RECORD_ERROR = "SQL error: cannot create new record in table streets.";
-    private static final String STREETS_UPDATE_ERROR = "SQL error: cannot update table streets.";
-    private static final String STREET_REFERENCES_NEW_RECORD_ERROR = "SQL error: cannot create new record in table street_references.";
+    private static final String WAYS_NEW_RECORD_ERROR = "SQL error: cannot create new record in table ways.";
+    private static final String WAYS_UPDATE_ERROR = "SQL error: cannot update table ways.";
+    private static final String WAY_REFERENCES_NEW_RECORD_ERROR = "SQL error: cannot create new record in table way_references.";
     private static final String CONNECTION_ERROR = "SQL error: cannot create the connection.";
     private static final String SAX_ERROR = "SAX Parser error: cannot create the parser or the factory.";
     private static final String PARKING_LANE_NEW_RECORD_ERROR = "SQL error: cannot update table parking_lanes.";
@@ -180,8 +180,8 @@ public class ReadXMLFile {
                             wayId = attributes.getValue(ID);
 
                             String sqlStatement = INSERT_INTO
-                                    + STREETS_TABLE
-                                    + STREETS_TABLE_HEADER
+                                    + WAYS_TABLE
+                                    + WAYS_TABLE_HEADER
                                     + VALUES
                                     + QUOTATION_MARK
                                     + wayId
@@ -189,7 +189,7 @@ public class ReadXMLFile {
 
                             try {
                                 CommonJdbcMethods.executeUpdateStatement(stmt,
-                                        sqlStatement, STREETS_NEW_RECORD_ERROR);
+                                        sqlStatement, WAYS_NEW_RECORD_ERROR);
                             } catch (ForwardedSqlException e) {
                                 e.printStackTrace();
                                 System.exit(1);
@@ -200,8 +200,8 @@ public class ReadXMLFile {
                             String nodeRef = attributes.getValue(REF);
 
                             String sqlStatement = INSERT_INTO
-                                    + STREET_REFERENCES_TABLE
-                                    + STREET_REFERENCES_TABLE_HEADERS
+                                    + WAY_REFERENCES_TABLE
+                                    + WAY_REFERENCES_TABLE_HEADERS
                                     + VALUES
                                     + QUOTATION_MARK
                                     + wayId
@@ -212,7 +212,7 @@ public class ReadXMLFile {
                             try {
                                 CommonJdbcMethods.executeUpdateStatement(stmt,
                                         sqlStatement,
-                                        STREET_REFERENCES_NEW_RECORD_ERROR);
+                                        WAY_REFERENCES_NEW_RECORD_ERROR);
                             } catch (ForwardedSqlException e) {
                                 e.printStackTrace();
                                 System.exit(1);
@@ -222,24 +222,24 @@ public class ReadXMLFile {
                                 && attributes.getValue(K).equals(NAME)
                                 && getNameAttr) {
 
-                            String nameOfStreet = attributes.getValue(V).replaceAll("'", "\\\\'");
+                            String nameOfWay = attributes.getValue(V).replaceAll("'", "\\\\'");
 
                             String sqlStatement = UPDATE
-                                    + STREETS_TABLE
+                                    + WAYS_TABLE
                                     + SET
-                                    + NAME_OF_STREET_EQUALS
+                                    + NAME_OF_WAY_EQUALS
                                     + QUOTATION_MARK
-                                    + nameOfStreet
+                                    + nameOfWay
                                     + QUOTATION_MARK
                                     + SPACE
                                     + WHERE
-                                    + STREET_ID_EQUALS
+                                    + WAY_ID_EQUALS
                                     + wayId
                                     + SEMICOLON;
 
                             try {
                                 CommonJdbcMethods.executeUpdateStatement(stmt,
-                                        sqlStatement, STREETS_UPDATE_ERROR);
+                                        sqlStatement, WAYS_UPDATE_ERROR);
                             } catch (ForwardedSqlException e) {
                                 e.printStackTrace();
                                 System.exit(1);
@@ -252,7 +252,7 @@ public class ReadXMLFile {
                             String highWayType = attributes.getValue(V);
 
                             String sqlStatement = UPDATE
-                                    + STREETS_TABLE
+                                    + WAYS_TABLE
                                     + SET
                                     + HIGHWAY_EQUALS
                                     + QUOTATION_MARK
@@ -260,13 +260,13 @@ public class ReadXMLFile {
                                     + QUOTATION_MARK
                                     + SPACE
                                     + WHERE
-                                    + STREET_ID_EQUALS
+                                    + WAY_ID_EQUALS
                                     + wayId
                                     + SEMICOLON;
 
                             try {
                                 CommonJdbcMethods.executeUpdateStatement(stmt,
-                                        sqlStatement, STREETS_UPDATE_ERROR);
+                                        sqlStatement, WAYS_UPDATE_ERROR);
                             } catch (ForwardedSqlException e) {
                                 e.printStackTrace();
                                 System.exit(1);

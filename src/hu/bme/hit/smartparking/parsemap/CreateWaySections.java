@@ -13,7 +13,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Properties;
 
-public class CreateStreetSections {
+public class CreateWaySections {
     private static final String DB_CLASS_NAME = "com.mysql.jdbc.Driver";
     private static final String HOST = "localhost";
     private static final String DATABASE = "vehicle_data";
@@ -34,15 +34,15 @@ public class CreateStreetSections {
     private static final String WHERE = "WHERE ";
     private static final String ORDER_BY = " ORDER BY ";
     private static final String ID = "ID ";
-    private static final String REQUESTED_FIELDS = "vehicle_data.budapest_street_references.node_id, "
+    private static final String REQUESTED_FIELDS = "vehicle_data.budapest_way_references.node_id, "
             + "vehicle_data.budapest_nodes.latitude, "
             + "vehicle_data.budapest_nodes.longitude ";
-    private static final String STREET_REFERENCES_TABLE = "vehicle_data.budapest_street_references ";
+    private static final String WAY_REFERENCES_TABLE = "vehicle_data.budapest_way_references ";
     private static final String NODES_TABLE = "vehicle_data.budapest_nodes ";
-    private static final String STREET_SECTIONS_TABLE = "vehicle_data.budapest_street_sections ";
-    private static final String STREET_SECTIONS_TABLE_HEADERS = "(street_id,node_id_1,latitude_1,longitude_1,node_id_2,latitude_2,longitude_2,length_of_section) ";
-    private static final String JOIN_CONDITION = "vehicle_data.budapest_street_references.node_id=vehicle_data.budapest_nodes.node_id ";
-    private static final String STREET_ID_EQUALS = "street_id=";
+    private static final String WAY_SECTIONS_TABLE = "vehicle_data.budapest_way_sections ";
+    private static final String WAY_SECTIONS_TABLE_HEADERS = "(way_id,node_id_1,latitude_1,longitude_1,node_id_2,latitude_2,longitude_2,length_of_section) ";
+    private static final String JOIN_CONDITION = "vehicle_data.budapest_way_references.node_id=vehicle_data.budapest_nodes.node_id ";
+    private static final String WAY_ID_EQUALS = "way_id=";
     private static final String NODE_ID = "node_id";
     private static final String LATITUDE = "latitude";
     private static final String LONGITUDE = "longitude";
@@ -56,7 +56,7 @@ public class CreateStreetSections {
     private static final String CONNECTION_ERROR = "SQL error: cannot create the connection.";
     private static final String SQL_QUERY_ERROR = "SQL error: cannot execute query.";
     private static final String SQL_CONNECTIONS_ARE_CLOSED = "SQL connections are closed!";
-    private static final String STREET_SECTIONS_NEW_RECORD_ERROR = "SQL error: cannot create new record in table budapest_street_sections.";
+    private static final String WAY_SECTIONS_NEW_RECORD_ERROR = "SQL error: cannot create new record in table budapest_way_sections.";
 
     public static void main(String argv[]) throws ClassNotFoundException {
 
@@ -67,42 +67,42 @@ public class CreateStreetSections {
 
         try {
             final Connection c = DriverManager.getConnection(CONNECTION, p);
-            final Statement streetsStatement = c.createStatement();
+            final Statement waysStatement = c.createStatement();
             final Statement nodesStatement = c.createStatement();
-            final Statement streetSectionsStatement = c.createStatement();
+            final Statement waySectionsStatement = c.createStatement();
 
-            String sqlQueryFromStreetsTable = "SELECT street_id FROM "
+            String sqlQueryFromWaysTable = "SELECT way_id FROM "
                     + DATABASE
-                    + ".budapest_streets;";
-            String sqlQueryFromStreetsTableErrorMsg = "SQL error: query from budapest_streets was unsuccessful.";
-            ResultSet streetsResultSet = CommonJdbcMethods
-                    .executeQueryStatement(streetsStatement,
-                            sqlQueryFromStreetsTable,
-                            sqlQueryFromStreetsTableErrorMsg);
+                    + ".budapest_ways;";
+            String sqlQueryFromWaysTableErrorMsg = "SQL error: query from budapest_ways was unsuccessful.";
+            ResultSet waysResultSet = CommonJdbcMethods
+                    .executeQueryStatement(waysStatement,
+                            sqlQueryFromWaysTable,
+                            sqlQueryFromWaysTableErrorMsg);
             ResultSet nodesResultSet = null;
 
-            int streetCounter = 1;
-            while (streetsResultSet.next()) {
-                long streetId = streetsResultSet.getLong("street_id");
+            int wayCounter = 1;
+            while (waysResultSet.next()) {
+                long wayId = waysResultSet.getLong("way_id");
 
-                String sqlQueryFromStreetReferencesTable = SELECT
+                String sqlQueryFromWayReferencesTable = SELECT
                         + REQUESTED_FIELDS
                         + FROM
-                        + STREET_REFERENCES_TABLE
+                        + WAY_REFERENCES_TABLE
                         + INNER_JOIN
                         + NODES_TABLE
                         + ON
                         + JOIN_CONDITION
                         + WHERE
-                        + STREET_ID_EQUALS
-                        + streetId
+                        + WAY_ID_EQUALS
+                        + wayId
                         + ORDER_BY
                         + ID
                         + SEMICOLON;
-                String sqlQueryFromStreetReferencesTableErrorMsg = "SQL error: query from budapest_streets was unsuccessful.";
+                String sqlQueryFromWayReferencesTableErrorMsg = "SQL error: query from budapest_ways was unsuccessful.";
                 nodesResultSet = CommonJdbcMethods.executeQueryStatement(
-                        nodesStatement, sqlQueryFromStreetReferencesTable,
-                        sqlQueryFromStreetReferencesTableErrorMsg);
+                        nodesStatement, sqlQueryFromWayReferencesTable,
+                        sqlQueryFromWayReferencesTableErrorMsg);
 
                 ArrayList<Node> nodes = new ArrayList<>();
                 while (nodesResultSet.next()) {
@@ -118,11 +118,11 @@ public class CreateStreetSections {
                     double distance = MapHandler.getDistance(startNode, endNode);
 
                     String sqlInsertIntoStatement = INSERT_INTO
-                            + STREET_SECTIONS_TABLE
-                            + STREET_SECTIONS_TABLE_HEADERS
+                            + WAY_SECTIONS_TABLE
+                            + WAY_SECTIONS_TABLE_HEADERS
                             + VALUES
                             + QUOTATION_MARK
-                            + streetId
+                            + wayId
                             + QUOTATION_MARKS_WITH_COMMA
                             + startNode.getNodeId()
                             + QUOTATION_MARKS_WITH_COMMA
@@ -138,18 +138,18 @@ public class CreateStreetSections {
                             + QUOTATION_MARKS_WITH_COMMA
                             + distance * 1000
                             + CLOSING_BRACKET;
-                    CommonJdbcMethods.executeUpdateStatement(streetSectionsStatement,
+                    CommonJdbcMethods.executeUpdateStatement(waySectionsStatement,
                             sqlInsertIntoStatement,
-                            STREET_SECTIONS_NEW_RECORD_ERROR);
+                            WAY_SECTIONS_NEW_RECORD_ERROR);
                 }
-                System.out.println(streetCounter++);
+                System.out.println(wayCounter++);
             }
 
-            CommonJdbcMethods.closeConnections(c, streetSectionsStatement);
+            CommonJdbcMethods.closeConnections(c, waySectionsStatement);
             CommonJdbcMethods.closeConnections(c, nodesStatement,
                     nodesResultSet);
-            CommonJdbcMethods.closeConnections(c, streetsStatement,
-                    streetsResultSet);
+            CommonJdbcMethods.closeConnections(c, waysStatement,
+                    waysResultSet);
             System.out.println(SQL_CONNECTIONS_ARE_CLOSED);
         } catch (SQLException e) {
             System.out.println(CONNECTION_ERROR);
