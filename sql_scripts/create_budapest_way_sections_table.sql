@@ -1,6 +1,6 @@
-CREATE table budapest_street_sections (
+CREATE table budapest_way_sections (
     section_id BIGINT(20) NOT NULL AUTO_INCREMENT,
-    street_id BIGINT(20),
+    way_id BIGINT(20),
     node_id_1 BIGINT(20),
     latitude_1 REAL,
     longitude_1 REAL,
