@@ -41,5 +41,5 @@ INSERT vehicle_data.budapest_parking_conditions (SELECT * FROM vehicle_data.park
 WHERE way_id = ANY (SELECT way_id FROM vehicle_data.budapest_ways));
 
 CREATE TABLE vehicle_data.budapest_parking_lanes LIKE vehicle_data.parking_lanes;
-INSERT vehicle_data.budapest_parking_lanes (SELECT * FROM vehicle_data.parking_conditions
+INSERT vehicle_data.budapest_parking_lanes (SELECT * FROM vehicle_data.parking_lanes
 WHERE way_id = ANY (SELECT way_id FROM vehicle_data.budapest_ways));
