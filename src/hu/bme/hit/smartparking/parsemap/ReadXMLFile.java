@@ -69,10 +69,11 @@ public class ReadXMLFile {
     private static final String WAY_REFERENCES_TABLE_HEADERS = "(way_id, node_id) ";
 
     private static final String PARKING_LANES_TABLE = "vehicle_data.parking_lanes ";
-    private static final String PARKING_LANES_TABLE_HEADERS = "(way_id, side, direction) ";
+    private static final String PARKING_LANES_TABLE_HEADERS = "(way_id, side, direction, from_user) ";
+    private static final int FROM_USER = 0;
 
     private static final String PARKING_CONDITIONS_TABLE = "vehicle_data.parking_conditions ";
-    private static final String PARKING_CONDITIONS_TABLE_HEADERS = "(way_id, side, parking_condition) ";
+    private static final String PARKING_CONDITIONS_TABLE_HEADERS = "(way_id, side, parking_condition, from_user) ";
 
     private static final String SPACE = " ";
 
@@ -295,8 +296,9 @@ public class ReadXMLFile {
                                     + strippedSide
                                     + QUOTATION_MARKS_WITH_COMMA
                                     + direction
+                                    + QUOTATION_MARKS_WITH_COMMA
+                                    + FROM_USER
                                     + CLOSING_BRACKET;
-
 
                             try {
                                 CommonJdbcMethods.executeUpdateStatement(stmt,
@@ -329,8 +331,9 @@ public class ReadXMLFile {
                                     + strippedSide
                                     + QUOTATION_MARKS_WITH_COMMA
                                     + condition
+                                    + QUOTATION_MARKS_WITH_COMMA
+                                    + FROM_USER
                                     + CLOSING_BRACKET;
-
 
                             try {
                                 CommonJdbcMethods.executeUpdateStatement(stmt,
