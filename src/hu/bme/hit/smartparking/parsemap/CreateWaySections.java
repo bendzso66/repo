@@ -54,9 +54,13 @@ public class CreateWaySections {
     private static final String QUOTATION_MARKS_WITH_COMMA = "','";
     private static final String CLOSING_BRACKET = "');";
     private static final String UPDATE_BUDAPEST_WAYS = "UPDATE vehicle_data.budapest_ways ";
-    private static final String SET_LATITUDE_EQUALS = "SET latitude=";
+    private static final String SET_LATITUDE_1_EQUALS = "SET latitude_1=";
     private static final String COMMA = ", ";
-    private static final String LONGITUDE_EQUALS = "longitude=";
+    private static final String LONGITUDE_1_EQUALS = "longitude_1=";
+    private static final String CENTER_LATITUDE_EQUALS = "center_latitude=";
+    private static final String CENTER_LONGITUDE_EQUALS = "center_longitude=";
+    private static final String LATITUDE_2_EQUALS = "latitude_2=";
+    private static final String LONGITUDE_2_EQUALS = "longitude_2=";
     private static final String WHERE_WAY_ID_EQUALS = "WHERE " + WAY_ID_EQUALS;
 
     private static final String CONNECTION_ERROR = "SQL error: cannot create the connection.";
@@ -122,11 +126,23 @@ public class CreateWaySections {
                 if (numOfNodes > 0) {
                     int middleNodePos = (int) Math.floor(numOfNodes / 2);
                     String sqlUpdateStatement = UPDATE_BUDAPEST_WAYS
-                            + SET_LATITUDE_EQUALS
+                            + SET_LATITUDE_1_EQUALS
+                            + nodes.get(0).getLatitude()
+                            + COMMA
+                            + LONGITUDE_1_EQUALS
+                            + nodes.get(0).getLongitude()
+                            + COMMA
+                            + CENTER_LATITUDE_EQUALS
                             + nodes.get(middleNodePos).getLatitude()
                             + COMMA
-                            + LONGITUDE_EQUALS
+                            + CENTER_LONGITUDE_EQUALS
                             + nodes.get(middleNodePos).getLongitude()
+                            + COMMA
+                            + LATITUDE_2_EQUALS
+                            + nodes.get(numOfNodes - 1).getLatitude()
+                            + COMMA
+                            + LONGITUDE_2_EQUALS
+                            + nodes.get(numOfNodes - 1).getLongitude()
                             + WHERE_WAY_ID_EQUALS
                             + wayId
                             + SEMICOLON;
