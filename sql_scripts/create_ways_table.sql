@@ -9,6 +9,8 @@ CREATE table ways (
     latitude_2 REAL,
     longitude_2 REAL,
     length_of_way REAL,
+    all_spaces SMALLINT,
+    free_spaces SMALLINT,
     PRIMARY KEY(way_id)
 )
 CHARACTER SET utf8 COLLATE utf8_unicode_ci;
