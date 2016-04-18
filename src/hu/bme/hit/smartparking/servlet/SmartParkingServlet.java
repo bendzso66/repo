@@ -35,8 +35,8 @@ public class SmartParkingServlet {
             + DATABASE
             + "?useUnicode=yes&characterEncoding=UTF-8";
     private static final int R = 6371; // corrected earth radius, km
-    private static String userName = "parking";
-    private static String password = "parking";
+    private static String userName = "smartparking";
+    private static String password = "spict2015";
     private static final Properties p = new Properties();
 
     public static void main(String[] args) throws ClassNotFoundException,
