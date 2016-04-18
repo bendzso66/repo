@@ -145,8 +145,7 @@ public class ReadXMLFile {
 
                             try {
                                 CommonJdbcMethods.executeUpdateStatement(stmt,
-                                        sqlStatement,
-                                        NODES_NEW_RECORD_ERROR);
+                                        sqlStatement, NODES_NEW_RECORD_ERROR);
                             } catch (ForwardedSqlException e) {
                                 e.printStackTrace();
                                 System.exit(1);
@@ -223,7 +222,8 @@ public class ReadXMLFile {
                                 && attributes.getValue(K).equals(NAME)
                                 && getNameAttr) {
 
-                            String nameOfWay = attributes.getValue(V).replaceAll("'", "\\\\'");
+                            String nameOfWay = attributes.getValue(V)
+                                    .replaceAll("'", "\\\\'");
 
                             String sqlStatement = UPDATE
                                     + WAYS_TABLE
@@ -274,7 +274,8 @@ public class ReadXMLFile {
                             }
 
                         } else if (qName.equalsIgnoreCase(TAG)
-                                && attributes.getValue(K).startsWith(PARKING_LANE)
+                                && attributes.getValue(K).startsWith(
+                                        PARKING_LANE)
                                 && getNameAttr) {
 
                             String side = attributes.getValue(K);
@@ -302,14 +303,16 @@ public class ReadXMLFile {
 
                             try {
                                 CommonJdbcMethods.executeUpdateStatement(stmt,
-                                        sqlStatement, PARKING_LANE_NEW_RECORD_ERROR);
+                                        sqlStatement,
+                                        PARKING_LANE_NEW_RECORD_ERROR);
                             } catch (ForwardedSqlException e) {
                                 e.printStackTrace();
                                 System.exit(1);
                             }
 
                         } else if (qName.equalsIgnoreCase(TAG)
-                                && attributes.getValue(K).startsWith(PARKING_CONDITION)
+                                && attributes.getValue(K).startsWith(
+                                        PARKING_CONDITION)
                                 && getNameAttr) {
 
                             String side = attributes.getValue(K);
@@ -337,7 +340,8 @@ public class ReadXMLFile {
 
                             try {
                                 CommonJdbcMethods.executeUpdateStatement(stmt,
-                                        sqlStatement, PARKING_CONDITION_NEW_RECORD_ERROR);
+                                        sqlStatement,
+                                        PARKING_CONDITION_NEW_RECORD_ERROR);
                             } catch (ForwardedSqlException e) {
                                 e.printStackTrace();
                                 System.exit(1);
