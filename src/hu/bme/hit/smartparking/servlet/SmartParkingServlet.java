@@ -338,12 +338,12 @@ public class SmartParkingServlet {
 
     }
 
-    private static List<rowInParkingLots> getrowsInParkingLots(ResultSet rs,
+    private static List<RowInParkingLots> getrowsInParkingLots(ResultSet rs,
             double lat1, double lon1, double radius)
             throws ForwardedSqlException {
 
-        ArrayList<rowInParkingLots> lst = new ArrayList<rowInParkingLots>();
-        rowInParkingLots row = null;
+        ArrayList<RowInParkingLots> lst = new ArrayList<RowInParkingLots>();
+        RowInParkingLots row = null;
         Double distance = null;
         try {
             while (rs.next()) {
@@ -363,7 +363,7 @@ public class SmartParkingServlet {
                 if (distance <= radius
                         & rs.getString("parking_lot_availability").equals(
                                 "free")) {
-                    row = new rowInParkingLots();
+                    row = new RowInParkingLots();
                     row.setId(rs.getInt("ID"));
                     row.setGpsTime(rs.getLong("time_of_submission"));
                     row.setLatitude(rs.getDouble("latitude"));
@@ -435,7 +435,7 @@ public class SmartParkingServlet {
                 return "RESULT_SET_IS_NULL";
             }
 
-            List<rowInParkingLots> lst = getrowsInParkingLots(rs, lat, lon,
+            List<RowInParkingLots> lst = getrowsInParkingLots(rs, lat, lon,
                     radius);
 
             Gson gson = new Gson();

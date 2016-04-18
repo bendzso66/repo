@@ -1,6 +1,6 @@
 package hu.bme.hit.smartparking.servlet;
 
-public class rowInParkingLots implements Comparable<rowInParkingLots> {
+public class RowInParkingLots implements Comparable<RowInParkingLots> {
 
     private int ID;
     private long gpsTime;
@@ -76,7 +76,7 @@ public class rowInParkingLots implements Comparable<rowInParkingLots> {
     }
 
     @Override
-    public int compareTo(rowInParkingLots other) {
+    public int compareTo(RowInParkingLots other) {
         return Double.compare(this.distance, other.getDistance());
     }
 
