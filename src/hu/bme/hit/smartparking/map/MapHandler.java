@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 import org.json.JSONObject;
 
-import hu.bme.hit.smartparking.map.Coordinates;;
+import hu.bme.hit.smartparking.map.Coordinates;
 
 public class MapHandler {
 
