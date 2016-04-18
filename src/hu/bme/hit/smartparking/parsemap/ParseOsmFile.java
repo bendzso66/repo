@@ -15,7 +15,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import hu.bme.hit.smartparking.jdbc.*;
 
-public class ReadXMLFile {
+public class ParseOsmFile {
 
     private static final String OSM_FILE_PATH = "d:\\Programs/repo/res/hungary_map/hungary-latest.osm";
 
