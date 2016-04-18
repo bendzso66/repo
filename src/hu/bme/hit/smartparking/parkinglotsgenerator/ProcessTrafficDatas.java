@@ -23,7 +23,8 @@ public class ProcessTrafficDatas {
     private static final String FILE_NAME = "d://traffic.db";
 
     public static void main(String[] args) throws Exception {
-        PrintWriter writer = new PrintWriter("d://insert_traffic_lines.sql", "UTF-8");
+        PrintWriter writer = new PrintWriter("d://insert_traffic_lines.sql",
+                "UTF-8");
         Scanner input = new Scanner(new FileInputStream(FILE_NAME));
         for (int i = 0; i < 2400; i++) {
             for (int j = 0; j < 10; j++) {
@@ -41,7 +42,12 @@ public class ProcessTrafficDatas {
                 availability = "reserved";
             }
 
-            String targetURL = GEOCODING_URL + latitude + COMMA_IN_URL + longitude + KEY_STRING + API_KEY;
+            String targetURL = GEOCODING_URL
+                    + latitude
+                    + COMMA_IN_URL
+                    + longitude
+                    + KEY_STRING
+                    + API_KEY;
             String address = geocodeCoords(targetURL);
 
             newLine = "INSERT INTO smartparking_parking_lots (gps_time, latitude, longitude, user_id, parking_lot_availability, address)\nVALUES ("
@@ -83,7 +89,8 @@ public class ProcessTrafficDatas {
         } else {
             JSONObject res = obj.getJSONArray("results").getJSONObject(0);
             String formattedAddress = res.getString("formatted_address");
-            String encodedAddress = new String(formattedAddress.getBytes(), "UTF-8");
+            String encodedAddress = new String(formattedAddress.getBytes(),
+                    "UTF-8");
             return encodedAddress;
         }
     }
