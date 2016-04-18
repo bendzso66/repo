@@ -16,7 +16,12 @@ public class GetAddress {
     public static void main(String[] args) throws Exception {
         double lat = 47.5238609631467;
         double lon = 19.097345216191794;
-        String targetURL = GEOCODING_URL + lat + COMMA_IN_URL + lon + KEY_STRING + API_KEY;
+        String targetURL = GEOCODING_URL
+                + lat
+                + COMMA_IN_URL
+                + lon
+                + KEY_STRING
+                + API_KEY;
         geocodeCoords(targetURL);
     }
 
