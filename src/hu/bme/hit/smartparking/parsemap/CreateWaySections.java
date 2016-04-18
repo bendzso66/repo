@@ -87,10 +87,9 @@ public class CreateWaySections {
                     + DATABASE
                     + ".budapest_ways;";
             String sqlQueryFromWaysTableErrorMsg = "SQL error: query from budapest_ways was unsuccessful.";
-            ResultSet waysResultSet = CommonJdbcMethods
-                    .executeQueryStatement(waysStatement,
-                            sqlQueryFromWaysTable,
-                            sqlQueryFromWaysTableErrorMsg);
+            ResultSet waysResultSet = CommonJdbcMethods.executeQueryStatement(
+                    waysStatement, sqlQueryFromWaysTable,
+                    sqlQueryFromWaysTableErrorMsg);
             ResultSet nodesResultSet = null;
 
             int wayCounter = 1;
@@ -146,8 +145,8 @@ public class CreateWaySections {
                             + WHERE_WAY_ID_EQUALS
                             + wayId
                             + SEMICOLON;
-                    CommonJdbcMethods.executeUpdateStatement(waySectionsStatement,
-                            sqlUpdateStatement,
+                    CommonJdbcMethods.executeUpdateStatement(
+                            waySectionsStatement, sqlUpdateStatement,
                             WAYS_UPDATE_ERROR);
                 }
 
@@ -155,7 +154,8 @@ public class CreateWaySections {
                 for (int i = 0; i < numOfSections; i++) {
                     Node startNode = nodes.get(i);
                     Node endNode = nodes.get(i + 1);
-                    double distance = MapHandler.getDistance(startNode, endNode);
+                    double distance = MapHandler
+                            .getDistance(startNode, endNode);
 
                     String sqlInsertIntoStatement = INSERT_INTO
                             + WAY_SECTIONS_TABLE
@@ -176,10 +176,11 @@ public class CreateWaySections {
                             + QUOTATION_MARKS_WITH_COMMA
                             + endNode.getLongitude()
                             + QUOTATION_MARKS_WITH_COMMA
-                            + distance * 1000
+                            + distance
+                            * 1000
                             + CLOSING_BRACKET;
-                    CommonJdbcMethods.executeUpdateStatement(waySectionsStatement,
-                            sqlInsertIntoStatement,
+                    CommonJdbcMethods.executeUpdateStatement(
+                            waySectionsStatement, sqlInsertIntoStatement,
                             WAY_SECTIONS_NEW_RECORD_ERROR);
                 }
                 System.out.println(wayCounter++);
@@ -188,8 +189,7 @@ public class CreateWaySections {
             CommonJdbcMethods.closeConnections(c, waySectionsStatement);
             CommonJdbcMethods.closeConnections(c, nodesStatement,
                     nodesResultSet);
-            CommonJdbcMethods.closeConnections(c, waysStatement,
-                    waysResultSet);
+            CommonJdbcMethods.closeConnections(c, waysStatement, waysResultSet);
             System.out.println(SQL_CONNECTIONS_ARE_CLOSED);
         } catch (SQLException e) {
             System.out.println(CONNECTION_ERROR);
