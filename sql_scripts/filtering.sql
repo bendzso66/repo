@@ -1,11 +1,11 @@
 -- filter nodes in a square around Budapest
 CREATE TABLE vehicle_data.budapest_nodes LIKE vehicle_data.nodes;
 INSERT vehicle_data.budapest_nodes SELECT * FROM vehicle_data.nodes
-											WHERE latitude < 47.623717
-											AND latitude > 47.351792
-											AND longitude < 19.358956
-											AND longitude > 18.936853;
-                                                  
+                                            WHERE latitude < 47.623717
+                                            AND latitude > 47.351792
+                                            AND longitude < 19.358956
+                                            AND longitude > 18.936853;
+
 -- filter way_references in a square around Budapest
 CREATE TABLE vehicle_data.budapest_way_references LIKE vehicle_data.way_references;
 INSERT vehicle_data.budapest_way_references SELECT * FROM vehicle_data.way_references
