@@ -16,7 +16,7 @@ BEGIN
     SET lng1 = mylng - dl;
     SET lng2 = mylng + dl;
 
-SELECT * ,
+SELECT way_id, name_of_way, latitude_1, longitude_1, latitude_2,  longitude_2, all_spaces, free_spaces,
     ( ( 2 * 6371
     * asin( sqrt( sin( radians( mylat - center_latitude ) / 2 )
                 * sin( radians( mylat - center_latitude ) / 2 )
