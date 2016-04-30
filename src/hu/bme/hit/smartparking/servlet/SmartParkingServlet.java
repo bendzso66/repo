@@ -9,7 +9,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -34,10 +33,26 @@ public class SmartParkingServlet {
             + "/"
             + DATABASE
             + "?useUnicode=yes&characterEncoding=UTF-8";
-    private static final int R = 6371; // corrected earth radius, km
     private static String userName = "smartparking";
     private static String password = "spict2015";
     private static final Properties p = new Properties();
+
+    private static final String WAY_ID = "way_id";
+    private static final String NAME_OF_WAY = "name_of_way";
+    private static final String LATITUDE_1 = "latitude_1";
+    private static final String LONGITUDE_1 = "longitude_1";
+    private static final String LATITUDE_2 = "latitude_2";
+    private static final String LONGITUDE_2 = "longitude_2";
+    private static final String ALL_SPACES = "all_spaces";
+    private static final String FREE_SPACES = "free_spaces";
+    private static final String DISTANCE = "distance";
+
+    private static final String CALL = "CALL ";
+    private static final String GET_WAYS_PROCEDURE = ".GetWays(";
+    private static final String COMMA = ", ";
+    private static final String CLOSING_BRACKET = ");";
+    private static final String SQL_ERROR_CANNOT_ALL_GETWAYS_PROCEDURE = "SQL error: call GetWays procedure was unsuccessful.";
+    private static final String SQL_ERROR_CANNOT_READ_WAYS_TABLE = "SQL error: cannot read the list of ways.";
 
     public static void main(String[] args) throws ClassNotFoundException,
             SQLException {
@@ -338,52 +353,31 @@ public class SmartParkingServlet {
 
     }
 
-    private static List<RowInParkingLots> getrowsInParkingLots(ResultSet rs,
-            double lat1, double lon1, double radius)
+    private static List<RowInWays> getrowsInWays(ResultSet rs)
             throws ForwardedSqlException {
 
-        ArrayList<RowInParkingLots> lst = new ArrayList<RowInParkingLots>();
-        RowInParkingLots row = null;
-        Double distance = null;
+        ArrayList<RowInWays> lst = new ArrayList<RowInWays>();
         try {
             while (rs.next()) {
-                double dLat = Math.toRadians(Double.parseDouble(rs
-                        .getString("latitude")) - lat1);
-                double dLon = Math.toRadians(Double.parseDouble(rs
-                        .getString("longitude")) - lon1);
-                double a = Math.sin(dLat / 2)
-                        * Math.sin(dLat / 2)
-                        + Math.cos(Math.toRadians(lat1))
-                        * Math.cos(Math.toRadians(Double.parseDouble(rs
-                                .getString("latitude"))))
-                        * Math.sin(dLon / 2)
-                        * Math.sin(dLon / 2);
-                double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-                distance = R * c;
-                if (distance <= radius
-                        & rs.getString("parking_lot_availability").equals(
-                                "free")) {
-                    row = new RowInParkingLots();
-                    row.setId(rs.getInt("ID"));
-                    row.setGpsTime(rs.getLong("time_of_submission"));
-                    row.setLatitude(rs.getDouble("latitude"));
-                    row.setLongitude(rs.getDouble("longitude"));
-                    row.setUserId(rs.getLong("id"));
-                    row.setParkingLotAvailability(rs
-                            .getString("parking_lot_availability"));
-                    row.setAddress(rs.getString("address"));
-                    row.setDistance(distance);
+                RowInWays row = new RowInWays(rs.getInt(WAY_ID),
+                        rs.getString(NAME_OF_WAY),
+                        rs.getDouble(LATITUDE_1),
+                        rs.getDouble(LONGITUDE_1),
+                        rs.getDouble(LATITUDE_2),
+                        rs.getDouble(LONGITUDE_2),
+                        rs.getInt(ALL_SPACES),
+                        rs.getInt(FREE_SPACES),
+                        rs.getDouble(DISTANCE));
 
-                    lst.add(row);
-                }
+                lst.add(row);
             }
         } catch (SQLException e) {
             System.out
-                    .println("SQL error: cannot create the list of parking lots.");
+                    .println(SQL_ERROR_CANNOT_READ_WAYS_TABLE);
             e.printStackTrace();
             throw new ForwardedSqlException();
         }
-        Collections.sort(lst);
+
         return lst;
     }
 
@@ -419,24 +413,27 @@ public class SmartParkingServlet {
             }
 
             if (radius == 0) {
-                radius = 0.5;
+                radius = 500;
             }
 
-            // TODO try to find parking lots in SQL
-            String sqlQueryFromParkingLotsTable = "SELECT * FROM "
+            String sqlCallGetWays = CALL
                     + DATABASE
-                    + ".smartparking_parking_lots;";
-            String sqlQueryFromParkingLotsTableErrorMsg = "SQL error: query from smartparking_parking_lots was unsuccessful.";
+                    + GET_WAYS_PROCEDURE
+                    + lat
+                    + COMMA
+                    + lon
+                    + COMMA
+                    + (int) radius
+                    + CLOSING_BRACKET;
             rs = CommonJdbcMethods.executeQueryStatement(stmt,
-                    sqlQueryFromParkingLotsTable,
-                    sqlQueryFromParkingLotsTableErrorMsg);
+                    sqlCallGetWays,
+                    SQL_ERROR_CANNOT_ALL_GETWAYS_PROCEDURE);
 
             if (rs == null) {
                 return "RESULT_SET_IS_NULL";
             }
 
-            List<RowInParkingLots> lst = getrowsInParkingLots(rs, lat, lon,
-                    radius);
+            List<RowInWays> lst = getrowsInWays(rs);
 
             Gson gson = new Gson();
             return gson.toJson(lst);
