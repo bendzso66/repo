@@ -91,9 +91,9 @@ public class SmartParkingServlet {
                     userId = Integer.parseInt(request.queryParams("id"));
                 }
 
-                double radius = 0;
+                int radius = 0;
                 if (queryParams.contains("rad")) {
-                    radius = Double.parseDouble(request.queryParams("rad"));
+                    radius = Integer.parseInt(request.queryParams("rad"));
                 }
 
                 return findFreeLot(lat, lon, userId, radius);
@@ -128,9 +128,9 @@ public class SmartParkingServlet {
                     userId = Integer.parseInt(request.queryParams("id"));
                 }
 
-                double radius = 0;
+                int radius = 0;
                 if (queryParams.contains("rad")) {
-                    radius = Double.parseDouble(request.queryParams("rad"));
+                    radius = Integer.parseInt(request.queryParams("rad"));
                 }
 
                 return findFreeLot(lat, lon, userId, radius);
@@ -382,7 +382,7 @@ public class SmartParkingServlet {
     }
 
     private static String findFreeLot(double lat, double lon, int userId,
-            double radius) {
+            int radius) {
         Connection c = null;
         Statement stmt = null;
         ResultSet rs = null;
@@ -393,7 +393,7 @@ public class SmartParkingServlet {
 
             if (userId != 0) {
                 try {
-                    double storedRadius = CommonJdbcMethods
+                    int storedRadius = CommonJdbcMethods
                             .manageUserParameters(userId, stmt, "lot_requests");
                     if (radius == 0) {
                         radius = storedRadius;
@@ -423,7 +423,7 @@ public class SmartParkingServlet {
                     + COMMA
                     + lon
                     + COMMA
-                    + (int) radius
+                    + radius
                     + CLOSING_BRACKET;
             rs = CommonJdbcMethods.executeQueryStatement(stmt,
                     sqlCallGetWays,

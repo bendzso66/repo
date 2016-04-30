@@ -39,11 +39,11 @@ public class CommonJdbcMethods {
         }
     }
 
-    public static double manageUserParameters(int userId, Statement stmt,
+    public static int manageUserParameters(int userId, Statement stmt,
             String updateableUserField) throws Exception {
 
         int size = 0;
-        double radius = 0;
+        int radius = 0;
 
         String sqlQueryFromUsersTable = "SELECT id, last_login, search_range FROM vehicle_data.smartparking_users WHERE id='"
                 + userId
@@ -66,7 +66,7 @@ public class CommonJdbcMethods {
                 } else if (lastLoginTime + ONE_DAY < System.currentTimeMillis()) {
                     throw new NotLoggedInException("NOT_LOGGED_IN");
                 } else {
-                    radius = rs.getDouble("search_range");
+                    radius = rs.getInt("search_range");
                     String sqlUpdateInUsersTable = "UPDATE vehicle_data.smartparking_users SET "
                             + updateableUserField
                             + " = "
