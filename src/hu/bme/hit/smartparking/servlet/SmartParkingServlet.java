@@ -81,8 +81,8 @@ public class SmartParkingServlet {
             @Override
             public Object handle(Request request, Response response) {
 
-                double lat = Double.parseDouble(request.queryParams("lat"));
-                double lon = Double.parseDouble(request.queryParams("lon"));
+                Coordinates targetCoords = new Coordinates(Double.parseDouble(request.queryParams("lat")),
+                        Double.parseDouble(request.queryParams("lon")));
 
                 Set<String> queryParams = request.queryParams();
 
@@ -96,7 +96,7 @@ public class SmartParkingServlet {
                     radius = Integer.parseInt(request.queryParams("rad"));
                 }
 
-                return findFreeLot(lat, lon, userId, radius);
+                return findFreeLot(targetCoords, userId, radius);
             }
 
         });
@@ -108,14 +108,12 @@ public class SmartParkingServlet {
 
                 String address = request.queryParams("address");
 
-                Map<String, Double> coords;
-                Double lat = null;
-                Double lon = null;
+                Coordinates targetCoords = null;
 
                 try {
-                    coords = MapHandler.geocoding(address);
-                    lat = coords.get("lat");
-                    lon = coords.get("lon");
+                    Map<String, Double> geocodedAddress = MapHandler.geocoding(address);
+                    targetCoords = new Coordinates(geocodedAddress.get("lat"),
+                            geocodedAddress.get("lon"));
                 } catch (Exception e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -133,7 +131,7 @@ public class SmartParkingServlet {
                     radius = Integer.parseInt(request.queryParams("rad"));
                 }
 
-                return findFreeLot(lat, lon, userId, radius);
+                return findFreeLot(targetCoords, userId, radius);
             }
 
         });
@@ -381,7 +379,7 @@ public class SmartParkingServlet {
         return lst;
     }
 
-    private static String findFreeLot(double lat, double lon, int userId,
+    private static String findFreeLot(Coordinates targetCoords, int userId,
             int radius) {
         Connection c = null;
         Statement stmt = null;
@@ -419,9 +417,9 @@ public class SmartParkingServlet {
             String sqlCallGetWays = CALL
                     + DATABASE
                     + GET_WAYS_PROCEDURE
-                    + lat
+                    + targetCoords.getLatitude()
                     + COMMA
-                    + lon
+                    + targetCoords.getLongitude()
                     + COMMA
                     + radius
                     + CLOSING_BRACKET;
