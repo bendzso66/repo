@@ -2,7 +2,6 @@ package hu.bme.hit.smartparking.servlet;
 
 import static spark.Spark.get;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -52,6 +51,8 @@ public class SmartParkingServlet {
     private static final String MAIL = "mail";
     private static final String PASS = "pass";
     private static final String AVAIL = "avail";
+    private static final String FREE = "free";
+    private static final String RESERVED = "reserved";
 
     private static final String LOT_REQUESTS = "lot_requests";
     private static final String RECOMMENDED_LOTS = "recommended_lots";
@@ -66,7 +67,6 @@ public class SmartParkingServlet {
     private static final String DISTANCE = "distance";
 
     private static final String INSERT_INTO = "INSERT INTO ";
-    private static final String INSERT_INTO_PARKING_LOTS_HEADER = ".smartparking_parking_lots (time_of_submission, latitude, longitude, user_id, parking_lot_availability, address) VALUES (";
     private static final String INSERT_INTO_USERS_HEADER = ".smartparking_users (email, password, search_range, last_login, time_of_submission) VALUES ('";
     private static final String SELECT_ID_FROM = "SELECT id FROM ";
     private static final String USERS_WHERE_EMAIL_EQUALS = ".smartparking_users WHERE email='";
@@ -80,20 +80,20 @@ public class SmartParkingServlet {
     private static final String GET_WAYS_PROCEDURE = ".GetWays(";
     private static final String COMMA = ", ";
     private static final String CLOSING_BRACKET = ");";
-    private static final String SQL_ERROR_CANNOT_UPDATE_PARKING_LOTS_TABLE = "SQL error: update in smartparking_parking_lots was unsuccessful.";
+    private static final String GET_SECTIONS_PROCEDURE = ".GetSections(";
+    private static final String SET_FREE_SPACE_PROCEDURE = ".SetFreeSpace(";
+    private static final String SQL_ERROR_CANNOT_CALL_GETSECTIONS_PROCEDURE = "SQL error: call GetWays procedure was unsuccessful.";
     private static final String SQL_ERROR_CANNOT_UPDATE_USERS_TABLE = "SQL error: update in smartparking_users was unsuccessful.";
     private static final String SQL_ERROR_CANNOT_READUSERS_TABLE = "SQL error: query in smartparking_users was unsuccessful.";
-    private static final String SQL_ERROR_CANNOT_ALL_GETWAYS_PROCEDURE = "SQL error: call GetWays procedure was unsuccessful.";
+    private static final String SQL_ERROR_CANNOT_CALL_GETWAYS_PROCEDURE = "SQL error: call GetWays procedure was unsuccessful.";
     private static final String SQL_ERROR_CANNOT_READ_WAYS_TABLE = "SQL error: cannot read the list of ways.";
+    private static final String SQL_ERROR_CANNOT_CALL_SETFREESPACES_PROCEDURE = "SQL error: call SetFreeSpaces procedure was unsuccessful.";
 
     private static final String QUOTITION_MARK = "'";
     private static final String SEMICOLON = ";";
-    private static final String EMPTY_STRING = "";
-    private static final String NO_ADDRESS = "no address";
     private static final String CHECK_EMAIL_PATTERN = "com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException: Duplicate entry '*@*.*' for key 'email'";
 
     private static final String GEOCODING_ERROR = "Geocoding error.";
-    private static final String MISSING_USER_ID = "MISSING_USER_ID";
     private static final String LOGIN_ERROR = "LOGIN_ERROR";
     private static final String SUCCESSFULL_REQUEST = "SUCCESSFULL_REQUEST";
     private static final String SQL_SERVER_ERROR = "SQL_SERVER_ERROR";
@@ -104,6 +104,7 @@ public class SmartParkingServlet {
     private static final String DUPLICATED_USER = "DUPLICATED_USER";
     private static final String RESULT_SET_IS_NULL = "RESULT_SET_IS_NULL";
     private static final String SQL_CONNECTION_ERROR = "SQL_CONNECTION_ERROR";
+    private static final String WRONG_AVAILABILITY_CONDITION = "WRONG_AVAILABILITY_CONDITION";
 
     private static final Properties p = new Properties();
 
@@ -196,67 +197,64 @@ public class SmartParkingServlet {
 
                 Connection c = null;
                 Statement stmt = null;
-
-                Set<String> queryParams = request.queryParams();
-
-                int userId;
-                if (queryParams.contains(ID)) {
-                    userId = Integer.parseInt(request.queryParams(ID));
-                } else {
-                    return MISSING_USER_ID;
-                }
+                ResultSet rs = null;
 
                 try {
                     c = DriverManager.getConnection(CONNECTION, p);
                     stmt = c.createStatement();
 
-                    try {
-                        CommonJdbcMethods.manageUserParameters(userId, stmt,
-                                RECOMMENDED_LOTS);
-                    } catch (InvalidIdException e) {
-                        return e.getMessage();
-                    } catch (DuplicatedUserException e) {
-                        return e.getMessage();
-                    } catch (InvalidLoginTimeException e) {
-                        return e.getMessage();
-                    } catch (NotLoggedInException e) {
-                        return e.getMessage();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        return LOGIN_ERROR;
+                    Set<String> queryParams = request.queryParams();
+
+                    if (queryParams.contains(ID)) {
+                        int userId = Integer.parseInt(request.queryParams(ID));
+
+                        try {
+                            CommonJdbcMethods.manageUserParameters(userId, stmt,
+                                    RECOMMENDED_LOTS);
+                        } catch (InvalidIdException e) {
+                            return e.getMessage();
+                        } catch (DuplicatedUserException e) {
+                            return e.getMessage();
+                        } catch (InvalidLoginTimeException e) {
+                            return e.getMessage();
+                        } catch (NotLoggedInException e) {
+                            return e.getMessage();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            return LOGIN_ERROR;
+                        }
                     }
 
-                    String lat = request.queryParams(LAT);
-                    String lon = request.queryParams(LON);
-
-                    String address;
-                    try {
-                        address = MapHandler.geocoding(lat, lon);
-                        address = address.replace(QUOTITION_MARK, EMPTY_STRING);
-                    } catch (IOException e) {
-                        address = NO_ADDRESS;
+                    String availability = request.queryParams(AVAIL);
+                    ParkingLot lot;
+                    if (availability.equals(FREE)) {
+                        lot = new ParkingLot(Double.parseDouble(request.queryParams(LAT)),
+                                Double.parseDouble(request.queryParams(LON)),
+                                true);
+                    } else if (availability.equals(RESERVED)) {
+                        lot = new ParkingLot(Double.parseDouble(request.queryParams(LAT)),
+                                Double.parseDouble(request.queryParams(LON)),
+                                false);
+                    } else {
+                        return WRONG_AVAILABILITY_CONDITION;
                     }
 
-                    String sqlQueryInParkingLotsTable = INSERT_INTO
+                    String sqlCallGetSections = CALL
                             + DATABASE
-                            + INSERT_INTO_PARKING_LOTS_HEADER
-                            + QUOTITION_MARK
-                            + System.currentTimeMillis()
-                            + COMMA_WITH_QUATITION_MARKS
-                            + lat
-                            + COMMA_WITH_QUATITION_MARKS
-                            + lon
-                            + COMMA_WITH_QUATITION_MARKS
-                            + userId
-                            + COMMA_WITH_QUATITION_MARKS
-                            + request.queryParams(AVAIL)
-                            + COMMA_WITH_QUATITION_MARKS
-                            + address
-                            + QUOTITION_MARK
+                            + GET_SECTIONS_PROCEDURE
+                            + lot.getLatitude()
+                            + COMMA
+                            + lot.getLongitude()
                             + CLOSING_BRACKET;
-                    CommonJdbcMethods.executeUpdateStatement(stmt,
-                            sqlQueryInParkingLotsTable,
-                            SQL_ERROR_CANNOT_UPDATE_PARKING_LOTS_TABLE);
+                    rs = CommonJdbcMethods.executeQueryStatement(stmt,
+                            sqlCallGetSections,
+                            SQL_ERROR_CANNOT_CALL_GETSECTIONS_PROCEDURE);
+
+                    if (rs == null) {
+                        return RESULT_SET_IS_NULL;
+                    }
+
+                    setSaturationInWays(stmt, rs, lot);
 
                     return SUCCESSFULL_REQUEST;
                 } catch (SQLException e) {
@@ -264,7 +262,7 @@ public class SmartParkingServlet {
                 } catch (ForwardedSqlException e) {
                     return SQL_QUERY_ERROR;
                 } finally {
-                    CommonJdbcMethods.closeConnections(c, stmt);
+                    CommonJdbcMethods.closeConnections(c, stmt, rs);
                 }
             }
 
@@ -402,7 +400,7 @@ public class SmartParkingServlet {
 
     }
 
-    private static List<RowInWays> getrowsInWays(ResultSet rs)
+    private static List<RowInWays> getRowsInWays(ResultSet rs)
             throws ForwardedSqlException {
 
         ArrayList<RowInWays> lst = new ArrayList<RowInWays>();
@@ -428,6 +426,39 @@ public class SmartParkingServlet {
         }
 
         return lst;
+    }
+
+    private static void setSaturationInWays(Statement stmt, ResultSet rs, ParkingLot lot)
+            throws ForwardedSqlException {
+
+        try {
+            int closestWayId = 0;
+            double minDistance = Double.MAX_VALUE;
+
+            while (rs.next()) {
+                Coordinates lineCoords1 = new Coordinates(rs.getDouble(LATITUDE_1), rs.getDouble(LONGITUDE_1));
+                Coordinates lineCoords2 = new Coordinates(rs.getDouble(LATITUDE_2), rs.getDouble(LONGITUDE_2));
+                double distance = MapHandler.getDistanceFromSection(lot, lineCoords1, lineCoords2);
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    closestWayId = rs.getInt(WAY_ID);
+                }
+            }
+
+            String sqlUpdateWaysStaturation = CALL
+                    + DATABASE
+                    + SET_FREE_SPACE_PROCEDURE
+                    + closestWayId
+                    + COMMA
+                    + (lot.getAvailability() ? 1 : 0)
+                    + CLOSING_BRACKET;
+            CommonJdbcMethods.executeQueryStatement(stmt, sqlUpdateWaysStaturation,
+                    SQL_ERROR_CANNOT_CALL_SETFREESPACES_PROCEDURE);
+        } catch (SQLException e) {
+            System.out.println(SQL_ERROR_CANNOT_READ_WAYS_TABLE);
+            e.printStackTrace();
+            throw new ForwardedSqlException();
+        }
     }
 
     private static String findFreeLot(Coordinates targetCoords, int userId,
@@ -476,13 +507,13 @@ public class SmartParkingServlet {
                     + CLOSING_BRACKET;
             rs = CommonJdbcMethods.executeQueryStatement(stmt,
                     sqlCallGetWays,
-                    SQL_ERROR_CANNOT_ALL_GETWAYS_PROCEDURE);
+                    SQL_ERROR_CANNOT_CALL_GETWAYS_PROCEDURE);
 
             if (rs == null) {
                 return RESULT_SET_IS_NULL;
             }
 
-            List<RowInWays> lst = getrowsInWays(rs);
+            List<RowInWays> lst = getRowsInWays(rs);
 
             Gson gson = new Gson();
             return gson.toJson(lst);

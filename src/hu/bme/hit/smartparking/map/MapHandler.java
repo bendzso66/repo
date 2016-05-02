@@ -97,4 +97,38 @@ public class MapHandler {
         return distance;
     }
 
+    public static double getDistanceFromSection(Coordinates pointCoords, Coordinates lineCoords1, Coordinates lineCoords2) {
+        double dLat21 = lineCoords2.getLatitude() - lineCoords1.getLatitude();
+        double dLon21 = lineCoords2.getLongitude() - lineCoords1.getLongitude();
+
+        double lengthSquare = dLat21 * dLat21 + dLon21 * dLon21;
+        double param = -1.0;
+
+        if (lengthSquare != 0) {
+            double dLat1 = pointCoords.getLatitude() - lineCoords1.getLatitude();
+            double dLon1 = pointCoords.getLongitude() - lineCoords1.getLongitude();
+            double dot = dLat1 * dLat21 + dLon1 * dLon21;
+
+            param = dot / lengthSquare;
+        }
+
+        double closestLat, closestLon;
+        if (param < 0) {
+            closestLat = lineCoords1.getLatitude();
+            closestLon = lineCoords1.getLongitude();
+          }
+          else if (param > 1) {
+            closestLat = lineCoords2.getLatitude();
+            closestLon = lineCoords2.getLongitude();
+          }
+          else {
+            closestLat = lineCoords1.getLatitude() + param * dLat21;
+            closestLon = lineCoords1.getLongitude() + param * dLon21;
+          }
+
+          double dLat = pointCoords.getLatitude() - closestLat;
+          double dLon = pointCoords.getLongitude() - closestLon;
+          return Math.sqrt(dLat * dLat + dLon * dLon);
+    }
+
 }
