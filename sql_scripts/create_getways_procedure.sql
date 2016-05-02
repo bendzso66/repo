@@ -25,8 +25,9 @@ SELECT way_id, name_of_way, latitude_1, longitude_1, latitude_2,  longitude_2, a
                 * sin( radians( mylng - center_longitude ) / 2 )
                 * sin( radians( mylng - center_longitude ) / 2 ) ) ) )
     * 1000 ) AS distance
-    FROM budapest_ways
-    WHERE (budapest_ways.center_latitude BETWEEN lat1 AND lat2)
+    FROM vehicle_data.budapest_ways
+    WHERE budapest_ways.all_spaces > 0
+    AND (budapest_ways.center_latitude BETWEEN lat1 AND lat2)
     AND (budapest_ways.center_longitude BETWEEN lng1 AND lng2)
     HAVING distance < dist
     ORDER BY distance;
