@@ -39,7 +39,7 @@ public class SmartParkingServlet {
 
     private static final String FIND_FREE_LOT = "/findFreeLot";
     private static final String FIND_FREE_LOT_FROM_ADDRESS = "/findFreeLotFromAddress";
-    private static final String SEND_FREE_LOT = "/sendFreeLot";
+    private static final String SEND_LOT_AVAILABILITY = "/sendLotAvailability";
     private static final String REGISTRATION = "/registration";
     private static final String LOGIN = "/login";
 
@@ -190,7 +190,7 @@ public class SmartParkingServlet {
 
         });
 
-        get(new Route(SEND_FREE_LOT) {
+        get(new Route(SEND_LOT_AVAILABILITY) {
 
             @Override
             public Object handle(Request request, Response response) {
