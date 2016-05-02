@@ -9,7 +9,7 @@ BEGIN
     DECLARE lat1 FLOAT; 
     DECLARE lat2 FLOAT;
 
-    SET df = 0.5 / 110.06;
+    SET df = 0.75 / 110.06;
     SET dl = df / abs(cos( radians( mylat ) ) );
     SET lat1 = mylat - df; 
     SET lat2 = mylat + df;
