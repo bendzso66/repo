@@ -1,5 +1,8 @@
 package hu.bme.hit.smartparking.servlet;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class RowInWays {
 
     private int wayId;
@@ -11,6 +14,8 @@ public class RowInWays {
     private int allSpaces;
     private int freeSpaces;
     private Double distance;
+    private List<Double> latitudes = new ArrayList<Double>();
+    private List<Double> longitudes = new ArrayList<Double>();
 
     public RowInWays(int wayId,
             String nameOfWay,
@@ -20,7 +25,9 @@ public class RowInWays {
             double longitude2,
             int allSpaces,
             int freeSpaces,
-            Double distance) {
+            Double distance,
+            List<Double> latitudes,
+            List<Double> longitudes) {
         this.wayId = wayId;
         this.nameOfWay = nameOfWay;
         this.latitude1 = latitude1;
@@ -30,6 +37,8 @@ public class RowInWays {
         this.allSpaces = allSpaces;
         this.freeSpaces = freeSpaces;
         this.distance = distance;
+        this.latitudes = latitudes;
+        this.longitudes = longitudes;
     }
 
     public int getId() {
@@ -66,6 +75,14 @@ public class RowInWays {
 
     public Double getDistance() {
         return this.distance;
+    }
+
+    public List<Double> getLatitudes() {
+        return this.latitudes;
+    }
+
+    public List<Double> getLongitudes() {
+        return this.longitudes;
     }
 
 }
