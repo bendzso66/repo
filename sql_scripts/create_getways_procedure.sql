@@ -27,6 +27,7 @@ SELECT way_id, name_of_way, latitude_1, longitude_1, latitude_2,  longitude_2, a
     * 1000 ) AS distance
     FROM vehicle_data.budapest_ways
     WHERE budapest_ways.all_spaces > 0
+    AND budapest_ways.length_of_way > 5
     AND (budapest_ways.latitude_1 BETWEEN lat1 AND lat2)
     AND (budapest_ways.longitude_1 BETWEEN lng1 AND lng2)
     HAVING distance < dist
@@ -42,6 +43,7 @@ SELECT way_id, name_of_way, latitude_1, longitude_1, latitude_2,  longitude_2, a
     * 1000 ) AS distance
     FROM vehicle_data.budapest_ways
     WHERE budapest_ways.all_spaces > 0
+    AND budapest_ways.length_of_way > 5
     AND (budapest_ways.latitude_2 BETWEEN lat1 AND lat2)
     AND (budapest_ways.longitude_2 BETWEEN lng1 AND lng2)
     HAVING distance < dist
