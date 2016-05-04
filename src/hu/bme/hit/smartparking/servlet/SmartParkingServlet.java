@@ -65,8 +65,6 @@ public class SmartParkingServlet {
     private static final String ALL_SPACES = "all_spaces";
     private static final String FREE_SPACES = "free_spaces";
     private static final String DISTANCE = "distance";
-    private static final String LATITUDE = "latitude";
-    private static final String LONGITUDE = "longitude";
 
     private static final String INSERT_INTO = "INSERT INTO ";
     private static final String INSERT_INTO_USERS_HEADER = ".smartparking_users (email, password, search_range, last_login, time_of_submission) VALUES ('";
@@ -80,7 +78,6 @@ public class SmartParkingServlet {
     private static final String CALL = "CALL ";
     private static final String COMMA_WITH_QUATITION_MARKS = "','";
     private static final String GET_WAYS_PROCEDURE = ".GetWays(";
-    private static final String GET_NODES_PROCEDURE = ".GetNodes(";
     private static final String COMMA = ", ";
     private static final String CLOSING_BRACKET = ");";
     private static final String GET_SECTIONS_PROCEDURE = ".GetSections(";
@@ -91,7 +88,6 @@ public class SmartParkingServlet {
     private static final String SQL_ERROR_CANNOT_CALL_GETWAYS_PROCEDURE = "SQL error: call GetWays procedure was unsuccessful.";
     private static final String SQL_ERROR_CANNOT_READ_WAYS_TABLE = "SQL error: cannot read the list of ways.";
     private static final String SQL_ERROR_CANNOT_CALL_SETFREESPACES_PROCEDURE = "SQL error: call SetFreeSpaces procedure was unsuccessful.";
-    private static final String SQL_ERROR_CANNOT_CALL_GETNODES_PROCEDURE = "SQL error: call GetNodes procedure was unsuccessful.";
 
     private static final String QUOTITION_MARK = "'";
     private static final String SEMICOLON = ";";
@@ -404,40 +400,21 @@ public class SmartParkingServlet {
 
     }
 
-    private static List<RowInWays> getRowsInWays(Statement stmt, ResultSet waysResultSet)
+    private static List<RowInWays> getRowsInWays(ResultSet rs)
             throws ForwardedSqlException {
 
         ArrayList<RowInWays> lst = new ArrayList<RowInWays>();
         try {
-            while (waysResultSet.next()) {
-                int wayId = waysResultSet.getInt(WAY_ID);
-                String sqlSelectFromNodes = CALL
-                        + DATABASE
-                        + GET_NODES_PROCEDURE
-                        + wayId
-                        + CLOSING_BRACKET;
-                ResultSet nodesResultSet = CommonJdbcMethods.executeQueryStatement(stmt,
-                        sqlSelectFromNodes, SQL_ERROR_CANNOT_CALL_GETNODES_PROCEDURE);
-
-                List<Double> latitudes = new ArrayList<Double>();
-                List<Double> longitudes = new ArrayList<Double>();
-                while (nodesResultSet.next()) {
-                    latitudes.add(nodesResultSet.getDouble(LATITUDE));
-                    longitudes.add(nodesResultSet.getDouble(LONGITUDE));
-                }
-                CommonJdbcMethods.closeResultSet(nodesResultSet);
-
-                RowInWays row = new RowInWays(wayId,
-                        waysResultSet.getString(NAME_OF_WAY),
-                        waysResultSet.getDouble(LATITUDE_1),
-                        waysResultSet.getDouble(LONGITUDE_1),
-                        waysResultSet.getDouble(LATITUDE_2),
-                        waysResultSet.getDouble(LONGITUDE_2),
-                        waysResultSet.getInt(ALL_SPACES),
-                        waysResultSet.getInt(FREE_SPACES),
-                        waysResultSet.getDouble(DISTANCE),
-                        latitudes,
-                        longitudes);
+            while (rs.next()) {
+                RowInWays row = new RowInWays(rs.getInt(WAY_ID),
+                        rs.getString(NAME_OF_WAY),
+                        rs.getDouble(LATITUDE_1),
+                        rs.getDouble(LONGITUDE_1),
+                        rs.getDouble(LATITUDE_2),
+                        rs.getDouble(LONGITUDE_2),
+                        rs.getInt(ALL_SPACES),
+                        rs.getInt(FREE_SPACES),
+                        rs.getDouble(DISTANCE));
 
                 lst.add(row);
             }
@@ -488,7 +465,6 @@ public class SmartParkingServlet {
             int radius) {
         Connection c = null;
         Statement stmt = null;
-        Statement nodesStmt = null;
         ResultSet rs = null;
 
         try {
@@ -517,7 +493,7 @@ public class SmartParkingServlet {
             }
 
             if (radius == 0) {
-                radius = 100;
+                radius = 500;
             }
 
             String sqlCallGetWays = CALL
@@ -537,8 +513,7 @@ public class SmartParkingServlet {
                 return RESULT_SET_IS_NULL;
             }
 
-            nodesStmt = c.createStatement();
-            List<RowInWays> lst = getRowsInWays(nodesStmt, rs);
+            List<RowInWays> lst = getRowsInWays(rs);
 
             Gson gson = new Gson();
             return gson.toJson(lst);
@@ -550,7 +525,6 @@ public class SmartParkingServlet {
             return SQL_QUERY_ERROR;
         } finally {
             CommonJdbcMethods.closeConnections(c, stmt, rs);
-            CommonJdbcMethods.closeConnections(c, nodesStmt);
         }
     }
 
