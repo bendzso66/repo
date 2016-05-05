@@ -58,6 +58,8 @@ public class SmartParkingServlet {
     private static final String RECOMMENDED_LOTS = "recommended_lots";
     private static final String WAY_ID = "way_id";
     private static final String NAME_OF_WAY = "name_of_way";
+    private static final String CENTER_LATITUDE = "center_latitude";
+    private static final String CENTER_LONGITUDE = "center_longitude";
     private static final String LATITUDE_1 = "latitude_1";
     private static final String LONGITUDE_1 = "longitude_1";
     private static final String LATITUDE_2 = "latitude_2";
@@ -408,6 +410,8 @@ public class SmartParkingServlet {
             while (rs.next()) {
                 RowInWays row = new RowInWays(rs.getInt(WAY_ID),
                         rs.getString(NAME_OF_WAY),
+                        rs.getDouble(CENTER_LATITUDE),
+                        rs.getDouble(CENTER_LONGITUDE),
                         rs.getDouble(LATITUDE_1),
                         rs.getDouble(LONGITUDE_1),
                         rs.getDouble(LATITUDE_2),

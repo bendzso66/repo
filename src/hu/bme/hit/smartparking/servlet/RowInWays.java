@@ -4,6 +4,8 @@ public class RowInWays {
 
     private int wayId;
     private String nameOfWay;
+    private double centerLatitude;
+    private double centerLongitude;
     private double latitude1;
     private double longitude1;
     private double latitude2;
@@ -14,6 +16,8 @@ public class RowInWays {
 
     public RowInWays(int wayId,
             String nameOfWay,
+            double centerLatitude,
+            double centerLongitude,
             double latitude1,
             double longitude1,
             double latitude2,
@@ -23,6 +27,8 @@ public class RowInWays {
             Double distance) {
         this.wayId = wayId;
         this.nameOfWay = nameOfWay;
+        this.centerLatitude = centerLatitude;
+        this.centerLongitude = centerLongitude;
         this.latitude1 = latitude1;
         this.longitude1 = longitude1;
         this.latitude2 = latitude2;
@@ -38,6 +44,14 @@ public class RowInWays {
 
     public String getNameOfWay() {
         return this.nameOfWay;
+    }
+
+    public double getCenterLatitude() {
+        return this.centerLatitude;
+    }
+
+    public double getCenterLongitude() {
+        return this.centerLongitude;
     }
 
     public double getLatitude1() {

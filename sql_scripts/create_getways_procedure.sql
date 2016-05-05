@@ -16,7 +16,7 @@ BEGIN
     SET lng1 = mylng - dl;
     SET lng2 = mylng + dl;
 
-SELECT way_id, name_of_way, latitude_1, longitude_1, latitude_2,  longitude_2, all_spaces, free_spaces,
+SELECT way_id, name_of_way, center_latitude, center_longitude, latitude_1, longitude_1, latitude_2,  longitude_2, all_spaces, free_spaces,
     ( ( 2 * 6371
     * asin( sqrt( sin( radians( mylat - latitude_1 ) / 2 )
                 * sin( radians( mylat - latitude_1 ) / 2 )
@@ -32,7 +32,7 @@ SELECT way_id, name_of_way, latitude_1, longitude_1, latitude_2,  longitude_2, a
     AND (budapest_ways.longitude_1 BETWEEN lng1 AND lng2)
     HAVING distance < dist
 UNION
-SELECT way_id, name_of_way, latitude_1, longitude_1, latitude_2,  longitude_2, all_spaces, free_spaces,
+SELECT way_id, name_of_way, center_latitude, center_longitude, latitude_1, longitude_1, latitude_2,  longitude_2, all_spaces, free_spaces,
     ( ( 2 * 6371
     * asin( sqrt( sin( radians( mylat - latitude_2 ) / 2 )
                 * sin( radians( mylat - latitude_2 ) / 2 )
