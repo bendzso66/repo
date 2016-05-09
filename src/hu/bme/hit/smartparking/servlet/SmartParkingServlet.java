@@ -93,6 +93,7 @@ public class SmartParkingServlet {
 
     private static final String QUOTITION_MARK = "'";
     private static final String SEMICOLON = ";";
+    private static final String SPACE = " ";
     private static final String CHECK_EMAIL_PATTERN = "com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException: Duplicate entry '*@*.*' for key 'email'";
 
     private static final String GEOCODING_ERROR = "Geocoding error.";
@@ -107,6 +108,7 @@ public class SmartParkingServlet {
     private static final String RESULT_SET_IS_NULL = "RESULT_SET_IS_NULL";
     private static final String SQL_CONNECTION_ERROR = "SQL_CONNECTION_ERROR";
     private static final String WRONG_AVAILABILITY_CONDITION = "WRONG_AVAILABILITY_CONDITION";
+    private static final String CANT_SET_FREE_LOT = "Unable to assign coordinates to a way at this point: ";
 
     private static final Properties p = new Properties();
 
@@ -449,15 +451,22 @@ public class SmartParkingServlet {
                 }
             }
 
-            String sqlUpdateWaysStaturation = CALL
-                    + DATABASE
-                    + SET_FREE_SPACE_PROCEDURE
-                    + closestWayId
-                    + COMMA
-                    + (lot.getAvailability() ? 1 : 0)
-                    + CLOSING_BRACKET;
-            CommonJdbcMethods.executeQueryStatement(stmt, sqlUpdateWaysStaturation,
-                    SQL_ERROR_CANNOT_CALL_SETFREESPACES_PROCEDURE);
+            if (closestWayId == 0) {
+                System.out.println(CANT_SET_FREE_LOT
+                        + lot.getLatitude()
+                        + SPACE
+                        + lot.getLongitude());
+            } else {
+                String sqlUpdateWaysStaturation = CALL
+                        + DATABASE
+                        + SET_FREE_SPACE_PROCEDURE
+                        + closestWayId
+                        + COMMA
+                        + (lot.getAvailability() ? 1 : 0)
+                        + CLOSING_BRACKET;
+                CommonJdbcMethods.executeQueryStatement(stmt, sqlUpdateWaysStaturation,
+                        SQL_ERROR_CANNOT_CALL_SETFREESPACES_PROCEDURE);
+            }
         } catch (SQLException e) {
             System.out.println(SQL_ERROR_CANNOT_READ_WAYS_TABLE);
             e.printStackTrace();
