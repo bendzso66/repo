@@ -43,6 +43,7 @@ public class SmartParkingServlet {
     private static final String REGISTRATION = "/registration";
     private static final String LOGIN = "/login";
     private static final String SEND_PARKIG_LANE = "/sendParkingLane";
+    private static final String SEND_PARKIG_CONDITION = "/sendParkingCondition";
 
     private static final String LAT = "lat";
     private static final String LON = "lon";
@@ -57,6 +58,7 @@ public class SmartParkingServlet {
     private static final String WAYID = "wayid";
     private static final String SIDE = "side";
     private static final String DIRECTION = "direction";
+    private static final String CONDITION = "condition";
 
     private static final String LOT_REQUESTS = "lot_requests";
     private static final String RECOMMENDED_LOTS = "recommended_lots";
@@ -89,6 +91,7 @@ public class SmartParkingServlet {
     private static final String GET_SECTIONS_PROCEDURE = ".GetSections(";
     private static final String SET_FREE_SPACE_PROCEDURE = ".SetFreeSpace(";
     private static final String ADD_PARKING_LANE_PROCEDURE = ".AddParkingLane(";
+    private static final String ADD_PARKING_CONDITION_PROCEDURE = ".AddParkingCondition(";
     private static final String SQL_ERROR_CANNOT_CALL_GETSECTIONS_PROCEDURE = "SQL error: call GetWays procedure was unsuccessful.";
     private static final String SQL_ERROR_CANNOT_UPDATE_USERS_TABLE = "SQL error: update in smartparking_users was unsuccessful.";
     private static final String SQL_ERROR_CANNOT_READUSERS_TABLE = "SQL error: query in smartparking_users was unsuccessful.";
@@ -96,6 +99,7 @@ public class SmartParkingServlet {
     private static final String SQL_ERROR_CANNOT_READ_WAYS_TABLE = "SQL error: cannot read the list of ways.";
     private static final String SQL_ERROR_CANNOT_CALL_SETFREESPACES_PROCEDURE = "SQL error: call SetFreeSpaces procedure was unsuccessful.";
     private static final String SQL_ERROR_CANNOT_CALL_ADDPARKINGLANE_PROCEDURE = "SQL error: call AddParkingLane procedure was unsuccessful.";
+    private static final String SQL_ERROR_CANNOT_CALL_ADDPARKINGCONDITION_PROCEDURE = "SQL error: call AddParkingCondition procedure was unsuccessful.";
 
     private static final String QUOTITION_MARK = "'";
     private static final String SEMICOLON = ";";
@@ -438,6 +442,49 @@ public class SmartParkingServlet {
                             + CLOSING_BRACKET;
                     CommonJdbcMethods.executeQueryStatement(stmt,
                             sqlQueryInUsersTable, SQL_ERROR_CANNOT_CALL_ADDPARKINGLANE_PROCEDURE);
+
+                    return SUCCESSFULL_REQUEST;
+                } catch (SQLException e) {
+                    return SQL_SERVER_ERROR;
+                } catch (ForwardedSqlException e) {
+                    return SQL_QUERY_ERROR;
+                } finally {
+                    CommonJdbcMethods.closeConnections(c, stmt);
+                }
+            }
+
+        });
+
+        get(new Route(SEND_PARKIG_CONDITION) {
+
+            @Override
+            public Object handle(Request request, Response response) {
+
+                Connection c = null;
+                Statement stmt = null;
+
+                String wayId = request.queryParams(WAYID);
+                String side = request.queryParams(SIDE);
+                String condition = request.queryParams(CONDITION);
+
+                try {
+                    c = DriverManager.getConnection(CONNECTION, p);
+                    stmt = c.createStatement();
+                    String sqlQueryInUsersTable = CALL
+                            + DATABASE
+                            + ADD_PARKING_CONDITION_PROCEDURE
+                            + wayId
+                            + COMMA
+                            + QUOTITION_MARK
+                            + side
+                            + QUOTITION_MARK
+                            + COMMA
+                            + QUOTITION_MARK
+                            + condition
+                            + QUOTITION_MARK
+                            + CLOSING_BRACKET;
+                    CommonJdbcMethods.executeQueryStatement(stmt,
+                            sqlQueryInUsersTable, SQL_ERROR_CANNOT_CALL_ADDPARKINGCONDITION_PROCEDURE);
 
                     return SUCCESSFULL_REQUEST;
                 } catch (SQLException e) {
