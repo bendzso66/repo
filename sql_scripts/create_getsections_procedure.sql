@@ -2,19 +2,19 @@ DELIMITER $$
 CREATE PROCEDURE GetSections(IN mylat DOUBLE, IN mylng DOUBLE)
 BEGIN
 
-    DECLARE df FLOAT; 
-    DECLARE dl FLOAT; 
-    DECLARE lng1 FLOAT; 
+    DECLARE dlat FLOAT;
+    DECLARE dlng FLOAT;
+    DECLARE lng1 FLOAT;
     DECLARE lng2 FLOAT;
-    DECLARE lat1 FLOAT; 
+    DECLARE lat1 FLOAT;
     DECLARE lat2 FLOAT;
 
-    SET df = 0.75 / 110.06;
-    SET dl = df / abs(cos( radians( mylat ) ) );
-    SET lat1 = mylat - df; 
-    SET lat2 = mylat + df;
-    SET lng1 = mylng - dl;
-    SET lng2 = mylng + dl;
+    SET dlat = 750 / 111319;
+    SET dlng = 750 / 75218;
+    SET lat1 = mylat - dlat;
+    SET lat2 = mylat + dlat;
+    SET lng1 = mylng - dlng;
+    SET lng2 = mylng + dlng;
 
 SELECT way_id, latitude_1, longitude_1, latitude_2, longitude_2
     FROM budapest_way_sections
